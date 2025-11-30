@@ -16,7 +16,18 @@ export async function GET(
       return NextResponse.json({ error: 'File not found' }, { status: 404 });
     }
 
-    const fullPath = path.join(process.cwd(), filePath);
+    // 먼저 public/code에서 파일 찾기 (빌드 시 복사된 파일)
+    const publicCodePath = path.join(process.cwd(), 'public', 'code', filename);
+    
+    // public/code에 파일이 있으면 사용, 없으면 소스 파일 경로 사용
+    let fullPath: string;
+    try {
+      await fs.access(publicCodePath);
+      fullPath = publicCodePath;
+    } catch {
+      // public/code에 없으면 소스 파일 경로 사용
+      fullPath = path.join(process.cwd(), filePath);
+    }
     
     // 파일 존재 여부 확인
     try {
@@ -25,6 +36,7 @@ export async function GET(
       console.error('File access error:', {
         filename,
         filePath,
+        publicCodePath,
         fullPath,
         cwd: process.cwd(),
         error: accessError,
