@@ -10,9 +10,7 @@
     "stylelint": "stylelint \"**/*.{css,scss}\" --fix",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "copy-storybook": "node scripts/copy-storybook.js",
-    "build:all": "npm run build-storybook && npm run copy-storybook && npm run build",
-    "postbuild": "npm run build-storybook && npm run copy-storybook"
+    "build:all": "npm run build-storybook && npm run build"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.0.0",
