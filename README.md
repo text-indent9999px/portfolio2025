@@ -3,7 +3,7 @@
 프론트엔드 개발자 포트폴리오 웹사이트입니다. Next.js 15와 TypeScript를 기반으로 구축되었으며, 커스텀 UI 컴포넌트 시스템과 Storybook을 활용한 컴포넌트 문서화를 포함합니다.
 
 > **🌐 라이브 데모**: [https://text-indent9999px.vercel.app](https://text-indent9999px.vercel.app)  
-> **📚 Storybook**: [Storybook URL](https://your-storybook.vercel.app) (Storybook 배포 후 URL로 변경하세요)
+> **📚 Storybook**: [https://text-indent9999px-storybook.vercel.app](https://text-indent9999px-storybook.vercel.app)
 
 ## 📋 목차
 
