@@ -1,0 +1,41 @@
+.button {
+  .icon {
+    display: inline-flex;
+    align-items: center;
+  }
+
+  .icon:only-child {
+    margin: 0 calc(var(--spacing) * -1);
+
+    svg {
+      height: 1em;
+      margin: 0 auto;
+    }
+  }
+
+  &[data-size='sm'] {
+    .icon:only-child {
+      svg {
+        height: 0.9em;
+      }
+    }
+  }
+
+  &[data-size='xs'] {
+    .icon:only-child {
+      svg {
+        height: 0.8em;
+      }
+    }
+  }
+
+  .icon:first-child:not(:only-child) {
+    margin-left: calc(
+      var(--spacing) * -1
+    ); /* 아이콘 있을 경우 좌측 여백 조정 (시각적 위치 조정) */
+  }
+
+  .label {
+    white-space: nowrap;
+  }
+}

@@ -1,0 +1,6 @@
+/* ===== 색상 시스템 메인 파일 ===== */
+/* 이 파일은 모든 색상 관련 CSS를 통합합니다. */
+
+@import './colors-variables.css';
+@import './colors-modes.css';
+@import './colors-theme.css';

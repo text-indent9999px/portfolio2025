@@ -1,0 +1,40 @@
+/* Animation keyframes for vertical movement */
+@keyframes move-top {
+  0% {
+    transform: translateY(var(--bounce-distance));
+  }
+
+  50% {
+    transform: translateY(calc(-1 * var(--bounce-distance)));
+  }
+
+  100% {
+    transform: translateY(var(--bounce-distance));
+  }
+}
+
+@keyframes move-down {
+  0% {
+    transform: translateY(calc(-1 * var(--bounce-distance)));
+  }
+
+  50% {
+    transform: translateY(var(--bounce-distance));
+  }
+
+  100% {
+    transform: translateY(calc(-1 * var(--bounce-distance)));
+  }
+}
+
+/* Text animation */
+@keyframes text-pulse {
+  0%,
+  100% {
+    opacity: 0.3;
+  }
+
+  50% {
+    opacity: 0.8;
+  }
+}

@@ -1,0 +1,73 @@
+/* ===== 다크모드 색상 매핑 ===== */
+html.dark {
+  color-scheme: dark;
+
+  /* ==== surface colors ===== */
+  --color-surface-level-min: var(--color-surface-1000);
+  --color-surface-level-1: var(--color-surface-900);
+  --color-surface-level-2: var(--color-surface-800);
+  --color-surface-level-3: var(--color-surface-700);
+  --color-surface-level-4: var(--color-surface-600);
+  --color-surface-level-5: var(--color-surface-400);
+  --color-surface-level-6: var(--color-surface-300);
+  --color-surface-level-7: var(--color-surface-200);
+  --color-surface-level-max: var(--color-surface-0);
+
+  /* ===== Text Colors ===== */
+  --color-text-primary: var(--color-surface-0);
+  --color-text-secondary: var(--color-surface-300);
+  --color-text-tertiary: var(--color-surface-400);
+  --color-text-quaternary: var(--color-surface-500);
+  --color-text-inverse: var(--color-surface-1000);
+
+  /* ===== Text Colors ===== */
+  --color-text-link: var(--color-info-300);
+  --color-text-success: var(--color-success-300);
+  --color-text-warning: var(--color-warning-200);
+  --color-text-danger: var(--color-danger-200);
+  --color-text-info: var(--color-info-300);
+
+  /* ===== InfoText 색상 ===== */
+  --color-infotext-info-bg: var(--color-info-900);
+  --color-infotext-info-border: var(--color-info-300);
+  --color-infotext-info-icon: var(--color-info-200);
+  --color-infotext-info-content: var(--color-info-200);
+  --color-infotext-info-title: var(--color-info-200);
+
+  /* InfoText Success 타입 */
+  --color-infotext-success-bg: var(--color-success-900);
+  --color-infotext-success-border: var(--color-success-300);
+  --color-infotext-success-icon: var(--color-success-200);
+  --color-infotext-success-content: var(--color-success-200);
+  --color-infotext-success-title: var(--color-success-200);
+
+  /* InfoText Warning 타입 */
+  --color-infotext-warning-bg: var(--color-warning-900);
+  --color-infotext-warning-border: var(--color-warning-200);
+  --color-infotext-warning-icon: var(--color-warning-50);
+  --color-infotext-warning-content: var(--color-warning-50);
+  --color-infotext-warning-title: var(--color-warning-50);
+
+  /* InfoText Danger 타입 */
+  --color-infotext-danger-bg: var(--color-danger-900);
+  --color-infotext-danger-border: var(--color-danger-200);
+  --color-infotext-danger-icon: var(--color-danger-50);
+  --color-infotext-danger-content: var(--color-danger-50);
+  --color-infotext-danger-title: var(--color-danger-50);
+
+  --color-disabled-bg: color-mix(
+    in srgb,
+    var(--color-gray-600) 40%,
+    transparent
+  );
+  --color-disabled-text: color-mix(
+    in srgb,
+    var(--color-gray-0) 20%,
+    transparent
+  );
+  --color-disabled-border: color-mix(
+    in srgb,
+    var(--color-gray-200) 10%,
+    transparent
+  );
+}

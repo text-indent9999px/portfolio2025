@@ -1,0 +1,142 @@
+@use 'sass:math';
+
+$cols: 8;
+$rows: 8;
+$dotSize: clamp(20px, 40%, 40px);
+$gutter: clamp(15px, 30%, 25px);
+$lineWeight: 2px;
+$speed: 4.5s;
+
+$bg: var(--color-surface-level-min);
+$fg: var(--color-surface-level-max);
+
+$containerSizeW: calc(100% + (100% / $cols) + #{$gutter});
+$containerSizeH: calc(100% + (100% / $rows) + #{$gutter});
+
+.dot-container {
+  width: 100%;
+  height: 100%;
+  background: transparent;
+  color: $fg;
+  overflow: hidden;
+
+  .container {
+    position: relative;
+    display: grid;
+    grid-template-rows: repeat($rows, 1fr);
+    grid-template-columns: repeat($cols, 1fr);
+    width: $containerSizeW;
+    height: $containerSizeH;
+    transform: translate(
+      calc(-1 * #{$dotSize} / $cols),
+      calc(-1 * #{$dotSize} / $rows)
+    );
+  }
+}
+
+.square {
+  position: relative;
+
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    background: $fg;
+    border-radius: 4px;
+  }
+
+  /* 가로 선 */
+  &::before {
+    top: 0;
+    left: calc(#{$dotSize} / 2 + #{$gutter} / 2);
+    width: calc(100% - #{$dotSize} - #{$gutter});
+    height: $lineWeight;
+    transform: translateY(-50%);
+    animation: line-y-pulse $speed infinite alternate-reverse ease-in;
+  }
+
+  /* 세로 선 */
+  &::after {
+    top: calc(#{$dotSize} / 2 + #{$gutter} / 2);
+    left: 0;
+    width: $lineWeight;
+    height: calc(100% - #{$dotSize} - #{$gutter});
+    transform: translateX(-50%);
+    animation: line-x-pulse $speed infinite alternate-reverse ease-in;
+  }
+}
+
+.dot {
+  position: absolute;
+  width: $dotSize;
+  height: $dotSize;
+  background: $fg;
+  box-sizing: border-box;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  animation: dot-pulse $speed infinite alternate ease-in;
+
+  &:last-child {
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.5);
+    animation-direction: alternate-reverse;
+  }
+}
+
+/* 중심 기준으로 delay 계산 */
+$centerRow: math.ceil(calc($rows / 2));
+$centerCol: math.ceil(calc($cols / 2));
+
+@for $row from 0 through $rows {
+  $centerRowPower: calc(($centerRow - abs(($centerRow - $row))) / 4);
+  @for $i from 1 through $cols {
+    $index: $i + ($cols * $row);
+    $centerColPower: calc(($centerCol - abs(($centerCol - $i))) / 4);
+
+    .square:nth-child(#{$index}) {
+      &::before,
+      &::after,
+      .dot {
+        animation-delay: ($centerColPower + $centerRowPower) * -0.5s;
+      }
+    }
+  }
+}
+
+/* 애니메이션 원본 그대로 */
+@keyframes dot-pulse {
+  0%,
+  35% {
+    transform: translate(-50%, -50%) scale(0);
+  }
+
+  65%,
+  100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes line-x-pulse {
+  0%,
+  35% {
+    transform: translateX(-50%) rotate(0deg);
+  }
+
+  65%,
+  100% {
+    transform: translateX(-50%) rotate(90deg);
+  }
+}
+
+@keyframes line-y-pulse {
+  0%,
+  35% {
+    transform: translateY(-50%) rotate(0deg);
+  }
+
+  65%,
+  100% {
+    transform: translateY(-50%) rotate(90deg);
+  }
+}

@@ -1,0 +1,89 @@
+@import 'tailwindcss';
+@custom-variant dark (&:where(.dark, .dark *));
+@import '../styles/design-tokens.css';
+@import '../styles/colors.css';
+@import '../styles/view-transition.css';
+@import '../styles/elevation.css';
+
+/* ===== 기본 스타일 ===== */
+
+:where(*) {
+  box-sizing: border-box;
+}
+
+html {
+  transition: opacity 1.2s ease;
+}
+
+html:not(.theme-ready) {
+  opacity: 0;
+}
+
+html.theme-ready {
+  opacity: 1;
+}
+
+html.theme-setting-completed {
+  transition: none;
+}
+
+html[data-visibility='visible'].theme-setting-completed.theme-ready {
+  transition: opacity 0.3s ease;
+}
+
+html[data-visibility='hidden'] {
+  display: none;
+}
+
+body {
+  font-family: var(--quicksand), var(--noto-sans-kr);
+}
+
+/* 접근성: 스크린리더 전용 숨김 */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+button,
+a {
+  cursor: pointer;
+}
+
+/* ===== Font Family ===== */
+.font-eng-point {
+  font-family: var(--playwrite-au-QLD) !important;
+}
+
+.font-kor-point {
+  font-family: var(--grandiflora-one) !important;
+}
+
+.font-base {
+  font-family: var(--quicksand), var(--noto-sans-kr);
+}
+
+.svg-inline--fa {
+  box-sizing: content-box;
+  display: var(--fa-display, inline-block);
+  height: 1em;
+  overflow: visible;
+  vertical-align: -0.125em;
+  width: var(--fa-width, 1.25em);
+}
+
+.no-scrollbar {
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

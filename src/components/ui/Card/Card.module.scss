@@ -1,0 +1,168 @@
+.card {
+  display: grid;
+  grid-template-areas: 'body';
+  gap: var(--card-gap, 12px);
+}
+
+/* Thumb가 있을 때 (기본: left) */
+.with-thumb {
+  grid-template-areas: 'thumb body';
+  grid-template-columns: var(--card-columns, 1fr 2fr);
+}
+
+/* Thumb가 오른쪽에 있을 때 */
+.thumb-right.with-thumb {
+  grid-template-areas: 'body thumb';
+}
+
+/* Thumb가 위에 있을 때 */
+.thumb-top.with-thumb {
+  grid-template-areas: 'thumb' 'body';
+  grid-template-columns: 1fr;
+  grid-template-rows: var(--card-rows, auto 1fr);
+}
+
+/* Thumb가 아래에 있을 때 */
+.thumb-bottom.with-thumb {
+  grid-template-areas: 'body' 'thumb';
+  grid-template-columns: 1fr;
+  grid-template-rows: var(--card-rows, 1fr auto);
+}
+
+/* Header만 있을 때 */
+.with-header {
+  grid-template-areas:
+    'header'
+    'body';
+}
+
+/* Footer만 있을 때 */
+.with-footer {
+  grid-template-areas:
+    'body'
+    'footer';
+}
+
+/* Header + Footer */
+.with-header.with-footer {
+  grid-template-areas:
+    'header'
+    'body'
+    'footer';
+}
+
+/* Thumb + Header (left) */
+.with-thumb.with-header:not(.thumb-top):not(.thumb-bottom) {
+  grid-template-areas:
+    'header header'
+    'thumb  body';
+}
+
+/* Thumb + Header (right) */
+.thumb-right.with-thumb.with-header {
+  grid-template-areas:
+    'header header'
+    'body   thumb';
+}
+
+/* Thumb + Header (top) */
+.thumb-top.with-thumb.with-header {
+  grid-template-areas:
+    'thumb'
+    'header'
+    'body';
+  grid-template-columns: 1fr;
+}
+
+/* Thumb + Header (bottom) */
+.thumb-bottom.with-thumb.with-header {
+  grid-template-areas:
+    'header'
+    'body'
+    'thumb';
+  grid-template-columns: 1fr;
+}
+
+/* Thumb + Footer (left) */
+.with-thumb.with-footer:not(.thumb-top):not(.thumb-bottom) {
+  grid-template-areas:
+    'thumb  body'
+    'footer footer';
+}
+
+/* Thumb + Footer (right) */
+.thumb-right.with-thumb.with-footer {
+  grid-template-areas:
+    'body   thumb'
+    'footer footer';
+}
+
+/* Thumb + Footer (top) */
+.thumb-top.with-thumb.with-footer {
+  grid-template-areas:
+    'thumb'
+    'body'
+    'footer';
+  grid-template-columns: 1fr;
+}
+
+/* Thumb + Footer (bottom) */
+.thumb-bottom.with-thumb.with-footer {
+  grid-template-areas:
+    'body'
+    'footer'
+    'thumb';
+  grid-template-columns: 1fr;
+}
+
+/* Thumb + Header + Footer (left) */
+.with-thumb.with-header.with-footer:not(.thumb-top):not(.thumb-bottom) {
+  grid-template-areas:
+    'header header'
+    'thumb  body'
+    'footer footer';
+}
+
+/* Thumb + Header + Footer (right) */
+.thumb-right.with-thumb.with-header.with-footer {
+  grid-template-areas:
+    'header header'
+    'body   thumb'
+    'footer footer';
+}
+
+/* Thumb + Header + Footer (top) */
+.thumb-top.with-thumb.with-header.with-footer {
+  grid-template-areas:
+    'thumb'
+    'header'
+    'body'
+    'footer';
+  grid-template-columns: 1fr;
+}
+
+/* Thumb + Header + Footer (bottom) */
+.thumb-bottom.with-thumb.with-header.with-footer {
+  grid-template-areas:
+    'header'
+    'body'
+    'footer'
+    'thumb';
+  grid-template-columns: 1fr;
+}
+
+.card [data-area='header'] {
+  grid-area: header;
+}
+
+.card [data-area='thumb'] {
+  grid-area: thumb;
+}
+
+.card [data-area='body'] {
+  grid-area: body;
+}
+
+.card [data-area='footer'] {
+  grid-area: footer;
+}

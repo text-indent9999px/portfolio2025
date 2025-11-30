@@ -1,0 +1,194 @@
+/* ===== 색상 변수 정의 ===== */
+
+:root {
+  color-scheme: light;
+
+  /* ===== Gray Colors ===== */
+  --color-gray-0: #f2f2f2;
+  --color-gray-50: #eeeeee;
+  --color-gray-100: #e7e7e7;
+  --color-gray-200: #cbcbcb;
+  --color-gray-300: #acacac;
+  --color-gray-400: #878787;
+  --color-gray-500: #636363;
+  --color-gray-600: #464646;
+  --color-gray-700: #333333;
+  --color-gray-800: #292929;
+  --color-gray-900: #212121;
+  --color-gray-1000: #111111;
+
+  /* ===== Surface 색상 팔레트 ===== */
+  --color-surface-0: var(--color-gray-0);
+  --color-surface-50: var(--color-gray-50);
+  --color-surface-100: var(--color-gray-100);
+  --color-surface-200: var(--color-gray-200);
+  --color-surface-300: var(--color-gray-300);
+  --color-surface-400: var(--color-gray-400);
+  --color-surface-500: var(--color-gray-500);
+  --color-surface-600: var(--color-gray-600);
+  --color-surface-700: var(--color-gray-700);
+  --color-surface-800: var(--color-gray-800);
+  --color-surface-900: var(--color-gray-900);
+  --color-surface-1000: var(--color-gray-1000);
+
+  /* Surface Colors */
+  --color-surface-level-min: var(--color-surface-0);
+  --color-surface-level-1: var(--color-surface-100);
+  --color-surface-level-2: var(--color-surface-200);
+  --color-surface-level-3: var(--color-surface-300);
+  --color-surface-level-4: var(--color-surface-400);
+  --color-surface-level-5: var(--color-surface-500);
+  --color-surface-level-6: var(--color-surface-600);
+  --color-surface-level-7: var(--color-surface-800);
+  --color-surface-level-max: var(--color-surface-1000);
+
+  /* ===== Primary Colors  ===== */
+  --color-primary-50: #f3f3f7;
+  --color-primary-100: #cdccdc;
+  --color-primary-200: #bfbed0;
+  --color-primary-300: #a5a3b9;
+  --color-primary-400: #8c8ba1;
+  --color-primary-500: #75748a;
+  --color-primary-600: #605e72;
+  --color-primary-700: #4b4a5b;
+  --color-primary-800: #373643;
+  --color-primary-900: #24232c;
+  --color-primary-1000: #111014;
+
+  /* ===== Secondary Colors ===== */
+  --color-secondary-50: #f1eae4;
+  --color-secondary-100: #dacbbf;
+  --color-secondary-200: #cdbdb0;
+  --color-secondary-300: #b4a08f;
+  --color-secondary-400: #9b836d;
+  --color-secondary-500: #82674e;
+  --color-secondary-600: #694e34;
+  --color-secondary-700: #503821;
+  --color-secondary-800: #372513;
+  --color-secondary-900: #1e1409;
+  --color-secondary-1000: #050302;
+
+  /* ===== Accent Colors ===== */
+  --color-accent-50: #f7e4b6;
+  --color-accent-100: #f1ce7e;
+  --color-accent-200: #edc15a;
+  --color-accent-300: #e9b335;
+  --color-accent-400: #dca218;
+  --color-accent-500: #ca9416;
+  --color-accent-600: #b88714;
+  --color-accent-700: #a57912;
+  --color-accent-800: #936e10;
+  --color-accent-900: #6e520c;
+  --color-accent-1000: #493708;
+
+  /* ===== Success Colors ===== */
+  --color-success-50: #e2f3e7;
+  --color-success-100: #c2dac5;
+  --color-success-200: #b2ceb5;
+  --color-success-300: #8bb692;
+  --color-success-400: #629d6f;
+  --color-success-500: #3c854f;
+  --color-success-600: #206c35;
+  --color-success-700: #0e5423;
+  --color-success-800: #043b16;
+  --color-success-900: #01230c;
+  --color-success-1000: #000a03;
+
+  /* ===== Warning Colors ===== */
+  --color-warning-50: #fff0eb;
+  --color-warning-100: #f7d2c5;
+  --color-warning-200: #f3c5b4;
+  --color-warning-300: #e89b7e;
+  --color-warning-400: #d96538;
+  --color-warning-500: #c43700;
+  --color-warning-600: #a93000;
+  --color-warning-700: #882600;
+  --color-warning-800: #631c00;
+  --color-warning-900: #3d1100;
+  --color-warning-1000: #190700;
+
+  /* ===== Danger Colors ===== */
+  --color-danger-50: #f7dee3;
+  --color-danger-100: #f8afc1;
+  --color-danger-200: #f69bb0;
+  --color-danger-300: #ed758f;
+  --color-danger-400: #e15672;
+  --color-danger-500: #d13d59;
+  --color-danger-600: #bc2a45;
+  --color-danger-700: #a31c34;
+  --color-danger-800: #861226;
+  --color-danger-900: #680c1b;
+  --color-danger-1000: #4d0813;
+
+  /* ===== Info Colors ===== */
+  --color-info-50: #eff7fa;
+  --color-info-100: #c0d4dc;
+  --color-info-200: #b0c7d0;
+  --color-info-300: #8aabb9;
+  --color-info-400: #638ea1;
+  --color-info-500: #3e728a;
+  --color-info-600: #225872;
+  --color-info-700: #0f425b;
+  --color-info-800: #062f43;
+  --color-info-900: #011e2c;
+  --color-info-1000: #000e14;
+
+  /* ===== Disabled Colors ===== */
+  --color-disabled-bg: color-mix(
+    in srgb,
+    var(--color-gray-300) 80%,
+    transparent
+  );
+  --color-disabled-text: color-mix(
+    in srgb,
+    var(--color-gray-0) 60%,
+    transparent
+  );
+  --color-disabled-border: color-mix(
+    in srgb,
+    var(--color-gray-300) 20%,
+    transparent
+  );
+
+  /* ===== Text Colors ===== */
+  --color-text-primary: var(--color-surface-1000);
+  --color-text-secondary: var(--color-surface-500);
+  --color-text-tertiary: var(--color-surface-400);
+  --color-text-quaternary: var(--color-surface-300);
+  --color-text-inverse: var(--color-surface-0);
+
+  /* ===== Text Colors  ===== */
+  --color-text-link: var(--color-info-800);
+  --color-text-success: var(--color-success-800);
+  --color-text-warning: var(--color-warning-600);
+  --color-text-danger: var(--color-danger-600);
+  --color-text-info: var(--color-info-600);
+
+  /* ===== InfoText 색상 ===== */
+  --color-infotext-info-bg: var(--color-info-100);
+  --color-infotext-info-border: var(--color-info-600);
+  --color-infotext-info-icon: var(--color-info-600);
+  --color-infotext-info-content: var(--color-info-800);
+  --color-infotext-info-title: var(--color-info-800);
+
+  /* InfoText Success 타입 */
+  --color-infotext-success-bg: var(--color-success-100);
+  --color-infotext-success-border: var(--color-success-600);
+  --color-infotext-success-icon: var(--color-success-600);
+  --color-infotext-success-content: var(--color-success-900);
+  --color-infotext-success-title: var(--color-success-900);
+
+  /* InfoText Warning 타입 */
+  --color-infotext-warning-bg: var(--color-warning-100);
+  --color-infotext-warning-border: var(--color-warning-600);
+  --color-infotext-warning-icon: var(--color-warning-600);
+  --color-infotext-warning-content: var(--color-warning-800);
+  --color-infotext-warning-title: var(--color-warning-800);
+
+  /* InfoText Danger 타입 */
+  --color-infotext-danger-bg: var(--color-danger-50);
+  --color-infotext-danger-border: var(--color-danger-600);
+  --color-infotext-danger-icon: var(--color-danger-600);
+  --color-infotext-danger-content: var(--color-danger-800);
+  --color-infotext-danger-title: var(--color-danger-800);
+}

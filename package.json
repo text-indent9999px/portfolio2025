@@ -1,0 +1,53 @@
+{
+  "name": "portfolio",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "stylelint": "stylelint \"**/*.{css,scss}\" --fix",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "copy-storybook": "node scripts/copy-storybook.js",
+    "build:all": "npm run build-storybook && npm run copy-storybook && npm run build",
+    "postbuild": "npm run build-storybook && npm run copy-storybook"
+  },
+  "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^7.0.0",
+    "@fortawesome/free-solid-svg-icons": "^7.0.0",
+    "@fortawesome/react-fontawesome": "^0.2.3",
+    "next": "15.4.2",
+    "react": "^0.0.0-experimental-6de32a5a-20250822",
+    "react-dom": "^0.0.0-experimental-6de32a5a-20250822",
+    "sass": "^1.89.2",
+    "shiki": "^3.15.0"
+  },
+  "devDependencies": {
+    "@chromatic-com/storybook": "^4.1.1",
+    "@eslint/eslintrc": "^3",
+    "@storybook/addon-a11y": "^9.1.10",
+    "@storybook/addon-docs": "^9.1.10",
+    "@storybook/addon-onboarding": "^9.1.10",
+    "@storybook/addon-vitest": "^9.1.10",
+    "@storybook/nextjs": "^9.1.10",
+    "@tailwindcss/postcss": "^4.1.11",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "ajv": "^8.17.1",
+    "ajv-keywords": "^5.1.0",
+    "autoprefixer": "^10.4.21",
+    "eslint": "^9",
+    "eslint-config-next": "15.4.2",
+    "eslint-plugin-storybook": "^9.1.10",
+    "postcss": "^8.5.6",
+    "storybook": "^9.1.10",
+    "stylelint": "^16.22.0",
+    "stylelint-config-standard": "^38.0.0",
+    "stylelint-order": "^7.0.0",
+    "tailwindcss": "^4.1.11",
+    "typescript": "^5"
+  }
+}
