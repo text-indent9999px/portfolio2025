@@ -142,7 +142,7 @@ export const skillCategories: Record<string, SkillCategory> = {
       },
       {
         name: 'GitHub',
-        icon: '/assets/skills/github.svg',
+        icon: '/assets/skills/gitHub.svg',
         hasBackground: true,
       },
       {
