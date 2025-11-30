@@ -203,10 +203,13 @@ export function useTransitionNavigation() {
             addTransitionType,
             startTransition
           );
-          resetNavigationFlag(
-            isNavigatingRef,
-            setIsNavigatingRef.current || undefined
-          );
+          // isNavigatingRef는 boolean이므로 resetNavigationFlag 대신 직접 설정
+          requestAnimationFrame(() => {
+            isNavigatingRef.current = false;
+            if (setIsNavigatingRef.current) {
+              setIsNavigatingRef.current(false);
+            }
+          });
         });
       });
     },
