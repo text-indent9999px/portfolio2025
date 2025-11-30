@@ -17,6 +17,24 @@ export async function GET(
     }
 
     const fullPath = path.join(process.cwd(), filePath);
+    
+    // 파일 존재 여부 확인
+    try {
+      await fs.access(fullPath);
+    } catch (accessError) {
+      console.error('File access error:', {
+        filename,
+        filePath,
+        fullPath,
+        cwd: process.cwd(),
+        error: accessError,
+      });
+      return NextResponse.json(
+        { error: 'File not found', path: fullPath },
+        { status: 404 }
+      );
+    }
+
     const content = await fs.readFile(fullPath, 'utf-8');
 
     return new NextResponse(content, {
@@ -25,7 +43,14 @@ export async function GET(
       },
     });
   } catch (error) {
-    console.error('Error reading file:', error);
-    return NextResponse.json({ error: 'Failed to read file' }, { status: 500 });
+    console.error('Error reading file:', {
+      error,
+      filename: (await params).filename,
+      cwd: process.cwd(),
+    });
+    return NextResponse.json(
+      { error: 'Failed to read file', details: error instanceof Error ? error.message : String(error) },
+      { status: 500 }
+    );
   }
 }
