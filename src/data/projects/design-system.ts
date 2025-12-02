@@ -1,4 +1,5 @@
 import { ProjectDetail } from '../../components/pages/Projects/types/project-tabs';
+import { EXTERNAL_LINKS } from '../../config/links';
 
 export const designSystemProject: ProjectDetail = {
   meta: {
@@ -35,7 +36,7 @@ export const designSystemProject: ProjectDetail = {
     { type: 'overview', label: '제작 배경', order: 1 },
     {
       type: 'features',
-      label: '주요 구현 사항',
+      label: '구현 사항',
       order: 2,
       payload: {
         features: [
@@ -94,7 +95,7 @@ export const designSystemProject: ProjectDetail = {
     },
     {
       type: 'code',
-      label: '코드 하이라이트',
+      label: '코드 보기',
       order: 4,
       payload: {
         codeHighlights: [
@@ -146,6 +147,24 @@ export const designSystemProject: ProjectDetail = {
             demoPath: 'Card',
           },
         ],
+      },
+    },
+    {
+      type: 'custom',
+      label: '스토리북',
+      order: 5,
+      payload: {
+        videos: [
+          {
+            path: '/assets/videos/storybook-theme-toggle.webm',
+            title: 'Storybook 테마 전환',
+            description:
+              'Storybook 상단 패널에서 배경색 변경을 통해 라이트/다크 모드를 전환할 수 있습니다.',
+          },
+        ],
+        storybookUrl: EXTERNAL_LINKS.storybook,
+        description:
+          'Storybook을 통해 컴포넌트를 인터랙티브하게 탐색하고 테스트할 수 있습니다.',
       },
     },
   ],

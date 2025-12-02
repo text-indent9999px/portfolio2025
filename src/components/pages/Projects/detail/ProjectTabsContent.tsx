@@ -5,7 +5,15 @@ import { useMediaQuery } from '../../../../hooks';
 import { PrimaryTab } from '../../../ui/Tab';
 import { SecondaryTab } from '../../../ui/Tab/Secondary';
 import type { ProjectDetail, ProjectTab } from '../types';
-import { ChallengesTab, CodeTab, FeaturesTab, OverviewTab } from './tabs';
+import {
+  ChallengesTab,
+  CodeTab,
+  DemoTab,
+  FeaturesTab,
+  LighthouseTab,
+  OverviewTab,
+  StorybookTab,
+} from './tabs';
 
 // overview는 timestamp가 필요하므로 별도 처리
 // 나머지 탭 타입과 컴포넌트 매핑 (overview, code, styleguide 제외)
@@ -17,6 +25,7 @@ const SIMPLE_TAB_COMPONENTS = {
 // 타입 가드 함수들
 const isValidProjectTabType = (value: string): value is ProjectTab['type'] => {
   return [
+    'demo',
     'overview',
     'features',
     'challenges',
@@ -89,6 +98,10 @@ export function ProjectTabsContent({
 
   // 탭 컨텐츠 렌더링 함수
   const renderTabContent = () => {
+    if (activeTab === 'demo') {
+      return <DemoTab project={project} />;
+    }
+
     if (activeTab === 'overview') {
       return <OverviewTab project={project} timestamp={timestamp} />;
     }
@@ -101,6 +114,18 @@ export function ProjectTabsContent({
           onSubTabChange={handleCodeSubTabChange}
         />
       );
+    }
+
+    // custom 타입 탭 처리 (스토리북, Lighthouse 등)
+    if (activeTab === 'custom') {
+      const customTab = project.tabs.find(t => t.type === 'custom');
+      if (customTab?.label === '스토리북') {
+        return <StorybookTab project={project} />;
+      }
+      if (customTab?.label === 'Lighthouse') {
+        return <LighthouseTab project={project} />;
+      }
+      return null;
     }
 
     // 나머지 탭들 (features, challenges)

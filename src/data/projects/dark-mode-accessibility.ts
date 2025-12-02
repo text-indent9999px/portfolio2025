@@ -42,10 +42,32 @@ BroadcastChannel을 지원하지 않는 환경에서는 제한적으로 sessionS
 단순한 색상 전환이 아닌, 탭 간 일관된 사용자 경험을 목표로 설계했습니다.`,
   },
   tabs: [
+    {
+      type: 'demo',
+      label: '데모',
+      order: 0,
+      payload: {
+        description:
+          '다크모드 토글 및 탭 간 테마 동기화 데모입니다.\n여러 탭을 열어두고 테마를 변경하면 모든 탭에서 실시간으로 동기화되는 것을 확인할 수 있습니다.',
+        videos: [
+          {
+            path: '/assets/videos/theme-toggle-click.webm',
+            title: '테마 토글',
+            description: '테마 버튼 클릭으로 라이트/다크 모드 전환',
+          },
+          {
+            path: '/assets/videos/theme-toggle-tabs.webm',
+            title: '탭 간 테마 동기화',
+            description:
+              '여러 탭을 열어두고 한 탭에서 테마를 변경하면 모든 탭에서 실시간으로 동기화',
+          },
+        ],
+      },
+    },
     { type: 'overview', label: '제작 배경', order: 1 },
     {
       type: 'features',
-      label: '주요 구현 사항',
+      label: '구현 사항',
       order: 2,
       payload: {
         features: [
@@ -100,7 +122,7 @@ BroadcastChannel을 지원하지 않는 환경에서는 제한적으로 sessionS
     },
     {
       type: 'code',
-      label: '코드 하이라이트',
+      label: '코드 보기',
       order: 4,
       payload: {
         codeHighlights: [
@@ -120,6 +142,11 @@ BroadcastChannel을 지원하지 않는 환경에서는 제한적으로 sessionS
           },
         ],
       },
+    },
+    {
+      type: 'custom',
+      label: 'Lighthouse',
+      order: 5,
     },
   ],
 };

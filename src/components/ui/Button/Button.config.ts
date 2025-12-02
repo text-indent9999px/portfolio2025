@@ -27,7 +27,7 @@ export const STYLE_CLASSES = {
 
 // 기본 클래스
 export const BASE_CLASSES =
-  'inline-flex items-center justify-center gap-1 relative box-border border-2 font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 will-change-transform';
+  'inline-flex items-center justify-center gap-1 relative box-border border-2 font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2 will-change-transform select-none';
 
 // 공통 설정 import
 import { VARIANT_CLASSES } from '../shared/UI.config';

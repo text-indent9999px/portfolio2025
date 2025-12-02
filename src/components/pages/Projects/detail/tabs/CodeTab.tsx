@@ -34,7 +34,7 @@ const CodeTab: React.FC<CodeTabProps> = React.memo(
     );
 
     const title = useMemo(
-      () => codeTab?.label ?? '코드 하이라이트',
+      () => codeTab?.label ?? '코드 보기',
       [codeTab?.label]
     );
 

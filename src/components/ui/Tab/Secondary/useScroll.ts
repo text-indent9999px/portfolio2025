@@ -4,6 +4,7 @@ import { useRef, useState } from 'react';
 import { useEventCallback } from '../../../../utils/useEventCallback';
 import type { TabItem } from '../common.types';
 import { animate } from './animation';
+import { EDGE_OVERLAY_WIDTH, EDGE_SCROLL_OFFSET } from './constants';
 import type { ScrollState } from './types';
 
 export interface UseScrollProps {
@@ -30,8 +31,6 @@ export function useScroll({
   const scrollAnimationCancelRef = useRef<(() => void) | null>(null);
 
   const scrollStart = 'scrollLeft';
-  const start = 'left';
-  const end = 'right';
 
   const [scrollState, setScrollState] = useState<ScrollState>({
     canScrollLeft: false,
@@ -138,23 +137,27 @@ export function useScroll({
       const isFirstTab = currentTabIndex === 0;
       const isLastTab = currentTabIndex === tabs.length - 1;
 
+      // 스크롤 버튼/그라디언트 오버레이를 고려한 가시 영역 계산
+      const visibleLeft = tabsMeta.left + EDGE_OVERLAY_WIDTH;
+      const visibleRight = tabsMeta.right - EDGE_OVERLAY_WIDTH;
+
       const needsScroll =
-        tabMeta[start] < tabsMeta[start] || tabMeta[end] > tabsMeta[end];
+        tabMeta.left < visibleLeft || tabMeta.right > visibleRight;
 
       if (needsScroll) {
-        if (tabMeta[start] < tabsMeta[start]) {
+        if (tabMeta.left < visibleLeft) {
           let nextScrollStart =
-            tabsMeta[scrollStart] + (tabMeta[start] - tabsMeta[start]);
+            tabsMeta.scrollLeft + (tabMeta.left - visibleLeft);
           if (!isFirstTab) {
-            nextScrollStart -= 15;
+            nextScrollStart -= EDGE_SCROLL_OFFSET;
           }
           scroll(nextScrollStart, { animation });
           didScroll = true;
-        } else if (tabMeta[end] > tabsMeta[end]) {
+        } else if (tabMeta.right > visibleRight) {
           let nextScrollStart =
-            tabsMeta[scrollStart] + (tabMeta[end] - tabsMeta[end]);
+            tabsMeta.scrollLeft + (tabMeta.right - visibleRight);
           if (!isLastTab) {
-            nextScrollStart += 15;
+            nextScrollStart += EDGE_SCROLL_OFFSET;
           }
           scroll(nextScrollStart, { animation });
           didScroll = true;

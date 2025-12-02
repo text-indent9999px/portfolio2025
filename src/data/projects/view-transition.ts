@@ -33,10 +33,33 @@ export const viewTransitionProject: ProjectDetail = {
   },
 
   tabs: [
+    {
+      type: 'demo',
+      label: '데모',
+      order: 0,
+      payload: {
+        description:
+          'View Transition API를 활용한 페이지 전환 데모입니다.\n리스트에서 디테일로 이동하거나 뒤로가기를 할 때 부드러운 전환 효과를 확인할 수 있습니다.',
+        videos: [
+          {
+            path: '/assets/videos/view-transition-page.webm',
+            title: '페이지 전환',
+            description:
+              '페이지 간 이동 시 View Transition API를 통한 자연스러운 전환 효과',
+          },
+          {
+            path: '/assets/videos/view-transition-detail.webm',
+            title: '디테일 페이지 전환',
+            description:
+              '리스트-디테일 페이지 간 이동 시 View Transition API를 통한 자연스러운 전환 효과',
+          },
+        ],
+      },
+    },
     { type: 'overview', label: '제작 배경', order: 1 },
     {
       type: 'features',
-      label: '주요 구현 사항',
+      label: '구현 사항',
       order: 2,
       payload: {
         features: [
@@ -86,7 +109,7 @@ export const viewTransitionProject: ProjectDetail = {
     },
     {
       type: 'code',
-      label: '코드 하이라이트',
+      label: '코드 보기',
       order: 4,
       payload: {
         codeHighlights: [

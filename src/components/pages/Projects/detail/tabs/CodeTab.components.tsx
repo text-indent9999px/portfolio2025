@@ -86,7 +86,7 @@ export function CodeSection({
   );
 }
 
-// 코드 하이라이트 콘텐츠 컴포넌트
+// 코드 보기 콘텐츠 컴포넌트
 interface CodeHighlightContentProps {
   highlight: CodeHighlightType;
   demoLoader: {

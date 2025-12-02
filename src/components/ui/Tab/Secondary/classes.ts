@@ -32,11 +32,10 @@ export const getSecondaryTabButtonContainerClassName = (
  */
 export const getScrollLeftButtonClassName = () => {
   return [
-    'absolute left-[15px] top-0 bottom-0',
+    'absolute left-0 top-0 bottom-0',
     'z-10',
     'flex items-center justify-center',
     'pr-3 mb-[0.75rem] mt-[0.25rem]',
-    'translate-x-[-100%]',
     'bg-gradient-to-l from-transparent',
     'via-[color-mix(in_srgb,var(--color-surface-level-min,#ffffff)_80%,transparent)]',
     'via-[45%] to-[color-mix(in_srgb,var(--color-surface-level-min,#ffffff)_100%,transparent)]',
@@ -50,11 +49,10 @@ export const getScrollLeftButtonClassName = () => {
  */
 export const getScrollRightButtonClassName = () => {
   return [
-    'absolute right-[15px] top-0 bottom-0',
+    'absolute right-0 top-0 bottom-0',
     'z-10',
     'flex items-center justify-center',
     'pl-3 mb-[0.75rem] mt-[0.25rem]',
-    'translate-x-[100%]',
     'bg-gradient-to-r from-transparent',
     'via-[color-mix(in_srgb,var(--color-surface-level-min,#ffffff)_60%,transparent)]',
     'via-[45%] to-[color-mix(in_srgb,var(--color-surface-level-min,#ffffff)_100%,transparent)]',
@@ -88,7 +86,8 @@ export const getSecondaryBadgeClassName = (isActive: boolean) => {
 
 export const getContainerClassName = (className: string | undefined) => {
   return [
-    'relative overflow-visible',
+    'relative overflow-hidden',
+    'max-w-full',
     'pt-[0.25rem] pb-[0.25rem]',
     className || '',
   ]
