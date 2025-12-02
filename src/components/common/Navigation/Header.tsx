@@ -54,9 +54,7 @@ const HeaderContent: React.FC = () => {
 
         {/* 우측 메뉴 버튼과 테마 토글 */}
         <div className="flex items-center gap-10">
-          <ThemeToggle
-            size={!isTransparent || !isXlOrAbove ? 'sm' : 'md'}
-          />
+          <ThemeToggle size={!isTransparent || !isXlOrAbove ? 'sm' : 'md'} />
           <MenuButton
             className={isMenuOpen ? 'menu-button-active' : ''}
             ariaLabel={isMenuOpen ? '메뉴 닫기' : '메뉴 열기'}
