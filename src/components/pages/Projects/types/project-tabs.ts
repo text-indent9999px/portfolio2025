@@ -29,6 +29,21 @@ export interface StyleGuideData {
 // Discriminated Union으로 탭 정의
 export type ProjectTab =
   | {
+      type: 'demo';
+      label?: string;
+      order?: number;
+      visible?: boolean;
+      payload: {
+        videoPath?: string; // Deprecated, use videos
+        videos?: Array<{
+          path: string;
+          title?: string;
+          description?: string;
+        }>;
+        description?: string;
+      };
+    }
+  | {
       type: 'overview';
       label?: string;
       order?: number;
