@@ -46,7 +46,6 @@ const HeaderContent: React.FC = () => {
         {/* 좌측 로고 */}
         <div className="flex items-center">
           <Logo
-            // needInvert={isMenuOpen}
             onClick={isMenuOpen ? closeMenu : undefined}
             width={isXlOrAbove ? (isTransparent ? 50 : 45) : 40}
             height={isXlOrAbove ? (isTransparent ? 50 : 45) : 40}
@@ -56,7 +55,6 @@ const HeaderContent: React.FC = () => {
         {/* 우측 메뉴 버튼과 테마 토글 */}
         <div className="flex items-center gap-10">
           <ThemeToggle
-            needInvert={isMenuOpen}
             size={!isTransparent || !isXlOrAbove ? 'sm' : 'md'}
           />
           <MenuButton

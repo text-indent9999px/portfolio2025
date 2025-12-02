@@ -79,7 +79,9 @@ export default function RootLayout({
       >
         <AppProviders>
           <Header />
-          {children}
+          <main id="main-content" className="w-full h-full">
+            {children}
+          </main>
           <LazyCustomCursor />
         </AppProviders>
       </body>

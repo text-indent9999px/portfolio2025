@@ -7,7 +7,6 @@ import CustomButton from '../../ui/Button';
 
 interface LogoProps {
   className?: string;
-  needInvert?: boolean;
   onClick?: () => Promise<void>;
   width?: number;
   height?: number;
@@ -15,7 +14,6 @@ interface LogoProps {
 
 const Logo: React.FC<LogoProps> = ({
   className = '',
-  needInvert = false,
   onClick,
   width = 50,
   height = 50,
@@ -44,9 +42,7 @@ const Logo: React.FC<LogoProps> = ({
     >
       <Image
         src={'/assets/images/logo.png'}
-        className={`${
-          needInvert ? 'invert-100 dark:invert-0' : 'invert-0 dark:invert-100'
-        } will-change-width transition-all duration-300 ease-in-out`}
+        className="invert-0 dark:invert-100 will-change-width transition-all duration-300 ease-in-out"
         alt="로고 이미지"
         width={width}
         height={height}

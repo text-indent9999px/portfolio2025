@@ -44,7 +44,7 @@ export const getThumbTranslateClasses = (
 };
 
 export const getFocusRingClasses = (): string =>
-  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gray-500 focus-visible:ring-offset-2';
+  'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-accent-500 focus-visible:ring-offset-2';
 
 // track 상태 스타일링
 export const getTrackStateClasses = (

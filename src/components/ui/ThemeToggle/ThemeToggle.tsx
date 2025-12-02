@@ -12,7 +12,6 @@ import { ThemeToggleProps } from './ThemeToggle.types';
 
 export const ThemeToggle: React.FC<ThemeToggleProps> = ({
   className = '',
-  needInvert = false,
   size = 'md',
 }) => {
   const isXlOrAbove = useMediaQuery('--breakpoint-xl', 'min');
@@ -117,7 +116,6 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
           arrowPosition="center"
           tooltipPosition="bottom"
           offset={{ top: '5px' }}
-          inverted={needInvert}
         >
           <span id="theme-toggle-tooltip">라이트/다크 모드 전환</span>
         </Tooltip>
