@@ -1,8 +1,2 @@
-# 백업 브랜치에 먼저 커밋
-node scripts/backup-before-commit.js
-
-# 백업 브랜치에 먼저 커밋
-node scripts/backup-before-commit.js
-
 npm run update:last-updated
 
