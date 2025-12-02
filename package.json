@@ -10,7 +10,9 @@
     "stylelint": "stylelint \"**/*.{css,scss}\" --fix",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "build:all": "npm run build-storybook && npm run build"
+    "build:all": "npm run build-storybook && npm run build",
+    "update:last-updated": "node scripts/update-last-updated.js",
+    "prepare": "husky"
   },
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^7.0.0",
