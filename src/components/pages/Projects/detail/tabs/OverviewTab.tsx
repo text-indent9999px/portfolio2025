@@ -1,12 +1,7 @@
 'use client';
 
-import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React, { unstable_ViewTransition as ViewTransition } from 'react';
-import { EXTERNAL_LINKS } from '../../../../../config/links';
 import { useMediaQuery } from '../../../../../hooks';
-import Blank from '../../../../ui/Blank';
-import CustomButton from '../../../../ui/Button';
 import { SectionHeader } from '../../../../ui/Heading';
 import type { ProjectDetail, ProjectTab } from '../../types';
 
@@ -37,22 +32,6 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ project, timestamp }) => {
           {project.meta.description}
         </p>
       </ViewTransition>
-      {project.meta.id === 'design-system' && (
-        <div>
-          <Blank height="2rem" bgColor="transparent" />
-          <CustomButton
-            color="primary"
-            variant="filled"
-            data-cursor="hover"
-            href={EXTERNAL_LINKS.storybook}
-            cursorTrigger={true}
-            rounded="full"
-            icon={<FontAwesomeIcon icon={faArrowRight} />}
-          >
-            Storybook 바로가기
-          </CustomButton>
-        </div>
-      )}
     </div>
   );
 };
