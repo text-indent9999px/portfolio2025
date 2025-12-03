@@ -18,10 +18,10 @@ export const STYLE_CLASSES = {
     lg: 'px-3 py-3 text-lg lg:px-4 lg:py-3',
   },
   equalRatio: {
-    xs: 'h-6 p-0 aspect-square',
-    sm: 'h-8 p-0 aspect-square',
-    md: 'h-11 p-0 aspect-square',
-    lg: 'h-12 p-0 aspect-square',
+    xs: 'h-6 p-0 w-6',
+    sm: 'h-8 p-0 w-8',
+    md: 'h-11 p-0 w-11',
+    lg: 'h-12 p-0 w-12',
   },
 } as const;
 

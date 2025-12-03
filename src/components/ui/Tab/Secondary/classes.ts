@@ -102,6 +102,7 @@ export const getScrollContainerClassName = () => {
     'pb-[0.5rem]',
     'no-scrollbar',
     'scroll-smooth',
+    'touch-pan-x',
   ]
     .filter(Boolean)
     .join(' ');

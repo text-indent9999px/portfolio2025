@@ -4,7 +4,7 @@ export interface TabItem {
   id: string;
   title: string;
   description?: string;
-  bottomSpacing: 'xs' | 'sm' | 'md' | 'lg' | 'xl';
+  bottomSpacing: 'none' | 'xs' | 'sm' | 'md' | 'lg' | 'xl';
   needsBlank?: boolean;
   needsSkillTab?: boolean; // skill 탭인 경우에만 true
 }
@@ -15,7 +15,7 @@ export const profileTabItems: TabItem[] = [
     value: 'introduction',
     id: 'introduction',
     title: 'Introduction',
-    bottomSpacing: 'sm',
+    bottomSpacing: 'xs',
   },
   {
     label: '기술스택',

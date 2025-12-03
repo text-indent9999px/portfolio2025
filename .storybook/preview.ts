@@ -587,7 +587,6 @@ const preview: Preview = {
           className: `p-4 ${quicksand.variable} ${notoSansKr.variable} ${grandiflora.variable} ${playWriteAu.variable}`,
           style: {
             fontFamily: 'var(--quicksand), var(--noto-sans-kr)',
-            // backgroundColor: 'var(--color-surface-level-min)',
             minHeight: '100vh',
           },
         },

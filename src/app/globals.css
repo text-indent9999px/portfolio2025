@@ -36,7 +36,7 @@ html[data-visibility='hidden'] {
 }
 
 body {
-  font-family: var(--quicksand), var(--noto-sans-kr);
+  font-family: var(--quicksand), 'Apple SD Gothic Neo', var(--noto-sans-kr);
 }
 
 /* 접근성: 스크린리더 전용 숨김 */
@@ -58,16 +58,17 @@ a {
 }
 
 /* ===== Font Family ===== */
+
 .font-eng-point {
-  font-family: var(--playwrite-au-QLD) !important;
+  font-family: var(--kalam) !important;
 }
 
 .font-kor-point {
-  font-family: var(--grandiflora-one) !important;
+  font-family: var(--gowun-batang) !important;
 }
 
 .font-base {
-  font-family: var(--quicksand), var(--noto-sans-kr);
+  font-family: var(--quicksand), 'Apple SD Gothic Neo', var(--noto-sans-kr);
 }
 
 .svg-inline--fa {
