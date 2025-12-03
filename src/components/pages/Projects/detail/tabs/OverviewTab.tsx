@@ -3,7 +3,10 @@
 import React, { unstable_ViewTransition as ViewTransition } from 'react';
 import { useMediaQuery } from '../../../../../hooks';
 import { SectionHeader } from '../../../../ui/Heading';
-import type { ProjectDetail, ProjectTab } from '../../types';
+import type {
+  OverviewTab as OverviewTabType,
+  ProjectDetail,
+} from '../../types';
 
 interface OverviewTabProps {
   project: ProjectDetail;
@@ -11,9 +14,9 @@ interface OverviewTabProps {
 }
 
 const OverviewTab: React.FC<OverviewTabProps> = ({ project, timestamp }) => {
-  const tab = project.tabs.find(t => t.type === 'overview') as
-    | Extract<ProjectTab, { type: 'overview' }>
-    | undefined;
+  const tab = project.tabs.find(
+    (t): t is OverviewTabType => t.type === 'overview'
+  );
   const title = tab?.label ?? '제작 배경';
   const isXlOrAbove = useMediaQuery('--breakpoint-xl', 'min');
   return (

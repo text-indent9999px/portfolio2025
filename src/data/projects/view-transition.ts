@@ -42,13 +42,19 @@ export const viewTransitionProject: ProjectDetail = {
           'View Transition API를 활용한 페이지 전환 데모입니다.\n리스트에서 디테일로 이동하거나 뒤로가기를 할 때 부드러운 전환 효과를 확인할 수 있습니다.',
         videos: [
           {
-            path: '/assets/videos/view-transition-page.webm',
+            path: '/assets/videos/view-transition-page.mp4',
+            width: 1866,
+            height: 912,
+            thumbnail: '/assets/images/port-dark.png',
             title: '페이지 전환',
             description:
               '페이지 간 이동 시 View Transition API를 통한 자연스러운 전환 효과',
           },
           {
-            path: '/assets/videos/view-transition-detail.webm',
+            path: '/assets/videos/view-transition-detail.mp4',
+            width: 1866,
+            height: 912,
+            thumbnail: '/assets/images/project-light.png',
             title: '디테일 페이지 전환',
             description:
               '리스트-디테일 페이지 간 이동 시 View Transition API를 통한 자연스러운 전환 효과',

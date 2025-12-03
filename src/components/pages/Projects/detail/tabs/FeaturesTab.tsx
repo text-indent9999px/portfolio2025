@@ -2,16 +2,19 @@ import React from 'react';
 import { useMediaQuery } from '../../../../../hooks';
 import { Badge } from '../../../../ui/Badge';
 import { SectionHeader } from '../../../../ui/Heading';
-import type { ProjectDetail, ProjectTab } from '../../types';
+import type {
+  FeaturesTab as FeaturesTabType,
+  ProjectDetail,
+} from '../../types';
 
 interface FeaturesTabProps {
   project: ProjectDetail;
 }
 
 const FeaturesTab: React.FC<FeaturesTabProps> = ({ project }) => {
-  const featuresTab = project.tabs.find(t => t.type === 'features') as
-    | Extract<ProjectTab, { type: 'features' }>
-    | undefined;
+  const featuresTab = project.tabs.find(
+    (t): t is FeaturesTabType => t.type === 'features'
+  );
   const features = featuresTab?.payload?.features ?? [];
   const title = featuresTab?.label ?? '주요 구현 사항';
   const isXlOrAbove = useMediaQuery('--breakpoint-xl', 'min');

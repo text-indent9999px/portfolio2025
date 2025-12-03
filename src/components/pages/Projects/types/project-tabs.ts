@@ -26,68 +26,94 @@ export interface StyleGuideData {
   typography: string[];
 }
 
+// 공통 탭 속성
+interface BaseTab {
+  label?: string;
+  order?: number;
+  visible?: boolean;
+}
+
+// 비디오 데이터 타입
+export interface VideoData {
+  path: string;
+  title?: string;
+  description?: string;
+  width: number;
+  height: number;
+  thumbnail?: string;
+}
+
+// 각 탭 타입별 정의
+export interface DemoTab extends BaseTab {
+  type: 'demo';
+  payload: {
+    videoPath?: string; // Deprecated, use videos
+    videos?: VideoData[];
+    description?: string;
+  };
+}
+
+export interface OverviewTab extends BaseTab {
+  type: 'overview';
+  payload?: { description?: string };
+}
+
+export interface FeaturesTab extends BaseTab {
+  type: 'features';
+  payload: { features: string[] };
+}
+
+export interface ChallengesTab extends BaseTab {
+  type: 'challenges';
+  payload: {
+    items: Array<{ challenge: string; solution: string }>;
+  };
+}
+
+export interface CodeTab extends BaseTab {
+  type: 'code';
+  payload: { codeHighlights: CodeHighlight[] };
+}
+
+export interface StyleGuideTab extends BaseTab {
+  type: 'styleguide';
+  payload: { styleGuide: StyleGuideData };
+}
+
+export interface StorybookCustomTab extends BaseTab {
+  type: 'custom';
+  label: '스토리북';
+  payload: {
+    videos: VideoData[];
+    storybookUrl?: string;
+    description?: string;
+  };
+}
+
+export interface AccessibilityCustomTab extends BaseTab {
+  type: 'custom';
+  label: '접근성';
+  payload: { description?: string };
+}
+
+export interface GenericCustomTab extends BaseTab {
+  type: 'custom';
+  label: string;
+  // 렌더러에서 자유롭게 사용
+  payload?: Record<string, unknown>;
+}
+
 // Discriminated Union으로 탭 정의
 export type ProjectTab =
-  | {
-      type: 'demo';
-      label?: string;
-      order?: number;
-      visible?: boolean;
-      payload: {
-        videoPath?: string; // Deprecated, use videos
-        videos?: Array<{
-          path: string;
-          title?: string;
-          description?: string;
-        }>;
-        description?: string;
-      };
-    }
-  | {
-      type: 'overview';
-      label?: string;
-      order?: number;
-      visible?: boolean;
-      payload?: { description?: string };
-    }
-  | {
-      type: 'features';
-      label?: string;
-      order?: number;
-      visible?: boolean;
-      payload: { features: string[] };
-    }
-  | {
-      type: 'challenges';
-      label?: string;
-      order?: number;
-      visible?: boolean;
-      payload: {
-        items: Array<{ challenge: string; solution: string }>;
-      };
-    }
-  | {
-      type: 'code';
-      label?: string;
-      order?: number;
-      visible?: boolean;
-      payload: { codeHighlights: CodeHighlight[] };
-    }
-  | {
-      type: 'styleguide';
-      label?: string;
-      order?: number;
-      visible?: boolean;
-      payload: { styleGuide: StyleGuideData };
-    }
-  | {
-      type: 'custom';
-      label: string;
-      order?: number;
-      visible?: boolean;
-      // 렌더러에서 자유롭게 사용
-      payload?: Record<string, unknown>;
-    };
+  | DemoTab
+  | OverviewTab
+  | FeaturesTab
+  | ChallengesTab
+  | CodeTab
+  | StyleGuideTab
+  | StorybookCustomTab
+  | AccessibilityCustomTab
+  | GenericCustomTab;
 
 export interface ProjectDetail {
   meta: ProjectMeta;

@@ -51,15 +51,21 @@ BroadcastChannel을 지원하지 않는 환경에서는 제한적으로 sessionS
           '다크모드 토글 및 탭 간 테마 동기화 데모입니다.\n여러 탭을 열어두고 테마를 변경하면 모든 탭에서 실시간으로 동기화되는 것을 확인할 수 있습니다.',
         videos: [
           {
-            path: '/assets/videos/theme-toggle-click.webm',
+            path: '/assets/videos/theme-toggle-click.mp4',
+            width: 1866,
+            height: 912,
             title: '테마 토글',
             description: '테마 버튼 클릭으로 라이트/다크 모드 전환',
+            thumbnail: '/assets/images/port-dark.png',
           },
           {
-            path: '/assets/videos/theme-toggle-tabs.webm',
+            path: '/assets/videos/theme-toggle-tabs.mp4',
             title: '탭 간 테마 동기화',
             description:
               '여러 탭을 열어두고 한 탭에서 테마를 변경하면 모든 탭에서 실시간으로 동기화',
+            width: 1866,
+            height: 912,
+            thumbnail: '/assets/images/project-dark.png',
           },
         ],
       },
@@ -145,8 +151,12 @@ BroadcastChannel을 지원하지 않는 환경에서는 제한적으로 sessionS
     },
     {
       type: 'custom',
-      label: 'Lighthouse',
+      label: '접근성',
       order: 5,
+      payload: {
+        description: `구글 Lighthouse를 이용하여 점수를 계산하였으며, 모든 페이지의 접근성 점수 100점을 달성했습니다.
+        이 외에도, 키보드를 통해 모든 주요 인터랙션을 수행할 수 있도록 구조를 개선했습니다.`,
+      },
     },
   ],
 };

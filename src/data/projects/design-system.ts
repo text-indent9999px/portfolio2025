@@ -156,7 +156,10 @@ export const designSystemProject: ProjectDetail = {
       payload: {
         videos: [
           {
-            path: '/assets/videos/storybook-theme-toggle.webm',
+            path: '/assets/videos/storybook-theme-toggle.mp4',
+            width: 1866,
+            height: 912,
+            thumbnail: '/assets/images/storybook-dark.png',
             title: 'Storybook 테마 전환',
             description:
               'Storybook 상단 패널에서 배경색 변경을 통해 라이트/다크 모드를 전환할 수 있습니다.',

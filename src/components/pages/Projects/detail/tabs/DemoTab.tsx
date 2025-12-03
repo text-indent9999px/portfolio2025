@@ -4,28 +4,24 @@ import React from 'react';
 import Blank from '../../../../ui/Blank';
 import { SectionHeader } from '../../../../ui/Heading';
 import { Video } from '../../../../ui/Video';
-import type { ProjectDetail, ProjectTab } from '../../types';
+import type { DemoTab as DemoTabType, ProjectDetail } from '../../types';
 
 interface DemoTabProps {
   project: ProjectDetail;
 }
 
 const DemoTab: React.FC<DemoTabProps> = ({ project }) => {
-  const tab = project.tabs.find(t => t.type === 'demo') as
-    | Extract<ProjectTab, { type: 'demo' }>
-    | undefined;
+  const tab = project.tabs.find((t): t is DemoTabType => t.type === 'demo');
 
   if (!tab || !tab.payload) {
     return null;
   }
 
-  const { videoPath, videos, description } = tab.payload;
+  const { videos, description } = tab.payload;
   const title = tab.label ?? '데모';
 
-  // videos 배열이 있으면 그것을 사용, 없으면 videoPath 사용
-  const videoList = videos || (videoPath ? [{ path: videoPath }] : []);
-
-  if (videoList.length === 0) {
+  // videos 배열이 필수이므로 videos만 사용
+  if (!videos || videos.length === 0) {
     return null;
   }
 
@@ -42,7 +38,7 @@ const DemoTab: React.FC<DemoTabProps> = ({ project }) => {
       )}
       <Blank height="2rem" bgColor="transparent" />
       <div className="space-y-6">
-        {videoList.map((video, index) => (
+        {videos.map((video, index) => (
           <Video
             key={video.path}
             src={video.path}
@@ -50,6 +46,9 @@ const DemoTab: React.FC<DemoTabProps> = ({ project }) => {
             description={video.description}
             contextTitle={project.meta.title}
             index={index + 1}
+            width={video.width}
+            height={video.height}
+            thumbnail={video.thumbnail}
           />
         ))}
       </div>

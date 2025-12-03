@@ -4,7 +4,7 @@ import React, { useCallback, useId, useMemo } from 'react';
 import { useMediaQuery } from '../../../../../hooks';
 import { SectionHeader } from '../../../../ui/Heading';
 import { SecondaryTab } from '../../../../ui/Tab/Secondary';
-import type { ProjectDetail, ProjectTab } from '../../types';
+import type { CodeTab as CodeTabType, ProjectDetail } from '../../types';
 import { CodeHighlightContent } from './CodeTab.components';
 import { useCodeTabState, useDemoLoader } from './CodeTab.hooks';
 
@@ -21,10 +21,7 @@ const CodeTab: React.FC<CodeTabProps> = React.memo(
 
     // 코드 탭 데이터 추출
     const codeTab = useMemo(
-      () =>
-        project.tabs.find(t => t.type === 'code') as
-          | Extract<ProjectTab, { type: 'code' }>
-          | undefined,
+      () => project.tabs.find((t): t is CodeTabType => t.type === 'code'),
       [project.tabs]
     );
 

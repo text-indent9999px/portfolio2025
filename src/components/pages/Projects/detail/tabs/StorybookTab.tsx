@@ -8,7 +8,7 @@ import Blank from '../../../../ui/Blank';
 import CustomButton from '../../../../ui/Button';
 import { SectionHeader } from '../../../../ui/Heading';
 import { Video } from '../../../../ui/Video';
-import type { ProjectDetail, ProjectTab } from '../../types';
+import type { ProjectDetail, StorybookCustomTab } from '../../types';
 
 interface StorybookTabProps {
   project: ProjectDetail;
@@ -16,13 +16,16 @@ interface StorybookTabProps {
 
 const StorybookTab: React.FC<StorybookTabProps> = ({ project }) => {
   const tab = project.tabs.find(
-    t => t.type === 'custom' && t.label === '스토리북'
-  ) as Extract<ProjectTab, { type: 'custom' }> | undefined;
+    (t): t is StorybookCustomTab =>
+      t.type === 'custom' && t.label === '스토리북'
+  );
 
-  if (!tab) {
+  if (!tab || !tab.payload) {
     return null;
   }
 
+  const video = tab.payload.videos?.[0];
+  const storybookUrl = tab.payload.storybookUrl ?? EXTERNAL_LINKS.storybook;
   const title = tab.label ?? '스토리북';
 
   return (
@@ -33,18 +36,23 @@ const StorybookTab: React.FC<StorybookTabProps> = ({ project }) => {
         bottomSpacing="xs"
         visualSize="lg"
       />
-      <Video
-        src="/assets/videos/storybook-theme-toggle.webm"
-        title="Storybook 테마 전환"
-        description="Storybook 상단 패널에서 배경색 변경을 통해 라이트/다크 모드를 전환할 수 있습니다."
-        contextTitle={project.meta.title}
-      />
+      {video && (
+        <Video
+          src={video.path}
+          title={video.title}
+          description={video.description ?? tab.payload.description}
+          contextTitle={project.meta.title}
+          width={video.width}
+          height={video.height}
+          thumbnail={video.thumbnail}
+        />
+      )}
       <Blank height="2rem" bgColor="transparent" />
       <CustomButton
         color="primary"
         variant="filled"
         data-cursor="hover"
-        href={EXTERNAL_LINKS.storybook}
+        href={storybookUrl}
         cursorTrigger={true}
         rounded="full"
         icon={<FontAwesomeIcon icon={faArrowRight} />}

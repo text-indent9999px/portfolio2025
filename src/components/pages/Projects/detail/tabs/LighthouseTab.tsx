@@ -1,9 +1,10 @@
 'use client';
 
 import React from 'react';
+import Blank from '../../../../ui/Blank';
 import { SectionHeader } from '../../../../ui/Heading';
 import { Image } from '../../../../ui/Image';
-import type { ProjectDetail, ProjectTab } from '../../types';
+import type { AccessibilityCustomTab, ProjectDetail } from '../../types';
 
 interface LighthouseTabProps {
   project: ProjectDetail;
@@ -11,40 +12,41 @@ interface LighthouseTabProps {
 
 const LighthouseTab: React.FC<LighthouseTabProps> = ({ project }) => {
   const tab = project.tabs.find(
-    t => t.type === 'custom' && t.label === 'Lighthouse'
-  ) as Extract<ProjectTab, { type: 'custom' }> | undefined;
+    (t): t is AccessibilityCustomTab =>
+      t.type === 'custom' && t.label === '접근성'
+  );
 
   if (!tab) {
     return null;
   }
 
-  const title = tab.label ?? 'Lighthouse';
-
+  const title = tab.label ?? '접근성';
+  const { description } = tab.payload;
   const lighthouseImages = [
     {
       src: '/assets/images/lighthouse-home.png',
       title: 'home',
-      description: '홈 Lighthouse 결과',
+      description: '클릭하여 큰 이미지로 확대할 수 있습니다.',
     },
     {
       src: '/assets/images/lighthouse-profile.png',
       title: 'profile',
-      description: '프로필 Lighthouse 결과',
+      description: '클릭하여 큰 이미지로 확대할 수 있습니다.',
     },
     {
       src: '/assets/images/lighthouse-project.png',
       title: 'project',
-      description: '프로젝트 Lighthouse 결과',
+      description: '클릭하여 큰 이미지로 확대할 수 있습니다.',
     },
     {
       src: '/assets/images/lighthouse-project-detail.png',
       title: 'project-detail',
-      description: '프로젝트 상세 Lighthouse 결과',
+      description: '클릭하여 큰 이미지로 확대할 수 있습니다.',
     },
     {
       src: '/assets/images/lighthouse-contact.png',
       title: 'contact',
-      description: '연락처 Lighthouse 결과',
+      description: '클릭하여 큰 이미지로 확대할 수 있습니다.',
     },
   ];
 
@@ -56,6 +58,10 @@ const LighthouseTab: React.FC<LighthouseTabProps> = ({ project }) => {
         bottomSpacing="xs"
         visualSize="lg"
       />
+      {description && (
+        <p className="text-text-secondary whitespace-pre-line">{description}</p>
+      )}
+      <Blank height="2rem" bgColor="transparent" />
       <div className="space-y-6">
         {lighthouseImages.map((image, index) => (
           <Image
@@ -66,6 +72,12 @@ const LighthouseTab: React.FC<LighthouseTabProps> = ({ project }) => {
             contextTitle={project.meta.title}
             index={index + 1}
             alt={`${image.title} Lighthouse 접근성 점수`}
+            width={1866}
+            height={947}
+            placeholder="blur"
+            blurDataURL={
+              'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mM8c/xMPQAHpgLgJ8nC6wAAAABJRU5ErkJggg=='
+            }
           />
         ))}
       </div>

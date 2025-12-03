@@ -116,13 +116,13 @@ export function ProjectTabsContent({
       );
     }
 
-    // custom 타입 탭 처리 (스토리북, Lighthouse 등)
+    // custom 타입 탭 처리 (스토리북, 접근성 등)
     if (activeTab === 'custom') {
       const customTab = project.tabs.find(t => t.type === 'custom');
       if (customTab?.label === '스토리북') {
         return <StorybookTab project={project} />;
       }
-      if (customTab?.label === 'Lighthouse') {
+      if (customTab?.label === '접근성') {
         return <LighthouseTab project={project} />;
       }
       return null;

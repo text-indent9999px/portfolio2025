@@ -1,16 +1,19 @@
 import React from 'react';
 import { SectionHeader } from '../../../../ui/Heading';
 import { Label } from '../../../../ui/Label';
-import type { ProjectDetail, ProjectTab } from '../../types';
+import type {
+  ChallengesTab as ChallengesTabType,
+  ProjectDetail,
+} from '../../types';
 
 interface ChallengesTabProps {
   project: ProjectDetail;
 }
 
 const ChallengesTab: React.FC<ChallengesTabProps> = ({ project }) => {
-  const challengesTab = project.tabs.find(t => t.type === 'challenges') as
-    | Extract<ProjectTab, { type: 'challenges' }>
-    | undefined;
+  const challengesTab = project.tabs.find(
+    (t): t is ChallengesTabType => t.type === 'challenges'
+  );
   const items = challengesTab?.payload?.items ?? [];
   const titleChallenge = challengesTab?.label ?? '도전 과제';
 
