@@ -142,6 +142,7 @@ npm run storybook
 - **Compound 패턴**: 확장 가능하고 유연한 컴포넌트 구조 (예: `Card.Header`, `Card.Body`, `Card.Footer`)
 - **Storybook 통합**: 모든 UI 컴포넌트에 대한 문서화 및 시각적 테스트
 - **타입 안정성**: TypeScript를 통한 완전한 타입 지원
+- **재사용 가능한 미디어 컴포넌트**: `Image`, `Video` 컴포넌트를 통한 일관된 미디어 표시 및 접근성 지원
 
 ### 2. 다크모드 지원
 
@@ -167,6 +168,28 @@ npm run storybook
 - **모바일 퍼스트**: 모바일, 태블릿, 데스크톱 지원
 - **Tailwind CSS**: 유틸리티 클래스를 활용한 반응형 레이아웃
 - **접근성 고려**: 터치 디바이스와 키보드 네비게이션 지원
+- **데이터 절약**: 모바일/태블릿 환경에서 비디오 지연 로딩으로 데이터 사용량 최적화
+
+### 6. 프로젝트 스크린샷
+
+#### 데스크톱
+
+![데스크톱 라이트 모드](./public/assets/images/port-light.png)
+![데스크톱 다크 모드](./public/assets/images/port-dark.png)
+
+#### 태블릿
+
+![태블릿 라이트 모드](./public/assets/images/port-light-tablet.png)
+![태블릿 다크 모드](./public/assets/images/port-dark-tablet.png)
+
+#### 모바일
+
+![모바일 라이트 모드](./public/assets/images/port-light-mobile.png)
+![모바일 다크 모드](./public/assets/images/port-dark-mobile.png)
+
+#### Storybook
+
+![Storybook 다크 모드](./public/assets/images/port-dark-storybook.png)
 
 ## 📂 프로젝트 구조 상세
 
@@ -351,13 +374,42 @@ npm run storybook
    - CSS Custom Properties를 통한 런타임 성능 향상
 
 4. **번들 크기 최적화**
+
    - Tree shaking을 통한 사용하지 않는 코드 제거
    - 동적 import를 통한 코드 스플리팅
 
+5. **미디어 최적화**
+   - 비디오 컴포넌트: 모바일/태블릿 환경에서 썸네일 기반 지연 로딩으로 데이터 사용량 최적화
+   - 이미지 컴포넌트: 모달 확대 기능 및 접근성 고려 설계
+
 ### 성능 모니터링
 
-- Lighthouse를 통한 성능 측정 권장
+- Lighthouse를 통한 성능 및 접근성 측정
 - Next.js 빌드 로그를 통한 번들 크기 확인
+
+### Lighthouse 점수
+
+모든 페이지에서 **접근성 점수 100점**을 달성했습니다. 전체 Lighthouse 리포트는 아래에서 확인할 수 있습니다:
+
+#### 홈 페이지
+
+![Lighthouse 홈 페이지 전체 리포트](./public/assets/images/lighthouse-home-all.png)
+
+#### 프로필 페이지
+
+![Lighthouse 프로필 페이지 전체 리포트](./public/assets/images/lighthouse-profile-all.png)
+
+#### 프로젝트 목록 페이지
+
+![Lighthouse 프로젝트 목록 페이지 전체 리포트](./public/assets/images/lighthouse-project-all.png)
+
+#### 프로젝트 상세 페이지
+
+![Lighthouse 프로젝트 상세 페이지 전체 리포트](./public/assets/images/lighthouse-project-detail-all.png)
+
+#### 연락처 페이지
+
+![Lighthouse 연락처 페이지 전체 리포트](./public/assets/images/lighthouse-contact-all.png)
 
 ## ♿ 접근성
 
@@ -368,21 +420,31 @@ npm run storybook
    - 모든 인터랙티브 요소에 키보드 포커스 지원
    - Tab 순서 최적화
    - `aria-label` 및 `aria-describedby` 속성 활용
+   - `focus-visible` 스타일을 통한 명확한 포커스 표시
 
 2. **스크린 리더 지원**
 
-   - 의미론적 HTML 요소 사용
+   - 의미론적 HTML 요소 사용 (`<main>`, `<nav>`, `<section>` 등)
    - ARIA 속성을 통한 상태 및 역할 명시
    - `sr-only` 클래스를 통한 스크린 리더 전용 콘텐츠
+   - 이미지 및 비디오에 적절한 `alt` 및 `aria-label` 제공
 
 3. **색상 대비**
 
    - WCAG AA 기준 준수 (4.5:1 이상)
    - 다크모드에서도 충분한 대비 확보
+   - 모든 텍스트와 배경 간 대비 비율 검증
 
 4. **Storybook a11y Addon**
+
    - 컴포넌트 단위 접근성 자동 검사
    - 접근성 문제 실시간 피드백
+
+5. **모달 및 오버레이 접근성**
+   - ESC 키로 모달 닫기 지원
+   - 포커스 트랩 구현
+   - 배경 클릭으로 닫기 옵션 제공
+   - 키보드 네비게이션 완전 지원
 
 ### 접근성 체크리스트
 
@@ -393,6 +455,7 @@ npm run storybook
 - ✅ 색상 대비 준수 (WCAG AA 기준)
 - ✅ ARIA 속성 활용
 - ✅ 포커스 표시 명확성
+- ✅ Lighthouse 접근성 점수 100점 달성 (모든 페이지)
 
 ## 👨‍💻 개발 가이드
 
@@ -537,6 +600,37 @@ npm install --legacy-peer-deps
 - **디자인 토큰**: 중앙 집중식 디자인 값 관리
 - **Tailwind + SCSS Modules**: 유틸리티와 모듈화의 조화
 
+## 📸 스크린샷
+
+### 반응형 디자인
+
+프로젝트는 다양한 디바이스 크기에서 최적화된 경험을 제공합니다:
+
+#### 데스크톱
+
+- **라이트 모드**: ![데스크톱 라이트 모드](./public/assets/images/port-light.png)
+- **다크 모드**: ![데스크톱 다크 모드](./public/assets/images/port-dark.png)
+
+#### 태블릿
+
+- **라이트 모드**: ![태블릿 라이트 모드](./public/assets/images/port-light-tablet.png)
+- **다크 모드**: ![태블릿 다크 모드](./public/assets/images/port-dark-tablet.png)
+
+#### 모바일
+
+- **라이트 모드**: ![모바일 라이트 모드](./public/assets/images/port-light-mobile.png)
+- **다크 모드**: ![모바일 다크 모드](./public/assets/images/port-dark-mobile.png)
+
+#### Storybook
+
+- **다크 모드**: ![Storybook 다크 모드](./public/assets/images/port-dark-storybook.png)
+
+### Lighthouse 접근성 점수
+
+모든 페이지에서 **접근성 점수 100점**을 달성했습니다. 상세 점수는 위의 "성능 최적화" 섹션에서 전체 Lighthouse 리포트를 확인할 수 있습니다.
+
+> **참고**: Lighthouse 점수는 접근성 점수를 중심으로 측정되었으며, 프로젝트의 접근성 우선 설계 철학을 반영합니다. 접근성 점수만 확인하려면 프로젝트 상세 페이지의 "다크모드·접근성 우선 테마 시스템" 항목을 참고하세요.
+
 ## 📝 라이선스
 
 이 프로젝트는 개인 포트폴리오용으로 제작되었습니다.
@@ -547,4 +641,4 @@ npm install --legacy-peer-deps
 
 ---
 
-**마지막 업데이트**: 2025.12.03
+**마지막 업데이트**: 2025.12.04
