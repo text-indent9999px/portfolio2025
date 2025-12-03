@@ -42,7 +42,7 @@ const MenuContent: React.FC = () => {
         aria-hidden={!isMenuOpen}
         id="global-menu"
       >
-        <nav>
+        <nav aria-label="메인 네비게이션">
           <ul>
             {menuItems.map(menu => (
               <MenuItem key={menu.label} label={menu.label} path={menu.path} />

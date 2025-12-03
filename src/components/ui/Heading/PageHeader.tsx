@@ -26,12 +26,8 @@ const PageHeader: React.FC<PageHeaderProps> = ({
 
   // Heading bottom spacing 계산
   const headingBottomSpacing = React.useMemo<SpacingType>(() => {
-    return fontFamily === 'eng-point' && subtitle
-      ? visualSize
-        ? visualSize
-        : 'xl'
-      : 'md';
-  }, [fontFamily, subtitle, visualSize]);
+    return visualSize?.indexOf('lg') !== -1 ? 'sm' : 'md';
+  }, [visualSize]);
 
   // Bottom spacing 높이 계산
   const bottomSpacingHeight = React.useMemo(() => {

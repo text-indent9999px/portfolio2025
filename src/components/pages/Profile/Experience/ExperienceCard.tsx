@@ -37,7 +37,7 @@ const ExperienceCard: React.FC<ExperienceCardProps> = ({
         variant={isSubProject ? 'default' : 'outlined'}
         elevation={isSubProject ? 1 : 2}
         padding="md"
-        clickable
+        clickable={false}
         className={`${
           isSubProject
             ? 'bg-surface-level-1! dark:bg-surface-level-1!'

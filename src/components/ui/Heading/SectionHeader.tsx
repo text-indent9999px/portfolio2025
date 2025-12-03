@@ -24,11 +24,11 @@ const VISUAL_SIZE_TO_LEVEL: Record<SizeType, HeadingLevel> = {
 
 // Heading 레벨별 bottom spacing 매핑
 const HEADING_BOTTOM_SPACING: Record<HeadingLevel, SpacingType> = {
-  1: 'xl',
-  2: 'lg',
-  3: 'md',
+  1: 'md',
+  2: 'md',
+  3: 'sm',
   4: 'sm',
-  5: 'sm',
+  5: 'xs',
   6: 'xs',
   7: 'none',
   8: 'none',

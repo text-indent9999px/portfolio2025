@@ -16,8 +16,8 @@ export default function Contact() {
         subtitle={
           <>
             <span className="text-text-secondary font-base">{`더 나은 경험, 더 깔끔한 코드 \n 함께 만들어가고 싶습니다.`}</span>
-            <span className="flex border-t-4 border-double border-text-primary p-5 mt-6">
-              <span className="flex flex-col gap-2 items-center font-kor-point font-bold">
+            <span className="flex border-t-4 border-double border-text-tertiary dark:border-text-secondary p-5 mt-6">
+              <span className="flex flex-col gap-2 items-center font-kor-point">
                 <span className="flex gap-2 items-center justify-start">
                   <span className="shrink-0 text-text-primary">email</span>
                   <span className="shrink-0">

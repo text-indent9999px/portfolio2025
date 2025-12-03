@@ -65,12 +65,35 @@ const meta: Meta<typeof Overlay> = {
           '기본 스타일을 제거하고 커스텀 클래스를 적용할 수 있게 합니다.',
       },
     },
+    zIndex: {
+      control: 'number',
+      description: '오버레이의 z-index 값을 설정합니다.',
+      table: {
+        type: { summary: 'number' },
+        defaultValue: { summary: '9999' },
+        category: '레이어',
+        description: '오버레이의 z-index 값을 설정합니다.',
+      },
+    },
+    closeOnBackdropClick: {
+      control: 'boolean',
+      description:
+        '배경(backdrop) 영역을 클릭했을 때 오버레이를 닫을지 여부를 설정합니다.',
+      table: {
+        type: { summary: 'boolean' },
+        defaultValue: { summary: 'true' },
+        category: '동작',
+        description:
+          '배경(backdrop) 영역을 클릭했을 때 오버레이를 닫을지 여부를 설정합니다.',
+      },
+    },
   },
   args: {
     open: true,
     blur: false,
     lockScroll: true,
     unstyled: false,
+    closeOnBackdropClick: true,
   },
 };
 
@@ -175,7 +198,11 @@ export const Default: Story = {
         <BackgroundContent onToggleOverlay={handleToggle} isOpen={open} />
 
         {/* 오버레이 */}
-        <Overlay {...args} open={open} onClick={handleClose}>
+        <Overlay
+          {...args}
+          open={open}
+          onClose={handleClose}
+        >
           <OverlayModal onClose={handleClose} />
         </Overlay>
       </div>

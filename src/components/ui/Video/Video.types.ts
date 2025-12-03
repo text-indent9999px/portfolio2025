@@ -19,6 +19,13 @@ export interface VideoProps {
    * 비디오 인덱스 (aria-label 생성용, 선택사항)
    */
   index?: number;
+
+  /**
+   * 비디오 너비
+   */
+  width: number;
+  height: number;
+
   /**
    * 자동 재생 여부
    * @default true
@@ -43,5 +50,8 @@ export interface VideoProps {
    * 추가 className
    */
   className?: string;
+  /**
+   * 썸네일 이미지 경로
+   */
+  thumbnail?: string;
 }
-

@@ -68,7 +68,7 @@ export default function Home() {
                 ${styles['info-list-item']}
                 mb-8 last:mb-0
                 text-text-secondary dark:text-text-tertiary
-                font-kor-point font-semibold
+                font-kor-point
                 text-left
                 leading-none tracking-tight
                 break-keep

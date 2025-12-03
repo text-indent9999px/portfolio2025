@@ -11,7 +11,7 @@ export default function Profile() {
       <PageHeader
         title="About me"
         fontFamily="eng-point"
-        bottomSpacing="xs"
+        bottomSpacing="none"
         visualSize="3xl"
       />
       <ProfileContent />

@@ -55,6 +55,8 @@ const Badge: React.FC<BadgeProps> = ({
       'leading-none',
       'align-middle',
       'border-2',
+      'select-none',
+      'cursor-default',
       variantStyles,
       radiusClass,
       sizeClass,

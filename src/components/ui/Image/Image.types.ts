@@ -1,8 +1,11 @@
-export interface ImageProps {
+import type { ImageProps as NextImageProps } from 'next/image';
+
+export interface ImageProps extends Omit<NextImageProps, 'src' | 'alt'> {
   /**
    * 이미지 파일 경로
+   * - Next.js Image의 src 타입을 그대로 사용
    */
-  src: string;
+  src: NextImageProps['src'];
   /**
    * 이미지 제목 (선택사항)
    */
@@ -20,20 +23,14 @@ export interface ImageProps {
    */
   index?: number;
   /**
-   * 이미지 너비
-   */
-  width?: number;
-  /**
-   * 이미지 높이
-   */
-  height?: number;
-  /**
    * 이미지 alt 텍스트
+   * - Next.js Image의 필수 alt를 선택적으로 오버라이드
    */
   alt?: string;
   /**
-   * 추가 className
+   * 이미지 클릭 시 오버레이 모달을 사용할지 여부
+   * - true: 클릭 시 확대 모달 표시 (기본값)
+   * - false: 모달 없이 부모에서 전달한 onClick만 동작
    */
-  className?: string;
+  enableModal?: boolean;
 }
-

@@ -147,8 +147,8 @@
 
   --font-family-quicksand: var(--quicksand);
   --font-family-noto-sans-kr: var(--noto-sans-kr);
-  --font-family-grandiflora-one: var(--grandiflora-one);
-  --font-family-playwrite-au-QLD: var(--playwrite-au-QLD);
+  --font-family-kalam: var(--kalam);
+  --font-family-gowun-batang: var(--gowun-batang);
 
   --color-disabled-bg: var(--color-disabled-bg);
   --color-disabled-text: var(--color-disabled-text);
@@ -173,4 +173,3 @@
   --text-4xl: var(--text-4xl);
   --text-4xl--line-height: var(--text-4xl--line-height);
 }
-
