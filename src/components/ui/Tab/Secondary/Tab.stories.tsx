@@ -81,19 +81,34 @@ type Story = StoryObj<typeof Tab>;
 export const Default: Story = {
   render: () => {
     const [activeTab, setActiveTab] = useState('tab1');
+    const tabs = [
+      { id: 'tab1', label: '첫번째 탭' },
+      { id: 'tab2', label: '두번째 탭', notification: 3 },
+      { id: 'tab3', label: '세번째 탭' },
+    ];
 
     return (
       <div>
         <Tab
           uniqueId="secondary-demo"
-          tabs={[
-            { id: 'tab1', label: '첫번째 탭' },
-            { id: 'tab2', label: '두번째 탭', notification: 3 },
-            { id: 'tab3', label: '세번째 탭' },
-          ]}
+          tabs={tabs}
           activeTab={activeTab}
           onTabChange={setActiveTab}
         />
+        <div className="mt-6 space-y-2">
+          {tabs.map(tab => (
+            <div
+              key={tab.id}
+              id={`panel-${tab.id}-secondary-demo`}
+              role="tabpanel"
+              aria-labelledby={`tab-${tab.id}-secondary-demo`}
+              hidden={activeTab !== tab.id}
+              className="p-4 border border-dashed border-surface-level-4 rounded-lg"
+            >
+              {tab.label} 패널 내용
+            </div>
+          ))}
+        </div>
       </div>
     );
   },

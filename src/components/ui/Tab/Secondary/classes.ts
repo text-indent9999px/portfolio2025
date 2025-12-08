@@ -55,7 +55,7 @@ export const getScrollRightButtonClassName = () => {
     'pl-3 mb-[0.75rem] mt-[0.25rem]',
     'bg-gradient-to-r from-transparent',
     'via-[color-mix(in_srgb,var(--color-surface-level-min,#ffffff)_60%,transparent)]',
-    'via-[45%] to-[color-mix(in_srgb,var(--color-surface-level-min,#ffffff)_100%,transparent)]',
+    'via-[10%] to-[color-mix(in_srgb,var(--color-surface-level-min,#ffffff)_100%,transparent)]',
   ]
     .filter(Boolean)
     .join(' ');
@@ -67,7 +67,7 @@ export const getSecondaryTabLabelClassName = (isActive: boolean) => {
     'transition-all duration-200 ease-in-out',
     isActive
       ? 'text-primary-900 dark:text-primary-50 font-semibold'
-      : 'text-primary-400 font-medium group-hover:text-primary-700',
+      : 'text-primary-500 dark:text-primary-300 font-medium group-hover:text-primary-700',
   ]
     .filter(Boolean)
     .join(' ');
@@ -77,7 +77,7 @@ export const getSecondaryBadgeClassName = (isActive: boolean) => {
   return [
     isActive
       ? 'opacity-100 dark:brightness-100'
-      : 'opacity-50 group-hover:opacity-70 dark:brightness-90 dark:group-hover:brightness-70',
+      : 'contrast-135 group-hover:contrast-100 dark:brightness-80 dark:group-hover:brightness-90',
     'transition-all duration-200 ease-in-out',
   ]
     .filter(Boolean)

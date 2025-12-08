@@ -61,34 +61,28 @@ type Story = StoryObj<typeof Tab>;
 export const Default: Story = {
   render: args => {
     const [activeTab, setActiveTab] = useState('tab1');
+    const tabs = args.tabs || [
+      { id: 'tab1', label: '첫번째 탭' },
+      { id: 'tab2', label: '두번째 탭', notification: 3 },
+      { id: 'tab3', label: '세번째 탭' },
+    ];
 
     return (
       <div>
         <Tab {...args} activeTab={activeTab} onTabChange={setActiveTab} />
-        {/* Mock panels for accessibility - aria-controls 참조용 */}
-        <div
-          id="panel-tab1-demo"
-          role="tabpanel"
-          aria-labelledby="tab-tab1-demo"
-          style={{ display: 'none' }}
-        >
-          Mock content for Tab 1
-        </div>
-        <div
-          id="panel-tab2-demo"
-          role="tabpanel"
-          aria-labelledby="tab-tab2-demo"
-          style={{ display: 'none' }}
-        >
-          Mock content for Tab 2
-        </div>
-        <div
-          id="panel-tab3-demo"
-          role="tabpanel"
-          aria-labelledby="tab-tab3-demo"
-          style={{ display: 'none' }}
-        >
-          Mock content for Tab 3
+        <div className="mt-6 space-y-2">
+          {tabs.map(tab => (
+            <div
+              key={tab.id}
+              id={`panel-${tab.id}-${args.uniqueId || 'demo'}`}
+              role="tabpanel"
+              aria-labelledby={`tab-${tab.id}-${args.uniqueId || 'demo'}`}
+              hidden={activeTab !== tab.id}
+              className="p-4 border border-dashed border-surface-level-4 rounded-lg"
+            >
+              {tab.label} 패널 내용
+            </div>
+          ))}
         </div>
       </div>
     );
@@ -99,34 +93,28 @@ export const Vertical: Story = {
   args: { orientation: 'vertical' },
   render: args => {
     const [activeTab, setActiveTab] = useState('tab1');
+    const tabs = args.tabs || [
+      { id: 'tab1', label: '첫번째 탭' },
+      { id: 'tab2', label: '두번째 탭', notification: 3 },
+      { id: 'tab3', label: '세번째 탭' },
+    ];
 
     return (
-      <div>
+      <div className="flex gap-6">
         <Tab {...args} activeTab={activeTab} onTabChange={setActiveTab} />
-        {/* Mock panels for accessibility - aria-controls 참조용 */}
-        <div
-          id="panel-tab1-demo"
-          role="tabpanel"
-          aria-labelledby="tab-tab1-demo"
-          style={{ display: 'none' }}
-        >
-          Mock content for Tab 1
-        </div>
-        <div
-          id="panel-tab2-demo"
-          role="tabpanel"
-          aria-labelledby="tab-tab2-demo"
-          style={{ display: 'none' }}
-        >
-          Mock content for Tab 2
-        </div>
-        <div
-          id="panel-tab3-demo"
-          role="tabpanel"
-          aria-labelledby="tab-tab3-demo"
-          style={{ display: 'none' }}
-        >
-          Mock content for Tab 3
+        <div className="flex-1">
+          {tabs.map(tab => (
+            <div
+              key={tab.id}
+              id={`panel-${tab.id}-${args.uniqueId || 'demo'}`}
+              role="tabpanel"
+              aria-labelledby={`tab-${tab.id}-${args.uniqueId || 'demo'}`}
+              hidden={activeTab !== tab.id}
+              className="p-4 border border-dashed border-surface-level-4 rounded-lg"
+            >
+              {tab.label} 패널 내용
+            </div>
+          ))}
         </div>
       </div>
     );

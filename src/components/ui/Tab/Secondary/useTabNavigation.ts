@@ -51,9 +51,8 @@ export function useTabNavigation({
         targetIndex = tabs.length - 1;
         break;
       case 'Tab':
-        e.preventDefault();
-        targetIndex = (currentIndex + 1) % tabs.length;
-        break;
+        // Tab 키는 기본 동작을 유지하여 다음 포커스 가능한 요소로 이동
+        return;
       default:
         return;
     }
