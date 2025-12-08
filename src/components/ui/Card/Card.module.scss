@@ -17,16 +17,14 @@
 
 /* Thumb가 위에 있을 때 */
 .thumb-top.with-thumb {
+  grid-template: var(--card-rows, auto 1fr) / 1fr;
   grid-template-areas: 'thumb' 'body';
-  grid-template-columns: 1fr;
-  grid-template-rows: var(--card-rows, auto 1fr);
 }
 
 /* Thumb가 아래에 있을 때 */
 .thumb-bottom.with-thumb {
+  grid-template: var(--card-rows, 1fr auto) / 1fr;
   grid-template-areas: 'body' 'thumb';
-  grid-template-columns: 1fr;
-  grid-template-rows: var(--card-rows, 1fr auto);
 }
 
 /* Header만 있을 때 */
@@ -52,7 +50,7 @@
 }
 
 /* Thumb + Header (left) */
-.with-thumb.with-header:not(.thumb-top):not(.thumb-bottom) {
+.with-thumb.with-header:not(.thumb-top, .thumb-bottom) {
   grid-template-areas:
     'header header'
     'thumb  body';
@@ -84,7 +82,7 @@
 }
 
 /* Thumb + Footer (left) */
-.with-thumb.with-footer:not(.thumb-top):not(.thumb-bottom) {
+.with-thumb.with-footer:not(.thumb-top, .thumb-bottom) {
   grid-template-areas:
     'thumb  body'
     'footer footer';
@@ -116,7 +114,7 @@
 }
 
 /* Thumb + Header + Footer (left) */
-.with-thumb.with-header.with-footer:not(.thumb-top):not(.thumb-bottom) {
+.with-thumb.with-header.with-footer:not(.thumb-top, .thumb-bottom) {
   grid-template-areas:
     'header header'
     'thumb  body'

@@ -1,3 +1,4 @@
+import { Suspense } from 'react';
 import type { ProjectDetail } from '../types';
 import { ProjectTabsContent } from './ProjectTabsContent';
 
@@ -14,11 +15,13 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({ project, timestamp }) => {
     .map(t => ({ id: t.type, label: t.label || t.type }));
 
   return (
-    <ProjectTabsContent
-      mainTabs={mainTabs}
-      project={project}
-      timestamp={timestamp}
-    />
+    <Suspense fallback={<div>Loading...</div>}>
+      <ProjectTabsContent
+        mainTabs={mainTabs}
+        project={project}
+        timestamp={timestamp}
+      />
+    </Suspense>
   );
 };
 
