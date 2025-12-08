@@ -1,5 +1,5 @@
 # Line ending 설정: 모든 텍스트 파일에 LF 강제
-* text=auto eol=lf
+* text eol=lf
 
 # 특정 파일 타입 명시적 설정
 *.ts text eol=lf
