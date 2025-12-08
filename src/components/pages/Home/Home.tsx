@@ -74,7 +74,7 @@ export default function Home() {
                 break-keep
               `}
           >
-            last updated: 2025.12.04
+            last updated: 2025.12.09
           </li>
         </ul>
       </div>
