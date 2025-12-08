@@ -76,7 +76,7 @@ const LighthouseTab: React.FC<LighthouseTabProps> = ({ project }) => {
             height={947}
             placeholder="blur"
             blurDataURL={
-              'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mM8c/xMPQAHpgLgJ8nC6wAAAABJRU5ErkJggg=='
+              'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mOUqwcAAMEAnwarUJAAAAAASUVORK5CYII='
             }
           />
         ))}
