@@ -89,8 +89,8 @@ const meta: Meta<typeof Overlay> = {
     },
   },
   args: {
-    open: true,
-    blur: false,
+    open: false,
+    blur: true,
     lockScroll: true,
     unstyled: false,
     closeOnBackdropClick: true,
@@ -166,20 +166,20 @@ const BackgroundContent = ({
 
 // 오버레이 모달 콘텐츠 컴포넌트
 const OverlayModal = ({ onClose }: { onClose: () => void }) => (
-  <div className="flex items-center justify-center h-full">
-    <div className="bg-surface-level-1 p-8 rounded-lg shadow-lg border-2 border-surface-level-2 max-w-md">
-      <h3 className="text-xl font-bold mb-4">오버레이 모달</h3>
-      <p className="mb-4 text-text-secondary">
-        모든 국민은 법률이 정하는 바에 의하여 국가기관에 문서로 청원할 권리를
-        가진다. 국가는 청원에 대하여 심사할 의무를 진다.
-      </p>
-      <button
-        onClick={onClose}
-        className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
-      >
-        닫기
-      </button>
-    </div>
+  <div className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-surface-level-1 p-8 rounded-lg shadow-lg border-2 border-surface-level-2 max-w-md">
+    <h3 id="overlay-modal-title" className="text-xl font-bold mb-4">
+      오버레이 모달
+    </h3>
+    <p className="mb-4 text-text-secondary">
+      모든 국민은 법률이 정하는 바에 의하여 국가기관에 문서로 청원할 권리를
+      가진다. 국가는 청원에 대하여 심사할 의무를 진다.
+    </p>
+    <button
+      onClick={onClose}
+      className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
+    >
+      닫기
+    </button>
   </div>
 );
 
@@ -190,10 +190,13 @@ export const Default: Story = {
     const [open, setOpen] = useState(args.open ?? true);
 
     const handleToggle = () => setOpen(!open);
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+      setOpen(false);
+      console.log('close');
+    };
 
     return (
-      <div className="relative w-[800px] h-[600px] border-2 border-dashed border-surface-level-5 rounded-lg overflow-hidden">
+      <div className="relative w-full h-[600px] border-2 border-dashed border-surface-level-5 rounded-lg overflow-hidden">
         {/* 배경 콘텐츠 - blur 효과가 잘 보이도록 배치 */}
         <BackgroundContent onToggleOverlay={handleToggle} isOpen={open} />
 
@@ -202,6 +205,7 @@ export const Default: Story = {
           {...args}
           open={open}
           onClose={handleClose}
+          ariaLabelledBy="overlay-modal-title"
         >
           <OverlayModal onClose={handleClose} />
         </Overlay>

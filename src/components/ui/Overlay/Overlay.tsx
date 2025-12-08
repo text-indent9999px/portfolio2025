@@ -138,6 +138,7 @@ const Overlay: React.FC<OverlayProps> = ({
       zIndex: zIndex,
       opacity: open ? 1 : 0,
       pointerEvents: open ? 'auto' : 'none',
+      visibility: open ? 'visible' : 'hidden',
       transition: 'opacity 200ms ease',
       ...blurStyle,
       ...style,
@@ -171,14 +172,59 @@ const Overlay: React.FC<OverlayProps> = ({
     [closeOnBackdropClick, onClose, onClick]
   );
 
+  // 닫힌 상태에서 포커스 가능한 요소들에 tabIndex={-1} 설정
+  React.useEffect(() => {
+    if (open || !overlayRef.current) return;
+
+    const overlay = overlayRef.current;
+    const focusableSelector = [
+      'a[href]',
+      'button:not([disabled])',
+      'textarea:not([disabled])',
+      'input:not([disabled])',
+      'select:not([disabled])',
+      '[tabindex]:not([tabindex="-1"])',
+    ].join(', ');
+
+    const focusableElements = Array.from(
+      overlay.querySelectorAll<HTMLElement>(focusableSelector)
+    );
+
+    // 원래 tabIndex 값을 저장하고 -1로 설정
+    const originalTabIndices = new Map<HTMLElement, string | null>();
+    focusableElements.forEach(el => {
+      originalTabIndices.set(el, el.getAttribute('tabindex'));
+      el.setAttribute('tabindex', '-1');
+    });
+
+    // cleanup: 원래 tabIndex 값 복원
+    return () => {
+      focusableElements.forEach(el => {
+        const originalTabIndex = originalTabIndices.get(el);
+        if (originalTabIndex === null) {
+          el.removeAttribute('tabindex');
+        } else if (originalTabIndex !== undefined) {
+          el.setAttribute('tabindex', originalTabIndex);
+        }
+      });
+    };
+  }, [open]);
+
   // 접근성 속성 계산
   const ariaProps = React.useMemo(() => {
-    const props: React.HTMLAttributes<HTMLDivElement> = {
+    const props: React.HTMLAttributes<HTMLDivElement> & {
+      inert?: boolean;
+    } = {
       id: finalId,
       role: open ? role : undefined,
       'aria-modal': open ? true : undefined,
       'aria-hidden': !open ? true : undefined,
     };
+
+    // inert 속성 추가 (최신 브라우저 지원)
+    if (!open) {
+      props.inert = true;
+    }
 
     if (open) {
       if (ariaLabelledBy) {
