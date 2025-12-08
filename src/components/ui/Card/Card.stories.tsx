@@ -126,8 +126,8 @@ export const Default: Story = {
       gap={args.gap}
     >
       <Card.Thumb aspect="16/9">
-        <div className="w-full h-full bg-accent-400 rounded flex items-center justify-center">
-          <span className="text-[#fff]">Thumb</span>
+        <div className="w-full h-full bg-success-500 rounded flex items-center justify-center">
+          <span className="text-[#fff] font-bold">Thumb</span>
         </div>
       </Card.Thumb>
       <Card.Body>
@@ -149,11 +149,14 @@ export const Default: Story = {
 
           return (
             <>
-              <h3 className={`text-lg mb-2 mix-blend-difference ${textColorClass}`}>
+              <h3
+                className={`text-lg mb-2 mix-blend-difference ${textColorClass}`}
+              >
                 카드 제목
               </h3>
               <p className={`mix-blend-difference ${textColorClass}`}>
-                카드 본문 내용입니다. 컨트롤 패널에서 다양한 옵션을 조정해보세요.
+                카드 본문 내용입니다. 컨트롤 패널에서 다양한 옵션을
+                조정해보세요.
               </p>
             </>
           );
