@@ -87,22 +87,34 @@
 }
 
 .menu-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
   position: fixed;
-  top: 50%;
+  top: 60px;
+  left: 0;
   z-index: 111;
   width: 100%;
-  margin-top: -2vh;
+  height: calc(100vh - 60px);
+
   text-align: center;
-  opacity: 1; /* 기본적으로 보이도록 변경 */
-  transform: translate(0%, -50%);
+  opacity: 1;
   visibility: visible; /* 항상 보이도록 변경 */
   pointer-events: none;
 
   @container style(--device: desktop) {
-    margin-top: 20px;
+    top: 86px;
+    height: calc(100vh - 86px);
   }
 
   nav {
+    margin-top: -60px;
+
+    @container style(--device: desktop) {
+      margin-top: -86px;
+    }
+
     ul {
       z-index: 2;
       margin: 0;
@@ -143,6 +155,16 @@
     }
   }
 
+  .menu-download-section {
+    opacity: 0;
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+  }
+
   &.active {
     pointer-events: auto;
 
@@ -166,6 +188,12 @@
       &:nth-child(4) {
         transition-delay: 1.1s;
       }
+    }
+
+    .menu-download-section {
+      opacity: 1;
+      transition: opacity 0.3s ease;
+      transition-delay: 1.4s;
     }
   }
 }

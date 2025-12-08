@@ -1,5 +1,7 @@
+'use client';
+
 import Blank from '../../ui/Blank';
-import { BackButton } from '../../ui/Button';
+import { BackButton, ResumeDownloadButton } from '../../ui/Button';
 import { PageHeader } from '../../ui/Heading';
 
 export default function Contact() {
@@ -17,8 +19,8 @@ export default function Contact() {
           <>
             <span className="text-text-secondary font-base">{`더 나은 경험, 더 깔끔한 코드 \n 함께 만들어가고 싶습니다.`}</span>
             <span className="flex border-t-4 border-double border-text-tertiary dark:border-text-secondary p-5 mt-6">
-              <span className="flex flex-col gap-2 items-center font-kor-point">
-                <span className="flex gap-2 items-center justify-start">
+              <span className="flex flex-col gap-2 items-center">
+                <span className="flex gap-2 items-center justify-start font-kor-point">
                   <span className="shrink-0 text-text-primary">email</span>
                   <span className="shrink-0">
                     <a
@@ -31,7 +33,7 @@ export default function Contact() {
                     </a>
                   </span>
                 </span>
-                <span className="flex gap-2 items-center justify-start">
+                <span className="flex gap-2 items-center justify-start font-kor-point">
                   <span className="shrink-0 text-text-primary">github</span>
                   <a
                     href="https://github.com/text-indent9999px"
@@ -41,6 +43,9 @@ export default function Contact() {
                   >
                     https://github.com/text-indent9999px
                   </a>
+                </span>
+                <span className="flex gap-2 items-center justify-start mt-3">
+                  <ResumeDownloadButton size="md" />
                 </span>
               </span>
             </span>

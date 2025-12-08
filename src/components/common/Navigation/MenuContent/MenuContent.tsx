@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { menuItems } from '../../../../data/navigation';
-import CustomButton from '../../../ui/Button';
+import CustomButton, { ResumeDownloadButton } from '../../../ui/Button';
 import Overlay from '../../../ui/Overlay';
 import styles from '../navigation.module.scss';
 import { useMenu } from './MenuContext';
@@ -49,6 +49,12 @@ const MenuContent: React.FC = () => {
             ))}
           </ul>
         </nav>
+        <div className={`${styles['menu-download-section']} mx-6 xl:mx-8 mb-5`}>
+          <ResumeDownloadButton
+            tabIndex={isMenuOpen ? undefined : -1}
+            size="sm"
+          />
+        </div>
       </div>
     </>
   );
