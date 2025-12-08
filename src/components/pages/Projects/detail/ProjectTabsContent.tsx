@@ -1,6 +1,14 @@
 'use client';
 
-import { startTransition, useCallback, useId, useMemo, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import {
+  startTransition,
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useState,
+} from 'react';
 import { useMediaQuery } from '../../../../hooks';
 import { PrimaryTab } from '../../../ui/Tab';
 import { SecondaryTab } from '../../../ui/Tab/Secondary';
@@ -55,6 +63,9 @@ export function ProjectTabsContent({
   const uniqueId = useId();
   const isXlOrAbove = useMediaQuery('--breakpoint-xl', 'min');
   const projectId = project.meta.id;
+  const searchParams = useSearchParams();
+  const pathname = usePathname();
+  const router = useRouter();
 
   // 활성 탭 상태
   const [activeTab, setActiveTab] = useState<ProjectTab['type']>(() => {
@@ -63,6 +74,17 @@ export function ProjectTabsContent({
       ? firstTabId
       : 'overview';
   });
+
+  // 쿼리 파라미터로 초기 탭 설정
+  useEffect(() => {
+    const tabParam = searchParams.get('tab');
+    const tabInMainTabs = mainTabs.some(tab => tab.id === tabParam);
+    const isValidTab = tabParam && isValidProjectTabType(tabParam);
+
+    if (tabParam && isValidTab && tabInMainTabs) {
+      setActiveTab(tabParam);
+    }
+  }, [searchParams, mainTabs]);
 
   // CodeTab의 서브 탭 상태 관리 (프로젝트별)
   const [codeSubTabs, setCodeSubTabs] = useState<Record<string, string>>(
@@ -84,13 +106,20 @@ export function ProjectTabsContent({
   );
 
   // 탭 변경 핸들러
-  const handleTabChange = useCallback((tabId: string) => {
-    startTransition(() => {
-      if (isValidProjectTabType(tabId)) {
+  const handleTabChange = useCallback(
+    (tabId: string) => {
+      if (!isValidProjectTabType(tabId)) return;
+
+      startTransition(() => {
         setActiveTab(tabId);
-      }
-    });
-  }, []);
+      });
+
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('tab', tabId);
+      router.replace(`${pathname}?${params.toString()}`);
+    },
+    [pathname, router, searchParams]
+  );
 
   // 탭 패널 속성들
   const tabPanelId = `panel-${activeTab}-${uniqueId}`;
