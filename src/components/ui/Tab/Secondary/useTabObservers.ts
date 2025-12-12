@@ -31,7 +31,8 @@ export function useTabObservers({
     isInitialMountRef.current = true;
 
     updateIndicatorState('initialMount');
-    updateScrollState();
+    // 초기 마운트 시 스크롤 상태 업데이트는 useLayoutEffect에서 처리
+    // updateScrollState();
 
     setMounted(true);
     requestAnimationFrame(() => {
@@ -39,22 +40,6 @@ export function useTabObservers({
         isInitialMountRef.current = false;
       });
     });
-
-    const handleMutation: MutationCallback = records => {
-      records.forEach(record => {
-        record.removedNodes.forEach(node => {
-          if (node instanceof Element && resizeObserver) {
-            resizeObserver.unobserve(node);
-          }
-        });
-        record.addedNodes.forEach(node => {
-          if (node instanceof Element && resizeObserver) {
-            resizeObserver.observe(node);
-          }
-        });
-      });
-      handleResize();
-    };
 
     const win = container.ownerDocument.defaultView;
     if (win) {
@@ -64,24 +49,12 @@ export function useTabObservers({
     let resizeObserver: ResizeObserver | null = null;
     if (typeof ResizeObserver !== 'undefined') {
       resizeObserver = new ResizeObserver(handleResize);
-      Array.from(tabList.children).forEach(child => {
-        resizeObserver!.observe(child);
-      });
       resizeObserver.observe(container);
-    }
-
-    let mutationObserver: MutationObserver | null = null;
-    if (typeof MutationObserver !== 'undefined') {
-      mutationObserver = new MutationObserver(handleMutation);
-      mutationObserver.observe(tabList, {
-        childList: true,
-        subtree: true,
-      });
     }
 
     return () => {
       resizeObserver?.disconnect();
-      mutationObserver?.disconnect();
+
       if (win) {
         win.removeEventListener('resize', handleResize);
       }

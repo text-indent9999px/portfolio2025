@@ -49,13 +49,13 @@ export const getScrollLeftButtonClassName = () => {
  */
 export const getScrollRightButtonClassName = () => {
   return [
-    'absolute right-0 top-0 bottom-0',
+    'absolute right-6 xl:right-0 top-0 bottom-0',
     'z-10',
     'flex items-center justify-center',
     'pl-3 mb-[0.75rem] mt-[0.25rem]',
     'bg-gradient-to-r from-transparent',
-    'via-[color-mix(in_srgb,var(--color-surface-level-min,#ffffff)_60%,transparent)]',
-    'via-[10%] to-[color-mix(in_srgb,var(--color-surface-level-min,#ffffff)_100%,transparent)]',
+    'via-[color-mix(in_srgb,var(--color-surface-level-min,#ffffff)_80%,transparent)]',
+    'via-[45%] to-[color-mix(in_srgb,var(--color-surface-level-min,#ffffff)_100%,transparent)]',
   ]
     .filter(Boolean)
     .join(' ');
@@ -95,13 +95,13 @@ export const getContainerClassName = (className: string | undefined) => {
     .join(' ');
 };
 
-export const getScrollContainerClassName = () => {
+export const getScrollContainerClassName = (shouldShowTransition: boolean) => {
   return [
     'relative w-full overflow-x-auto overflow-y-hidden',
     'border-b-1 border-primary-300',
     'pb-[0.5rem]',
     'no-scrollbar',
-    'scroll-smooth',
+    shouldShowTransition ? 'scroll-smooth' : '',
     'touch-pan-x',
   ]
     .filter(Boolean)

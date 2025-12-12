@@ -84,23 +84,26 @@ export const resetNavigationFlag = (
 };
 
 export const performNavigation = (
-  router: { push: (url: string) => void },
+  router: { push: (url: string) => void; replace: (url: string) => void },
   url: string,
   useDefaultTransition: boolean,
   transitionType: string,
   addTransitionType: (type: string) => void,
-  startTransition: (callback: () => void) => void
+  startTransition: (callback: () => void) => void,
+  replace = false
 ) => {
   if (!url || typeof url !== 'string') {
     return;
   }
 
+  const navigate = replace ? router.replace : router.push;
+
   if (useDefaultTransition) {
     startTransition(() => {
       addTransitionType(transitionType);
-      router.push(url);
+      navigate(url);
     });
   } else {
-    router.push(url);
+    navigate(url);
   }
 };

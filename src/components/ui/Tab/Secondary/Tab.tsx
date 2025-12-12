@@ -51,8 +51,8 @@ const Tab: React.FC<TabProps> = ({
   );
 
   const scrollContainerClassName = React.useMemo(
-    () => getScrollContainerClassName(),
-    []
+    () => getScrollContainerClassName(shouldShowTransition),
+    [shouldShowTransition]
   );
 
   const indicatorClassName = React.useMemo(() => getIndicatorClassName(), []);

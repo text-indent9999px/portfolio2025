@@ -10,9 +10,15 @@ import type { ProjectDetail } from '../types';
 
 interface DetailProps {
   project: ProjectDetail;
+  initialTab?: string;
+  initialCodeSubTab?: string;
 }
 
-const Detail: React.FC<DetailProps> = ({ project }) => {
+const Detail: React.FC<DetailProps> = ({
+  project,
+  initialTab,
+  initialCodeSubTab,
+}) => {
   const { getNavigationState } = useRouter();
   const [timestamp, setTimestamp] = useState<number>(() => {
     const state = getNavigationState() as { timestamp?: number } | undefined;
@@ -32,7 +38,12 @@ const Detail: React.FC<DetailProps> = ({ project }) => {
       <DetailBackButton timestamp={timestamp} />
       <Blank height="1.5rem" bgColor="transparent" />
       <ProjectHeader project={project} timestamp={timestamp} />
-      <ProjectTabs project={project} timestamp={timestamp} />
+      <ProjectTabs
+        project={project}
+        timestamp={timestamp}
+        initialTab={initialTab}
+        initialCodeSubTab={initialCodeSubTab}
+      />
       <Blank height="3rem" bgColor="transparent" />
     </div>
   );

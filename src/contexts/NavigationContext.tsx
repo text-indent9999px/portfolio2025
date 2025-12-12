@@ -93,7 +93,11 @@ interface NavigationContextType {
   canGoForward: boolean;
   setHistoryIndexBack: (state?: Record<string, unknown>) => void;
   setHistoryIndexForward: () => void;
-  navigateTo: (url: string, state?: Record<string, unknown>) => void;
+  navigateTo: (
+    url: string,
+    state?: Record<string, unknown>,
+    replace?: boolean
+  ) => void;
   getCurrentNavigationState: () => Record<string, unknown> | undefined;
   setUrlHistory: (
     history:
@@ -147,12 +151,33 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const navigateTo = (url: string, state?: Record<string, unknown>) => {
+  const navigateTo = (
+    url: string,
+    state?: Record<string, unknown>,
+    replace = false
+  ) => {
     const currentScrollY = getScrollY(isXlOrAbove);
 
     // URL 변경 시 로그 출력 (navigateTo 호출 시점에 바로 출력)
     if (url && url !== previousUrlRef.current) {
       previousUrlRef.current = url;
+    }
+
+    // replace가 true인 경우: 현재 인덱스의 엔트리만 교체 (히스토리 길이 유지)
+    if (replace && history.length > 0) {
+      setHistory(prev => {
+        const updatedHistory = [...prev];
+        if (updatedHistory[currentIndex]) {
+          updatedHistory[currentIndex] = {
+            url,
+            scrollY: currentScrollY,
+            timestamp: Date.now(),
+            state,
+          };
+        }
+        return updatedHistory;
+      });
+      return;
     }
 
     // 먼저 같은 URL인지 확인

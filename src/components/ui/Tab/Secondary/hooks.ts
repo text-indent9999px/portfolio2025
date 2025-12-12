@@ -1,6 +1,12 @@
 'use client';
 
-import { useEffect, useLayoutEffect, useRef, useState } from 'react';
+import {
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import { debounce } from '../../../../utils/debounce';
 import { useEventCallback } from '../../../../utils/useEventCallback';
 import type { TabItem } from '../common.types';
@@ -61,6 +67,7 @@ export const useSecondaryTab = ({
     isInitialMountRef,
     isDocumentHiddenRef,
     scheduleIndicatorUpdate,
+    uniqueId,
   });
 
   const { handleTabClick, handleButtonKeydown, handleButtonFocusSync } =
@@ -73,12 +80,12 @@ export const useSecondaryTab = ({
 
   const handleResize = useEventCallback(
     debounce(() => {
-      if (isDocumentHiddenRef.current) return;
-      if (isInitialMountRef.current) return;
-      if (scrollContainerRef.current) {
-        updateIndicatorState('handleResize');
-        updateScrollState();
-      }
+      // if (isDocumentHiddenRef.current) return;
+      // if (isInitialMountRef.current) return;
+      // if (scrollContainerRef.current) {
+      //   updateIndicatorState('handleResize');
+      //   updateScrollState();
+      // }
     }, 166)
   );
 
@@ -93,20 +100,20 @@ export const useSecondaryTab = ({
     scrollAnimationCancelRef,
   });
 
-  useEffect(() => {
-    const handleVisibility = () => {
-      isDocumentHiddenRef.current = document.visibilityState === 'hidden';
-      if (!isDocumentHiddenRef.current) {
-        requestAnimationFrame(() => {
-          updateIndicatorState('visibilityChange');
-        });
-      }
-    };
-    document.addEventListener('visibilitychange', handleVisibility);
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibility);
-    };
-  }, [updateIndicatorState]);
+  // useEffect(() => {
+  //   const handleVisibility = () => {
+  //     isDocumentHiddenRef.current = document.visibilityState === 'hidden';
+  //     if (!isDocumentHiddenRef.current) {
+  //       requestAnimationFrame(() => {
+  //         updateIndicatorState('visibilityChange');
+  //       });
+  //     }
+  //   };
+  //   document.addEventListener('visibilitychange', handleVisibility);
+  //   return () => {
+  //     document.removeEventListener('visibilitychange', handleVisibility);
+  //   };
+  // }, [updateIndicatorState]);
 
   useEffect(() => {
     if (!mounted || isInitialMountRef.current) {
@@ -124,31 +131,36 @@ export const useSecondaryTab = ({
     const container = scrollContainerRef.current;
     if (!container) return;
 
+    // 초기 마운트 시 스크롤 설정을 한 프레임 지연하여 DOM이 완전히 렌더링된 후 실행
     requestAnimationFrame(() => {
+      scrollSelectedIntoView(false);
+      // 스크롤 설정 완료 후 상태 업데이트 (animation: false이므로 즉시 완료)
       requestAnimationFrame(() => {
-        scrollSelectedIntoView(false);
         updateScrollState();
       });
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [mounted]);
 
-  useEffect(() => {
-    const container = scrollContainerRef.current;
-    if (!container) return;
-
-    const onScroll = (e: Event) => {
+  const onScroll = useCallback(
+    (e: Event) => {
       e.stopPropagation();
       e.stopImmediatePropagation();
       updateScrollState();
       scheduleIndicatorUpdate(80, 'scrollEvent');
-    };
+    },
+    [updateScrollState, scheduleIndicatorUpdate]
+  );
+
+  useEffect(() => {
+    const container = scrollContainerRef.current;
+    if (!container) return;
 
     container.addEventListener('scroll', onScroll, { passive: true });
     return () => {
       container.removeEventListener('scroll', onScroll);
     };
-  }, [scheduleIndicatorUpdate, updateScrollState]);
+  }, [onScroll]);
 
   useEffect(() => {
     return () => {

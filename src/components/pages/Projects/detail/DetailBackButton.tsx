@@ -34,6 +34,7 @@ const DetailBackButton: React.FC<DetailBackButtonProps> = ({ timestamp }) => {
         url: '/projects',
         useDefaultTransition: false,
         state: timestamp ? { timestamp } : undefined,
+        replace: true,
       });
     }
   };

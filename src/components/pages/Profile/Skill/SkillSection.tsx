@@ -7,11 +7,13 @@ import SkillList from './SkillList';
 
 interface SkillSectionProps {
   activeTab: string;
+  displayedTab: string;
   onTabChange: (tab: string) => void;
 }
 
 export default function SkillSection({
   activeTab,
+  displayedTab,
   onTabChange,
 }: SkillSectionProps) {
   const uniqueId = useId();
@@ -28,8 +30,8 @@ export default function SkillSection({
       {Object.entries(skillCategories).map(([key, category]) => (
         <div
           key={key}
-          className={activeTab === key ? 'block' : 'hidden'}
-          aria-hidden={activeTab !== key}
+          className={displayedTab === key ? 'block' : 'hidden'}
+          aria-hidden={displayedTab !== key}
         >
           <SkillList
             skills={category.skills}

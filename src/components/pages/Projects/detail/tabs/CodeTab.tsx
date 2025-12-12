@@ -1,11 +1,11 @@
 'use client';
 
-import React, { useCallback, useId, useMemo } from 'react';
+import React, { useCallback, useEffect, useId, useMemo, useState } from 'react';
 import { useMediaQuery } from '../../../../../hooks';
 import { SectionHeader } from '../../../../ui/Heading';
 import { SecondaryTab } from '../../../../ui/Tab/Secondary';
 import type { CodeTab as CodeTabType, ProjectDetail } from '../../types';
-import { CodeHighlightContent } from './CodeTab.components';
+import { CodeSection, DemoSection } from './CodeTab.components';
 import { useCodeTabState, useDemoLoader } from './CodeTab.hooks';
 
 interface CodeTabProps {
@@ -36,14 +36,58 @@ const CodeTab: React.FC<CodeTabProps> = React.memo(
     );
 
     // 탭 상태 관리
-    const { activeTab, setActiveTab, activeHighlight } = useCodeTabState(
+    const { activeTab, setActiveTab } = useCodeTabState(
       codeHighlights,
       activeSubTab,
       onSubTabChange
     );
 
+    // 탭 패널 내용용 상태 (지연 업데이트)
+    const [displayedTab, setDisplayedTab] = useState(() => {
+      if (activeSubTab) return activeSubTab;
+      return codeHighlights[0]?.title || '';
+    });
+
+    // 코드 로드 완료 상태
+    const [isCodeLoaded, setIsCodeLoaded] = useState(true);
+    const panelRef = React.useRef<HTMLDivElement>(null);
+
+    // activeSubTab prop 변경 시 displayedTab 동기화
+    useEffect(() => {
+      if (activeSubTab && activeSubTab !== displayedTab) {
+        setIsCodeLoaded(false);
+        const timeoutId = setTimeout(() => {
+          setDisplayedTab(activeSubTab);
+        }, 400);
+        return () => clearTimeout(timeoutId);
+      }
+    }, [activeSubTab, displayedTab]);
+
+    // activeTab 변경 시: 스피너 표시, displayedTab 지연 업데이트
+    useEffect(() => {
+      if (activeTab === displayedTab) return;
+
+      const timeoutId = setTimeout(() => {
+        setIsCodeLoaded(false);
+        setDisplayedTab(activeTab);
+      }, 400);
+
+      return () => {
+        clearTimeout(timeoutId);
+      };
+    }, [activeTab, displayedTab]);
+
+    // displayedTab에 해당하는 highlight 찾기
+    const displayedHighlight = useMemo(
+      () => codeHighlights.find(highlight => highlight.title === displayedTab),
+      [codeHighlights, displayedTab]
+    );
+
     // 데모 로더
-    const demoLoader = useDemoLoader(activeHighlight?.demoPath, activeTab);
+    const demoLoader = useDemoLoader(
+      displayedHighlight?.demoPath,
+      displayedTab
+    );
 
     // 탭 배열 생성
     const tabsArray = useMemo(
@@ -58,10 +102,23 @@ const CodeTab: React.FC<CodeTabProps> = React.memo(
     // 탭 변경 핸들러
     const handleTabChange = useCallback(
       (tab: string) => {
+        if (tab === activeTab) return;
+        setIsCodeLoaded(false);
         setActiveTab(tab);
+        // 부모 컴포넌트에 서브 탭 변경 알림 (쿼리 파라미터 업데이트용)
+        if (onSubTabChange) {
+          onSubTabChange(tab);
+        }
       },
-      [setActiveTab]
+      [setActiveTab, activeTab, onSubTabChange]
     );
+
+    // 코드 로드 완료 핸들러 (displayedTab이 변경될 때마다 새로운 콜백 생성)
+    const handleCodeLoadComplete = useCallback(() => {
+      if (displayedTab === activeTab) {
+        setIsCodeLoaded(true);
+      }
+    }, [displayedTab, activeTab]);
 
     // 탭 패널 속성
     const tabPanelId = useMemo(
@@ -93,16 +150,41 @@ const CodeTab: React.FC<CodeTabProps> = React.memo(
         />
 
         <div
+          ref={panelRef}
           role="tabpanel"
           id={tabPanelId}
           aria-labelledby={tabPanelLabelledBy}
-          className="border border-surface-level-2 rounded-lg p-4"
+          className={`relative border border-surface-level-2 rounded-lg p-4 ${
+            !isCodeLoaded ? 'min-h-[70vh]' : ''
+          }`}
         >
-          {activeHighlight && (
-            <CodeHighlightContent
-              highlight={activeHighlight}
-              demoLoader={demoLoader}
-            />
+          {displayedHighlight && (
+            <>
+              <div>
+                <h3 className="text-lg font-semibold text-text-primary mb-2">
+                  {displayedHighlight.title}
+                </h3>
+                {displayedHighlight.description && (
+                  <p className="text-text-secondary mb-4">
+                    {displayedHighlight.description}
+                  </p>
+                )}
+              </div>
+
+              <DemoSection
+                demoPath={displayedHighlight.demoPath}
+                shouldLoadDemo={demoLoader.shouldLoadDemo}
+                LazyDemoComponent={demoLoader.LazyDemoComponent}
+              />
+
+              <CodeSection
+                codeFile={displayedHighlight.codeFile}
+                language={displayedHighlight.language}
+                enableObserver={demoLoader.enableCodeObserver}
+                onLoadComplete={handleCodeLoadComplete}
+                showSpinner={!isCodeLoaded || displayedTab !== activeTab}
+              />
+            </>
           )}
         </div>
       </div>

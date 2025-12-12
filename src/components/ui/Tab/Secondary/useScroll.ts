@@ -16,6 +16,7 @@ export interface UseScrollProps {
   isInitialMountRef: React.MutableRefObject<boolean>;
   isDocumentHiddenRef: React.MutableRefObject<boolean>;
   scheduleIndicatorUpdate: (delay?: number, source?: string) => void;
+  uniqueId?: string;
 }
 
 export function useScroll({
@@ -27,6 +28,7 @@ export function useScroll({
   isInitialMountRef,
   isDocumentHiddenRef,
   scheduleIndicatorUpdate,
+  uniqueId = '',
 }: UseScrollProps) {
   const scrollAnimationCancelRef = useRef<(() => void) | null>(null);
 
@@ -64,6 +66,8 @@ export function useScroll({
         bottom: rect.bottom,
         left: rect.left,
         right: rect.right,
+        width: rect.width,
+        height: rect.height,
       };
     }
 
@@ -86,12 +90,20 @@ export function useScroll({
     options: { animation?: boolean } = {},
     cb?: (error: Error | null) => void
   ) => {
-    const { animation = true } = options;
+    let { animation = true } = options;
     const container = scrollContainerRef.current;
     if (!container) {
       cb?.(new Error('Container not found'));
       return;
     }
+
+    // 초기 마운트 시에는 항상 즉시 스크롤 (애니메이션 없음)
+    if (isInitialMountRef.current) {
+      animation = false;
+    }
+
+    // 음수 스크롤 방지
+    const safeScrollValue = Math.max(0, scrollValue);
 
     if (animation) {
       if (scrollAnimationCancelRef.current) {
@@ -100,7 +112,7 @@ export function useScroll({
       scrollAnimationCancelRef.current = animate(
         scrollStart,
         container,
-        scrollValue,
+        safeScrollValue,
         { duration: 300 },
         error => {
           scrollAnimationCancelRef.current = null;
@@ -111,22 +123,41 @@ export function useScroll({
     } else {
       const originalScrollBehavior = container.style.scrollBehavior;
       container.style.scrollBehavior = 'auto';
-      container[scrollStart] = scrollValue;
-
-      requestAnimationFrame(() => {
-        const currentScroll = container[scrollStart];
-        if (Math.abs(currentScroll - scrollValue) > 1) {
-          container[scrollStart] = scrollValue;
-        }
+      
+      // 초기 마운트 시에는 즉시 스크롤 (RAF 없이)
+      if (isInitialMountRef.current) {
+        container[scrollStart] = safeScrollValue;
         container.style.scrollBehavior = originalScrollBehavior;
         scheduleIndicatorUpdate(0, 'scrollImmediate');
         cb?.(null);
-      });
+      } else {
+        // 일반적인 경우에는 RAF 사용
+        container[scrollStart] = safeScrollValue;
+        requestAnimationFrame(() => {
+          const currentScroll = container[scrollStart];
+          if (Math.abs(currentScroll - safeScrollValue) > 1) {
+            container[scrollStart] = safeScrollValue;
+          }
+          container.style.scrollBehavior = originalScrollBehavior;
+          scheduleIndicatorUpdate(0, 'scrollImmediate');
+          cb?.(null);
+        });
+      }
     }
   };
 
   const scrollSelectedIntoView = useEventCallback(
     (animation: boolean = true) => {
+      // 초기 마운트 시에는 항상 즉시 스크롤 (애니메이션 없음)
+      // scrollLeft가 0이고 animation이 true면 초기 마운트로 간주
+      const container = scrollContainerRef.current;
+      const currentScrollLeft = container?.scrollLeft ?? 0;
+      const isInitialMount = isInitialMountRef.current || (currentScrollLeft === 0 && animation);
+      
+      if (isInitialMount) {
+        animation = false;
+      }
+
       let didScroll = false;
       const { tabsMeta, tabMeta } = getTabsMeta();
       if (!tabMeta || !tabsMeta) {
@@ -151,6 +182,8 @@ export function useScroll({
           if (!isFirstTab) {
             nextScrollStart -= EDGE_SCROLL_OFFSET;
           }
+          // 음수 스크롤 방지
+          nextScrollStart = Math.max(0, nextScrollStart);
           scroll(nextScrollStart, { animation });
           didScroll = true;
         } else if (tabMeta.right > visibleRight) {
@@ -159,6 +192,8 @@ export function useScroll({
           if (!isLastTab) {
             nextScrollStart += EDGE_SCROLL_OFFSET;
           }
+          // 음수 스크롤 방지
+          nextScrollStart = Math.max(0, nextScrollStart);
           scroll(nextScrollStart, { animation });
           didScroll = true;
         }

@@ -1,21 +1,22 @@
 'use client';
 
-import { useRouter as useNextRouter, usePathname } from 'next/navigation';
+import {
+  useRouter as useNextRouter,
+  usePathname,
+  useSearchParams,
+} from 'next/navigation';
 import React, {
   unstable_addTransitionType as addTransitionType,
   useTransition,
 } from 'react';
 import { useNavigationHistory } from '../contexts/NavigationContext';
 import { useMediaQuery } from '../hooks/useMediaQuery';
-import {
-  performNavigation,
-  resetNavigationFlag,
-  waitForRipple,
-} from './router.utils';
+import { performNavigation, waitForRipple } from './router.utils';
 
 export function useTransitionNavigation() {
   const router = useNextRouter();
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const isXlOrAbove = useMediaQuery('--breakpoint-xl', 'min');
   const {
@@ -33,6 +34,7 @@ export function useTransitionNavigation() {
   const historyRef = React.useRef(history);
   const currentIndexRef = React.useRef(currentIndex);
   const previousPathnameRef = React.useRef<string>(pathname);
+  const previousSearchParamsRef = React.useRef<string>(searchParams.toString());
   const setIsNavigatingRef = React.useRef<((value: boolean) => void) | null>(
     null
   );
@@ -60,15 +62,27 @@ export function useTransitionNavigation() {
       useDefaultTransition = true,
       transitionType = 'nav-forward',
       state,
+      replace = false,
     }: {
       url: string;
       useDefaultTransition?: boolean;
       transitionType?: string;
       state?: Record<string, unknown>;
+      replace?: boolean;
     }) => {
-      if (isNavigatingRef.current) return;
-
       if (!url || typeof url !== 'string') {
+        return;
+      }
+
+      // replace인 경우: 히스토리만 교체하고 router.replace 호출 (네비게이션 상태 변경 없음)
+      if (replace) {
+        navigateTo(url, state, replace);
+        router.replace(url);
+        return;
+      }
+
+      // replace가 아닌 경우: 기존 로직 유지
+      if (isNavigatingRef.current) {
         return;
       }
 
@@ -81,7 +95,8 @@ export function useTransitionNavigation() {
         isNavigatingRef.current = true;
         setIsNavigating(true);
         window.dispatchEvent(new CustomEvent('cursor-reset'));
-        navigateTo(url, state);
+
+        navigateTo(url, state, replace);
 
         performNavigation(
           router,
@@ -89,7 +104,8 @@ export function useTransitionNavigation() {
           useDefaultTransition,
           transitionType,
           addTransitionType,
-          startTransition
+          startTransition,
+          replace
         );
       });
     },
@@ -129,7 +145,8 @@ export function useTransitionNavigation() {
             useDefaultTransition,
             transitionType,
             addTransitionType,
-            startTransition
+            startTransition,
+            false
           );
           return;
         }
@@ -155,7 +172,8 @@ export function useTransitionNavigation() {
             useDefaultTransition,
             transitionType,
             addTransitionType,
-            startTransition
+            startTransition,
+            false
           );
         });
       });
@@ -201,7 +219,8 @@ export function useTransitionNavigation() {
             useDefaultTransition,
             transitionType,
             addTransitionType,
-            startTransition
+            startTransition,
+            false
           );
           // isNavigatingRef는 boolean이므로 resetNavigationFlag 대신 직접 설정
           requestAnimationFrame(() => {

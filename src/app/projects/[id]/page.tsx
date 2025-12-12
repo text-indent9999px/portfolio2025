@@ -8,12 +8,15 @@ interface ProjectDetailPageProps {
   params: Promise<{
     id: string;
   }>;
+  searchParams: Promise<{ tab?: string; codeSubTab?: string }>;
 }
 
 const ProjectDetailPage: React.FC<ProjectDetailPageProps> = async ({
   params,
+  searchParams,
 }) => {
   const { id } = await params;
+  const { tab, codeSubTab } = await searchParams;
   const projectId = id;
 
   // 프로젝트 ID로 프로젝트 찾기
@@ -25,7 +28,11 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = async ({
 
   return (
     <CenteredLayout maxWidth="4xl">
-      <Detail project={project} />
+      <Detail
+        project={project}
+        initialTab={tab}
+        initialCodeSubTab={codeSubTab}
+      />
     </CenteredLayout>
   );
 };

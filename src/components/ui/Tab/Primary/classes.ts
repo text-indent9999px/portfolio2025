@@ -73,6 +73,8 @@ export const getContainerClassName = (
     'inline-flex relative size-fit',
     // Spacing
     'p-[0.5rem] gap-[0.25rem]',
+    // Size - 최소 높이 설정 (탭 높이 2.5rem + 상하 패딩 0.5rem * 2 = 3.5rem)
+    orientation === 'horizontal' ? 'min-h-[3.5rem]' : 'min-w-fit',
     // Border
     'border-2 border-primary-900 dark:border-primary-50',
     // Conditional orientation
