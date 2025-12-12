@@ -29,7 +29,6 @@ const CustomButton: React.FC<CustomButtonProps> = ({
 }) => {
   const isIconOnly = !!icon && !children;
 
-  // Storybook 환경에서는 useRouter를 무시하고 기본 동작 사용
   let navigateToUrl, navigateBack;
 
   try {

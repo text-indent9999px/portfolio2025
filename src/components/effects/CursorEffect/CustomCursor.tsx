@@ -12,7 +12,7 @@ const CustomCursor: React.FC = () => {
   const isXlOrAbove = useMediaQuery('--breakpoint-xl', 'min');
 
   useEffect(() => {
-    // lg 브레이크포인트 미만이면 이펙트 비활성화
+    // Xl 브레이크포인트 미만이면 이펙트 비활성화
     if (!isXlOrAbove) {
       return;
     }
@@ -220,7 +220,7 @@ const CustomCursor: React.FC = () => {
     };
   }, [isXlOrAbove]);
 
-  // lg 브레이크포인트 미만이면 렌더링하지 않음
+  // Xl브레이크포인트 미만이면 렌더링하지 않음
   if (!isXlOrAbove) {
     return null;
   }

@@ -1,14 +1,10 @@
 import type { Preview } from '@storybook/nextjs';
 import { Gowun_Batang, Kalam, Noto_Sans_KR, Quicksand } from 'next/font/google';
 import React from 'react';
-
-// CSS 변수를 먼저 로드 (Tailwind보다 먼저)
-// 순서가 중요: CSS 변수 → Tailwind → 기타 스타일
+import '../src/app/globals.css';
 import '../src/styles/colors-modes.css';
 import '../src/styles/colors-theme.css';
 import '../src/styles/colors-variables.css';
-// 그 다음 Tailwind와 다른 스타일
-import '../src/app/globals.css';
 
 // Storybook 배경색 강제 적용 (다크모드 지원)
 const applyStorybookStyles = () => {
@@ -23,11 +19,7 @@ const applyStorybookStyles = () => {
     existingStyle.remove();
   }
 
-  const storybookStyles = `
-
-  `;
-
-  style.textContent = storybookStyles;
+  style.textContent = '';
   document.head.appendChild(style);
 };
 
@@ -196,14 +188,12 @@ const preview: Preview = {
     (Story: React.FC) => {
       React.useEffect(() => {
         const getBrightness = (bgColor: string): number | null => {
-          // rgba(0, 0, 0, 0) 같은 투명한 배경은 null 반환 (initTheme의 mode 사용)
           if (bgColor.includes('rgba')) {
             const rgbaMatch = bgColor.match(
               /rgba\((\d+),\s*(\d+),\s*(\d+),\s*([\d.]+)\)/
             );
             if (rgbaMatch) {
               const alpha = parseFloat(rgbaMatch[4]);
-              // alpha가 0에 가까우면 투명한 배경 → null 반환
               if (alpha < 0.1) {
                 return null;
               }
