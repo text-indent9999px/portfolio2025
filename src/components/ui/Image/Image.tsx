@@ -136,32 +136,44 @@ const Image: React.FC<ImageProps> = ({
           closeOnBackdropClick={true}
           ariaLabel={`${ariaLabel} 확대 보기`}
         >
-          <div className="flex items-center justify-center min-h-full p-4 pointer-events-none">
+          <div
+            className={`h-full w-full flex
+            overflow-y-scroll no-scrollbar pointer-events-none`}
+          >
             <div
-              className={`relative max-w-[90vw] max-h-[90vh] w-auto h-auto 
-              ${isModalOpen ? 'pointer-events-auto' : 'pointer-events-none'}`}
+              className={`flex justify-start flex-col gap-3 w-[90%] xl:w-[80%] pt-16 pb-5
+                h-auto m-auto transition-all duration-300 ease-out ${
+                  isModalOpen
+                    ? 'translate-y-0 opacity-100'
+                    : 'translate-y-8 opacity-0'
+                }`}
               onClick={e => e.stopPropagation()}
             >
-              <NextImage
-                src={src}
-                alt={ariaLabel}
-                width={safeWidth}
-                height={safeHeight}
-                className="max-w-full max-h-[90vh] w-auto h-auto rounded-lg shadow-2xl"
-                quality={100}
-                {...rest}
-              />
-
-              <CustomButton
-                color="gray"
-                variant="tonal"
-                onClick={() => setIsModalOpen(false)}
-                icon={<FontAwesomeIcon icon={faXmark} />}
-                rounded="circle"
-                size="md"
-                aria-label="모달 닫기"
-                className="absolute! -top-15 right-0"
-              />
+              <div
+                className={`relative mx-auto h-auto ${
+                  isModalOpen ? 'pointer-events-auto' : 'pointer-events-none'
+                }`}
+              >
+                <CustomButton
+                  color="gray"
+                  variant="tonal"
+                  onClick={() => setIsModalOpen(false)}
+                  icon={<FontAwesomeIcon icon={faXmark} />}
+                  rounded="circle"
+                  size="md"
+                  aria-label="모달 닫기"
+                  className="absolute! -top-15 -right-3 xl:-right-5"
+                />
+                <NextImage
+                  alt={ariaLabel}
+                  src={src}
+                  width={safeWidth}
+                  height={safeHeight}
+                  className="w-full h-auto rounded-lg shadow-2xl"
+                  quality={100}
+                  {...rest}
+                />
+              </div>
             </div>
           </div>
         </Overlay>

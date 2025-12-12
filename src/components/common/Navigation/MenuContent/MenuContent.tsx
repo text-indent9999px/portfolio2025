@@ -49,7 +49,9 @@ const MenuContent: React.FC = () => {
             ))}
           </ul>
         </nav>
-        <div className={`${styles['menu-download-section']} mx-6 xl:mx-8 mb-5`}>
+        <div
+          className={`${styles['menu-download-section']} mx-6 xl:mx-8 mb-8 xl:mb-5`}
+        >
           <ResumeDownloadButton
             tabIndex={isMenuOpen ? undefined : -1}
             size="sm"
