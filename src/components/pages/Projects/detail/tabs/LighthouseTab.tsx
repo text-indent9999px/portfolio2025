@@ -26,27 +26,32 @@ const LighthouseTab: React.FC<LighthouseTabProps> = ({ project }) => {
     {
       src: '/assets/images/lighthouse-home.png',
       title: 'home',
-      description: '클릭하여 큰 이미지로 확대할 수 있습니다.',
+      description:
+        '클릭하면 큰 이미지로 열리며, 핀치줌 동작을 통해 확대하여 볼 수 있습니다',
     },
     {
       src: '/assets/images/lighthouse-profile.png',
       title: 'profile',
-      description: '클릭하여 큰 이미지로 확대할 수 있습니다.',
+      description:
+        '클릭하면 큰 이미지로 열리며, 핀치줌 동작을 통해 확대하여 볼 수 있습니다',
     },
     {
       src: '/assets/images/lighthouse-project.png',
       title: 'project',
-      description: '클릭하여 큰 이미지로 확대할 수 있습니다.',
+      description:
+        '클릭하면 큰 이미지로 열리며, 핀치줌 동작을 통해 확대하여 볼 수 있습니다',
     },
     {
       src: '/assets/images/lighthouse-project-detail.png',
       title: 'project-detail',
-      description: '클릭하여 큰 이미지로 확대할 수 있습니다.',
+      description:
+        '클릭하면 큰 이미지로 열리며, 핀치줌 동작을 통해 확대하여 볼 수 있습니다',
     },
     {
       src: '/assets/images/lighthouse-contact.png',
       title: 'contact',
-      description: '클릭하여 큰 이미지로 확대할 수 있습니다.',
+      description:
+        '클릭하면 큰 이미지로 열리며, 핀치줌 동작을 통해 확대하여 볼 수 있습니다',
     },
   ];
 
