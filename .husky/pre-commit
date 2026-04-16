@@ -1,2 +1,2 @@
 npm run update:last-updated
-
+git add README.md src/components/pages/Home/Home.tsx
