@@ -1,6 +1,7 @@
 import { config } from '@fortawesome/fontawesome-svg-core';
 import type { Metadata, Viewport } from 'next';
 import { Gowun_Batang, Kalam, Noto_Sans_KR, Quicksand } from 'next/font/google';
+import { Suspense } from 'react';
 import { Header } from '../components/common/Navigation';
 import LazyCustomCursor from '../components/effects/CursorEffect/LazyCustomCursor';
 import { AppProviders } from '../components/providers';
@@ -76,10 +77,12 @@ export default function RootLayout({
           ${quicksand.variable} ${kalam.variable} antialiased bg-surface-level-min`}
       >
         <AppProviders>
-          <Header />
-          <main id="main-content" className="w-full h-full">
-            {children}
-          </main>
+          <Suspense fallback={null}>
+            <Header />
+            <main id="main-content" className="w-full h-full">
+              {children}
+            </main>
+          </Suspense>
           <LazyCustomCursor />
         </AppProviders>
       </body>

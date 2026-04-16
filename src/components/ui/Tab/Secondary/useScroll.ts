@@ -53,6 +53,8 @@ export function useScroll({
       bottom: number;
       left: number;
       right: number;
+      width: number;
+      height: number;
     } | null = null;
 
     if (tabsNode) {
