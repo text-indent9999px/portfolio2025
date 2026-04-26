@@ -20,6 +20,9 @@
 # production
 /build
 
+# local docs (AI 가이드 등, 저장소에 포함하지 않음)
+/docs/
+
 # misc
 .DS_Store
 *.pem
@@ -44,3 +47,4 @@ next-env.d.ts
 storybook-static
 public/storybook
 public/code
+/.cursor/rules/ai-work-guide.mdc

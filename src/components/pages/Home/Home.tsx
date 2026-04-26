@@ -26,9 +26,9 @@ export default function Home() {
             `}
         >
           <CustomButton
-            variant="filled"
-            color="primary"
-            rounded="full"
+            variant="solid"
+            color="brand"
+            rounded="pill"
             dataCursor="hover"
             href="/profile"
             cursorTrigger={true}
@@ -36,9 +36,9 @@ export default function Home() {
             프로필
           </CustomButton>
           <CustomButton
-            variant="tonal"
-            color="primary"
-            rounded="full"
+            variant="soft"
+            color="brand"
+            rounded="pill"
             dataCursor="hover"
             href="/projects"
             cursorTrigger={true}
@@ -46,9 +46,9 @@ export default function Home() {
             프로젝트
           </CustomButton>
           <CustomButton
-            variant="outlined"
-            color="primary"
-            rounded="full"
+            variant="outline"
+            color="brand"
+            rounded="pill"
             dataCursor="hover"
             href="/contact"
             cursorTrigger={true}
@@ -74,7 +74,7 @@ export default function Home() {
                 break-keep
               `}
           >
-            last updated: 2026.04.16
+            last updated: 2026.04.26
           </li>
         </ul>
       </div>
