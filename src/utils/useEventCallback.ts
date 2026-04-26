@@ -1,6 +1,6 @@
 'use client';
 
-import { useRef, useLayoutEffect } from 'react';
+import { useCallback, useLayoutEffect, useRef } from 'react';
 
 /**
  * MUI의 useEventCallback과 유사한 훅
@@ -19,8 +19,8 @@ export function useEventCallback<T extends (...args: any[]) => any>(
   });
 
   // 안정적인 함수 참조 반환
-  return ((...args: Parameters<T>) => {
+  return useCallback((...args: Parameters<T>) => {
     return ref.current(...args);
-  }) as T;
+  }, []) as T;
 }
 

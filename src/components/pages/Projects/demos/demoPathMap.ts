@@ -5,8 +5,13 @@
 export const demoPathMap: Record<string, string> = {
   Button: 'styleGuide/basics/Button',
   Badge: 'styleGuide/basics/Badge',
-  Label: 'styleGuide/basics/Label',
+  Pill: 'styleGuide/basics/Pill',
+  InfoText: 'styleGuide/basics/InfoText',
+  Image: 'styleGuide/basics/Image',
+  Video: 'styleGuide/basics/Video',
   Tab: 'styleGuide/basics/Tab',
+  Toggle: 'styleGuide/basics/Toggle',
+  Tooltip: 'styleGuide/basics/Tooltip',
   Card: 'styleGuide/basics/Card',
   // 필요시 추가
 };

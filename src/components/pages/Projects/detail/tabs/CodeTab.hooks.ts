@@ -108,10 +108,22 @@ export function useCodeTabState(
     if (activeSubTab) return activeSubTab;
     return codeHighlights[0]?.title || '';
   });
+  const pendingLocalSelectionRef = useRef<string | null>(null);
 
-  // activeSubTab prop이 변경되면 동기화 (외부에서 변경된 경우)
+  // activeSubTab prop이 변경되면 동기화 (외부 네비게이션/직접 URL 진입)
   useEffect(() => {
-    if (activeSubTab && activeSubTab !== activeTab) {
+    if (!activeSubTab) return;
+
+    // 로컬에서 방금 선택한 탭이 URL에 반영되기 전, stale query 값으로 롤백되는 것을 방지
+    if (pendingLocalSelectionRef.current && activeSubTab !== pendingLocalSelectionRef.current) {
+      return;
+    }
+
+    if (pendingLocalSelectionRef.current === activeSubTab) {
+      pendingLocalSelectionRef.current = null;
+    }
+
+    if (activeSubTab !== activeTab) {
       setActiveTabState(activeSubTab);
     }
   }, [activeSubTab, activeTab]);
@@ -119,6 +131,7 @@ export function useCodeTabState(
   // setActiveTab: 로컬 상태 먼저 업데이트, 그 다음 부모 콜백 호출
   const setActiveTab = useCallback(
     (tab: string) => {
+      pendingLocalSelectionRef.current = tab;
       setActiveTabState(tab);
       if (onSubTabChange) {
         onSubTabChange(tab);

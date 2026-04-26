@@ -29,26 +29,37 @@ export const TabItem: React.FC<TabItemProps> = ({
   onFocus,
 }) => {
   const hasNotification = !!tab.notification;
+  const handleClick = React.useCallback(
+    () => onTabClick(tab.id),
+    [onTabClick, tab.id]
+  );
+  const handleKeyDown = React.useCallback(
+    (e: React.KeyboardEvent<HTMLButtonElement>) => onKeyDown(e, tab.id),
+    [onKeyDown, tab.id]
+  );
+  const handleFocus = React.useCallback(
+    () => onFocus(tab.id),
+    [onFocus, tab.id]
+  );
 
   return (
     <button
       id={`tab-${tab.id}-${uniqueId}`}
       type="button"
       data-tab-id={tab.id}
-      data-text={tab.label}
       className={getSecondaryTabButtonClassName(hasNotification)}
-      onClick={() => onTabClick(tab.id)}
-      onKeyDown={e => onKeyDown(e, tab.id)}
-      onFocus={() => onFocus(tab.id)}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      onFocus={handleFocus}
       role="tab"
-      aria-selected={isActive ? 'true' : 'false'}
+      aria-selected={isActive}
       aria-controls={`panel-${tab.id}-${uniqueId}`}
       tabIndex={isActive ? 0 : -1}
       aria-label={getTabAriaLabel(tab.label, tab.notification)}
     >
       <div
         className={getSecondaryTabButtonContainerClassName(hasNotification)}
-        data-text={`${tab.label}`}
+        data-text={tab.label}
       >
         <span className={getSecondaryTabLabelClassName(isActive)}>
           {tab.label}
@@ -57,8 +68,8 @@ export const TabItem: React.FC<TabItemProps> = ({
           <Badge
             size="xs"
             shape="circle"
-            variant="filled"
-            color={isActive ? 'primary' : 'gray'}
+            variant={isActive ? 'solid' : 'outline'}
+            color={isActive ? 'info' : 'neutral'}
             className={getSecondaryBadgeClassName(isActive)}
           >
             {tab.notification}
@@ -68,3 +79,5 @@ export const TabItem: React.FC<TabItemProps> = ({
     </button>
   );
 };
+
+export const MemoizedTabItem = React.memo(TabItem);

@@ -4,6 +4,7 @@ import {
   useCallback,
   useEffect,
   useLayoutEffect,
+  useMemo,
   useRef,
   useState,
 } from 'react';
@@ -36,10 +37,13 @@ export const useSecondaryTab = ({
   const isInitialMountRef = useRef(true);
   const isDocumentHiddenRef = useRef(false);
 
-  const tabIdToIndex = new Map<string, number>();
-  tabs.forEach((tab, index) => {
-    tabIdToIndex.set(tab.id, index);
-  });
+  const tabIdToIndex = useMemo(() => {
+    const map = new Map<string, number>();
+    tabs.forEach((tab, index) => {
+      map.set(tab.id, index);
+    });
+    return map;
+  }, [tabs]);
 
   const {
     indicatorStyle,
@@ -78,15 +82,21 @@ export const useSecondaryTab = ({
       uniqueId,
     });
 
+  const debouncedResizeHandler = useMemo(
+    () =>
+      debounce(() => {
+        if (isDocumentHiddenRef.current) return;
+        if (isInitialMountRef.current) return;
+        if (scrollContainerRef.current) {
+          updateIndicatorState('handleResize');
+          updateScrollState();
+        }
+      }, 166),
+    [updateIndicatorState, updateScrollState]
+  );
+
   const handleResize = useEventCallback(
-    debounce(() => {
-      // if (isDocumentHiddenRef.current) return;
-      // if (isInitialMountRef.current) return;
-      // if (scrollContainerRef.current) {
-      //   updateIndicatorState('handleResize');
-      //   updateScrollState();
-      // }
-    }, 166)
+    debouncedResizeHandler
   );
 
   useTabObservers({
@@ -95,25 +105,25 @@ export const useSecondaryTab = ({
     isInitialMountRef,
     setMounted,
     updateIndicatorState,
-    updateScrollState,
     handleResize,
     scrollAnimationCancelRef,
   });
 
-  // useEffect(() => {
-  //   const handleVisibility = () => {
-  //     isDocumentHiddenRef.current = document.visibilityState === 'hidden';
-  //     if (!isDocumentHiddenRef.current) {
-  //       requestAnimationFrame(() => {
-  //         updateIndicatorState('visibilityChange');
-  //       });
-  //     }
-  //   };
-  //   document.addEventListener('visibilitychange', handleVisibility);
-  //   return () => {
-  //     document.removeEventListener('visibilitychange', handleVisibility);
-  //   };
-  // }, [updateIndicatorState]);
+  useEffect(() => {
+    const handleVisibility = () => {
+      isDocumentHiddenRef.current = document.visibilityState === 'hidden';
+      if (!isDocumentHiddenRef.current) {
+        requestAnimationFrame(() => {
+          updateIndicatorState('visibilityChange');
+          updateScrollState();
+        });
+      }
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+    return () => {
+      document.removeEventListener('visibilitychange', handleVisibility);
+    };
+  }, [updateIndicatorState, updateScrollState]);
 
   useEffect(() => {
     if (!mounted || isInitialMountRef.current) {
@@ -122,8 +132,7 @@ export const useSecondaryTab = ({
 
     const didScroll = scrollSelectedIntoView(true);
     scheduleIndicatorUpdate(didScroll ? 320 : 50, 'activeTabChange');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [activeTab, mounted]);
+  }, [activeTab, mounted, scheduleIndicatorUpdate, scrollSelectedIntoView]);
 
   useLayoutEffect(() => {
     if (!mounted || !isInitialMountRef.current) return;
@@ -139,8 +148,7 @@ export const useSecondaryTab = ({
         updateScrollState();
       });
     });
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [mounted]);
+  }, [mounted, scrollSelectedIntoView, updateScrollState]);
 
   const onScroll = useCallback(
     (e: Event) => {
@@ -169,10 +177,17 @@ export const useSecondaryTab = ({
         indicatorUpdateTimeoutRef.current = null;
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [indicatorUpdateTimeoutRef]);
 
   const shouldShowTransition = mounted && !isInitialMountRef.current;
+  const handleArrowLeft = useCallback(
+    () => handleArrowClick('left'),
+    [handleArrowClick]
+  );
+  const handleArrowRight = useCallback(
+    () => handleArrowClick('right'),
+    [handleArrowClick]
+  );
 
   return {
     tabsRef,
@@ -182,10 +197,10 @@ export const useSecondaryTab = ({
     indicatorStyle,
     scrollState,
     shouldShowTransition,
-    isMoving: false,
+    handleArrowLeft,
+    handleArrowRight,
     handleTabClick,
     handleButtonKeydown,
     handleButtonFocusSync,
-    handleArrowClick,
   };
 };

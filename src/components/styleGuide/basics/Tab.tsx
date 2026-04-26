@@ -7,7 +7,7 @@ import { StyleGuideDetailHeading, StyleGuideSection } from '../common';
 
 const tabs = [
   { id: 'one', label: 'One' },
-  { id: 'two', label: 'Two', notification: 'N' },
+  { id: 'two', label: 'Two', notification: 1 },
   { id: 'three', label: 'Three', notification: 30 },
 ];
 

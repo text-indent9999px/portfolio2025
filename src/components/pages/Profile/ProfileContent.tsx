@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname, useSearchParams } from 'next/navigation';
-import { useEffect, useId, useState } from 'react';
+import { startTransition, useEffect, useId, useState } from 'react';
 import { profileTabItems, skillTabItems } from '../../../data/profile';
 import { useRouter as useCustomRouter } from '../../../utils/router';
 import Blank from '../../ui/Blank';
@@ -31,8 +31,15 @@ export function ProfileContent() {
     return isValidSkillTab && skillTabParam ? skillTabParam : 'language';
   };
 
+  // 메인 탭: 인디케이터용 즉시 상태
   const [activeTab, setActiveTab] = useState(() => getInitialTab(searchParams));
-  const activeTabConfig = profileTabItems.find(tab => tab.value === activeTab);
+  // 메인 탭: 패널 내용용 지연 상태
+  const [displayedTab, setDisplayedTab] = useState(() =>
+    getInitialTab(searchParams)
+  );
+  const displayedTabConfig = profileTabItems.find(
+    tab => tab.value === displayedTab
+  );
 
   // 활성 탭 상태 - 탭 인디케이터용 (즉시 업데이트)
   const [activeSkillTab, setActiveSkillTab] = useState(() =>
@@ -53,6 +60,17 @@ export function ProfileContent() {
     }
   }, [searchParams, activeTab]);
 
+  // activeTab 변경 시 패널 내용을 지연 업데이트
+  useEffect(() => {
+    if (activeTab === displayedTab) return;
+
+    const timeoutId = setTimeout(() => {
+      setDisplayedTab(activeTab);
+    }, 300);
+
+    return () => clearTimeout(timeoutId);
+  }, [activeTab, displayedTab]);
+
   // URL 파라미터 변경 감지 (스킬 서브 탭)
   useEffect(() => {
     const skillTabParam = searchParams.get('skillTab');
@@ -64,7 +82,10 @@ export function ProfileContent() {
   }, [searchParams, activeSkillTab]);
 
   const handleTabChange = (tab: string) => {
-    setActiveTab(tab);
+    // 인디케이터는 즉시 바꾸고, 패널은 effect에서 지연 반영
+    startTransition(() => {
+      setActiveTab(tab);
+    });
     const params = new URLSearchParams(searchParams.toString());
     params.set('tab', tab);
     // 메인 탭이 skill이 아닌 경우 skillTab 파라미터 제거
@@ -105,10 +126,10 @@ export function ProfileContent() {
     return () => clearTimeout(timeoutId);
   }, [activeSkillTab, displayedSkillTab]);
 
-  if (!activeTabConfig) return null;
+  if (!displayedTabConfig) return null;
 
   const renderComponent = () => {
-    switch (activeTab) {
+    switch (displayedTab) {
       case 'introduction':
         return <IntroSection />;
       case 'skill':
@@ -141,15 +162,15 @@ export function ProfileContent() {
         aria-labelledby={`tab-${activeTab}-${uniqueId}`}
       >
         <SectionHeader
-          title={activeTabConfig.title}
+          title={displayedTabConfig.title}
           size={2}
           fontFamily="eng-point"
-          bottomSpacing={activeTabConfig.bottomSpacing}
+          bottomSpacing={displayedTabConfig.bottomSpacing}
           visualSize="2xl"
-          description={activeTabConfig.description}
+          description={displayedTabConfig.description}
         />
         {renderComponent()}
-        {activeTabConfig.needsBlank && (
+        {displayedTabConfig.needsBlank && (
           <Blank height="5rem" bgColor="transparent" />
         )}
       </div>

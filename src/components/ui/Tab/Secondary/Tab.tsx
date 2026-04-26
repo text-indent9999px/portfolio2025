@@ -16,8 +16,12 @@ import {
 } from './classes';
 import { TAB_SPACING } from './constants';
 import { useSecondaryTab } from './hooks';
-import { TabItem } from './TabItem';
+import { MemoizedTabItem } from './TabItem';
 import type { TabProps } from './types';
+
+const INDICATOR_CLASS_NAME = getIndicatorClassName();
+const SCROLL_LEFT_BUTTON_CLASS_NAME = getScrollLeftButtonClassName();
+const SCROLL_RIGHT_BUTTON_CLASS_NAME = getScrollRightButtonClassName();
 
 const Tab: React.FC<TabProps> = ({
   tabs,
@@ -37,7 +41,8 @@ const Tab: React.FC<TabProps> = ({
     handleTabClick,
     handleButtonKeydown,
     handleButtonFocusSync,
-    handleArrowClick,
+    handleArrowLeft,
+    handleArrowRight,
   } = useSecondaryTab({
     tabs,
     activeTab,
@@ -45,51 +50,24 @@ const Tab: React.FC<TabProps> = ({
     uniqueId,
   });
 
-  const containerClassName = React.useMemo(
-    () => getContainerClassName(className),
-    [className]
-  );
-
-  const scrollContainerClassName = React.useMemo(
-    () => getScrollContainerClassName(shouldShowTransition),
-    [shouldShowTransition]
-  );
-
-  const indicatorClassName = React.useMemo(() => getIndicatorClassName(), []);
-
-  const indicatorStyleValue = React.useMemo(
-    () => getIndicatorStyle(indicatorStyle, shouldShowTransition),
-    [indicatorStyle, shouldShowTransition]
-  );
-
-  const scrollLeftButtonClassName = React.useMemo(
-    () => getScrollLeftButtonClassName(),
-    []
-  );
-
-  const scrollRightButtonClassName = React.useMemo(
-    () => getScrollRightButtonClassName(),
-    []
-  );
-
   return (
-    <div ref={tabsRef} className={containerClassName}>
-      {scrollState.canScrollLeft && (
-        <button
-          type="button"
-          onClick={() => handleArrowClick('left')}
-          className={scrollLeftButtonClassName}
-          aria-label="왼쪽으로 스크롤"
-        >
-          <FontAwesomeIcon
-            icon={faChevronLeft}
-            className="text-base relative z-10 text-text-secondary"
-          />
-        </button>
-      )}
+    <div ref={tabsRef} className={getContainerClassName(className)}>
+      <button
+        type="button"
+        onClick={handleArrowLeft}
+        className={`${SCROLL_LEFT_BUTTON_CLASS_NAME} ${
+          scrollState.canScrollLeft ? '' : 'invisible pointer-events-none'
+        }`}
+        aria-label="왼쪽으로 스크롤"
+      >
+        <FontAwesomeIcon
+          icon={faChevronLeft}
+          className="text-base relative z-10 text-text-secondary"
+        />
+      </button>
       <div
         ref={scrollContainerRef}
-        className={scrollContainerClassName}
+        className={getScrollContainerClassName(shouldShowTransition)}
         role="tablist"
         aria-label="탭 네비게이션"
       >
@@ -102,7 +80,7 @@ const Tab: React.FC<TabProps> = ({
         >
           {tabs.map(tab => (
             <div key={tab.id} className="w-fit group">
-              <TabItem
+              <MemoizedTabItem
                 tab={tab}
                 isActive={activeTab === tab.id}
                 uniqueId={uniqueId}
@@ -115,25 +93,25 @@ const Tab: React.FC<TabProps> = ({
         </div>
         {isInitialized && (
           <span
-            className={indicatorClassName}
-            style={indicatorStyleValue}
+            className={INDICATOR_CLASS_NAME}
+            style={getIndicatorStyle(indicatorStyle, shouldShowTransition)}
             aria-hidden="true"
           />
         )}
       </div>
-      {scrollState.canScrollRight && (
-        <button
-          type="button"
-          onClick={() => handleArrowClick('right')}
-          className={scrollRightButtonClassName}
-          aria-label="오른쪽으로 스크롤"
-        >
-          <FontAwesomeIcon
-            icon={faChevronRight}
-            className="text-base relative z-10 text-text-secondary"
-          />
-        </button>
-      )}
+      <button
+        type="button"
+        onClick={handleArrowRight}
+        className={`${SCROLL_RIGHT_BUTTON_CLASS_NAME} ${
+          scrollState.canScrollRight ? '' : 'invisible pointer-events-none'
+        }`}
+        aria-label="오른쪽으로 스크롤"
+      >
+        <FontAwesomeIcon
+          icon={faChevronRight}
+          className="text-base relative z-10 text-text-secondary"
+        />
+      </button>
     </div>
   );
 };

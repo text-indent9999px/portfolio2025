@@ -1,16 +1,37 @@
 'use client';
 
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { startTransition, useEffect, useRef, useState } from 'react';
 import InfoText from '../InfoText';
 import { Spinner } from '../Spinner';
-import { useCodeFetch, useLanguage, useThemeDetection } from './hooks';
-import { getHighlighter, registerHighlighterUser } from './utils';
+import { useCodeFetch, useThemeDetection } from './hooks';
+import {
+  detectLanguage,
+  getHighlighter,
+  registerHighlighterUser,
+} from './utils';
 
 interface CodeHighlightProps {
   filename: string;
   language?: string;
-  enableObserver?: boolean; // Observer 활성화 여부 (데모 로드 완료 후 true)
-  onLoadComplete?: () => void; // 코드 로드 완료 콜백
+  /** `false`이면 뷰포트 진입을 기다리지 않고 즉시 코드를 요청한다. (예: 데모 로드 전에는 관찰 off, 이후 on) */
+  enableObserver?: boolean;
+  onLoadComplete?: () => void;
+}
+
+function buildEscapedCodeFallbackHtml(code: string): string {
+  const escaped = code
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+  return `<pre><code>${escaped}</code></pre>`;
+}
+
+function scheduleHeavyWork(run: () => void): void {
+  if (typeof requestIdleCallback === 'function') {
+    requestIdleCallback(run, { timeout: 1500 });
+  } else {
+    setTimeout(run, 0);
+  }
 }
 
 const CodeHighlightComponent: React.FC<CodeHighlightProps> = ({
@@ -21,54 +42,36 @@ const CodeHighlightComponent: React.FC<CodeHighlightProps> = ({
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isInView, setIsInView] = useState<boolean>(false);
-  // isInView가 false일 때는 빈 문자열 전달하여 요청하지 않음
-  // 하지만 filename은 항상 전달하여 filename 변경 감지 가능하게 함
-  // useMemo로 메모이제이션하여 불필요한 재계산 방지
-  const shouldFetch = useMemo(() => isInView && !!filename, [isInView, filename]);
-  const fetchFilename = useMemo(() => shouldFetch ? filename : '', [shouldFetch, filename]);
+  /**
+   * 한 번이라도 fetch 활성화 조건을 만족하면(즉시 로드 또는 뷰포트 진입),
+   * 같은 filename 동안에는 observer 토글로 다시 비활성화하지 않는다.
+   */
+  const [hasActivatedFetch, setHasActivatedFetch] = useState<boolean>(false);
+  /** Observer 사용 시에만 뷰포트를 기다린다. 끄면 filename만 있으면 바로 fetch. */
+  const fetchFilename = filename && hasActivatedFetch ? filename : '';
   const { code, loading, error } = useCodeFetch(fetchFilename);
   const isDark = useThemeDetection();
-  const detectedLanguage = useLanguage(language, filename);
+  const detectedLanguage = language || detectLanguage(filename);
   const [highlightedHtml, setHighlightedHtml] = useState<string>('');
-  const isMountedRef = useRef<boolean>(true);
   const onLoadCompleteRef = useRef(onLoadComplete);
-  const hasRequestedRef = useRef<boolean>(false); // 이미 요청했는지 추적
 
-  // onLoadComplete ref 업데이트 (dependency 변경 방지)
   useEffect(() => {
     onLoadCompleteRef.current = onLoadComplete;
   }, [onLoadComplete]);
 
-  // 컴포넌트 마운트 상태 추적
   useEffect(() => {
-    isMountedRef.current = true;
-    return () => {
-      isMountedRef.current = false;
-      // 언마운트 시 highlightedHtml 메모리 해제
-      setHighlightedHtml('');
-    };
-  }, []);
+    setIsInView(false);
+    setHasActivatedFetch(false);
+    setHighlightedHtml('');
+  }, [filename]);
 
-  // filename이나 enableObserver가 변경되면 상태 초기화
   useEffect(() => {
-    if (isMountedRef.current) {
-      hasRequestedRef.current = false; // filename 변경 시 요청 플래그 리셋
-      // 상태 업데이트를 startTransition으로 배치 처리하여 재렌더링 최소화
-      React.startTransition(() => {
-        setIsInView(false);
-        setHighlightedHtml('');
-      });
+    if (!filename) return;
+    if (!enableObserver || isInView) {
+      setHasActivatedFetch(true);
     }
-    // cleanup: 컴포넌트 언마운트 시에도 메모리 해제
-    return () => {
-      if (isMountedRef.current) {
-        setHighlightedHtml('');
-      }
-    };
-  }, [filename, enableObserver]);
+  }, [filename, enableObserver, isInView]);
 
-  // Intersection Observer로 뷰포트 진입 감지
-  // enableObserver가 true일 때만 observer 활성화
   useEffect(() => {
     if (
       typeof window === 'undefined' ||
@@ -78,32 +81,27 @@ const CodeHighlightComponent: React.FC<CodeHighlightProps> = ({
       return;
     }
 
+    let observerActive = true;
     const observer = new IntersectionObserver(
       entries => {
         entries.forEach(entry => {
-          if (
-            entry.isIntersecting &&
-            isMountedRef.current &&
-            !hasRequestedRef.current
-          ) {
-            hasRequestedRef.current = true; // 요청 플래그 설정
-            // startTransition으로 배치 처리하여 재렌더링 최소화
-            React.startTransition(() => {
+          if (entry.isIntersecting && observerActive) {
+            startTransition(() => {
               setIsInView(true);
             });
-            // 한 번만 감지하면 observer 해제
             observer.disconnect();
           }
         });
       },
       {
-        rootMargin: '100px', // 뷰포트에 들어오기 100px 전에 미리 로드 시작
+        rootMargin: '100px',
       }
     );
 
     observer.observe(containerRef.current);
 
     return () => {
+      observerActive = false;
       observer.disconnect();
     };
   }, [enableObserver, filename]);
@@ -116,45 +114,50 @@ const CodeHighlightComponent: React.FC<CodeHighlightProps> = ({
     let cancelled = false;
     const unregister = registerHighlighterUser();
 
+    const applyFallbackHtml = () => {
+      if (cancelled) return;
+      startTransition(() => {
+        setHighlightedHtml(buildEscapedCodeFallbackHtml(code));
+      });
+      onLoadCompleteRef.current?.();
+    };
+
     const highlight = async () => {
       try {
-        // 싱글톤 highlighter 인스턴스 가져오기
         const highlighter = await getHighlighter();
-
-        if (cancelled || !isMountedRef.current) {
+        if (cancelled) {
           return;
         }
 
-        const theme = isDark ? 'github-dark' : 'github-light';
-        const lang =
-          detectedLanguage === 'text' ? 'plaintext' : detectedLanguage;
+        scheduleHeavyWork(() => {
+          if (cancelled) {
+            return;
+          }
 
-        const html = highlighter.codeToHtml(code, {
-          lang,
-          theme,
+          try {
+            const theme = isDark ? 'github-dark' : 'github-light';
+            const lang =
+              detectedLanguage === 'text' ? 'plaintext' : detectedLanguage;
+
+            const html = highlighter.codeToHtml(code, {
+              lang,
+              theme,
+            });
+
+            if (!cancelled) {
+              startTransition(() => {
+                setHighlightedHtml(html);
+              });
+              onLoadCompleteRef.current?.();
+            }
+          } catch (error) {
+            console.error('Shiki error:', error);
+            applyFallbackHtml();
+          }
         });
-
-        if (!cancelled && isMountedRef.current) {
-          // startTransition으로 배치 처리하여 재렌더링 최소화
-          React.startTransition(() => {
-            setHighlightedHtml(html);
-          });
-          onLoadCompleteRef.current?.();
-        }
       } catch (error) {
         console.error('Shiki error:', error);
-        if (!cancelled && isMountedRef.current) {
-          const escaped = code
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;');
-          const fallbackHtml = `<pre><code>${escaped}</code></pre>`;
-          // startTransition으로 배치 처리하여 재렌더링 최소화
-          React.startTransition(() => {
-            setHighlightedHtml(fallbackHtml);
-          });
-          onLoadCompleteRef.current?.();
-        }
+        applyFallbackHtml();
       }
     };
 
@@ -166,9 +169,9 @@ const CodeHighlightComponent: React.FC<CodeHighlightProps> = ({
     };
   }, [code, detectedLanguage, isDark]);
 
-  // 에러 발생 시 완료 콜백 호출
+  // fetch 실패 시 부모 알림. 재시도로 error가 null → 에러로 다시 바뀌면 onLoadComplete가 중복될 수 있음.
   useEffect(() => {
-    if (error && isMountedRef.current) {
+    if (error) {
       onLoadCompleteRef.current?.();
     }
   }, [error]);
@@ -190,7 +193,8 @@ const CodeHighlightComponent: React.FC<CodeHighlightProps> = ({
     );
   }
 
-  if (!isInView || loading || !code) {
+  const awaitingViewport = enableObserver && !isInView;
+  if (awaitingViewport || loading || !code) {
     return (
       <div
         ref={containerRef}
@@ -221,24 +225,13 @@ const CodeHighlightComponent: React.FC<CodeHighlightProps> = ({
     >
       <div
         dangerouslySetInnerHTML={{ __html: highlightedHtml }}
-        className="[&_pre]:!m-0 [&_pre]:!p-4 [&_pre]:!bg-transparent [&_code]:!text-sm [&_code]:!leading-relaxed [&_code]:!block [&_code]:!w-full [&_code]:!overflow-x-auto"
-        style={{
-          margin: 0,
-          padding: 0,
-          fontSize: '0.875rem',
-          lineHeight: '1.5',
-          width: '100%',
-          maxWidth: '100%',
-        }}
+        className="m-0 w-full max-w-full p-0 text-sm leading-relaxed [&_pre]:!m-0 [&_pre]:!p-4 [&_pre]:!bg-transparent [&_code]:!m-0 [&_code]:!block [&_code]:!w-full [&_code]:!overflow-x-auto [&_code]:!p-0 [&_code]:!text-sm [&_code]:!leading-relaxed"
       />
     </div>
   );
 };
 
-// React.memo로 메모이제이션하여 불필요한 재렌더링 방지
 export const CodeHighlight = React.memo(CodeHighlightComponent, (prevProps, nextProps) => {
-  // filename, language, enableObserver가 변경되지 않으면 재렌더링 방지
-  // onLoadComplete는 함수 참조가 변경될 수 있으므로 비교에서 제외
   return (
     prevProps.filename === nextProps.filename &&
     prevProps.language === nextProps.language &&

@@ -9,7 +9,13 @@ const codePathMap = {
   'uiConfig.ts': 'src/components/ui/shared/UI.config.ts',
   'Button.tsx': 'src/components/ui/Button/Button.tsx',
   'Badge.tsx': 'src/components/ui/Badge/Badge.tsx',
-  'Label.tsx': 'src/components/ui/Label/Label.tsx',
+  'Pill.tsx': 'src/components/ui/Pill/Pill.tsx',
+  'InfoText.tsx': 'src/components/ui/InfoText/InfoText.tsx',
+  'Image.tsx': 'src/components/ui/Image/Image.tsx',
+  'Video.tsx': 'src/components/ui/Video/Video.tsx',
+  'Tab.tsx': 'src/components/ui/Tab/Primary/Tab.tsx',
+  'Toggle.tsx': 'src/components/ui/Toggle/Toggle.tsx',
+  'Tooltip.tsx': 'src/components/ui/Tooltip/Tooltip.tsx',
   'router.ts': 'src/utils/router.ts',
   'themeDetector.ts': 'src/utils/themeDetector.ts',
   'ThemeToggle.tsx': 'src/components/ui/ThemeToggle/ThemeToggle.tsx',
@@ -41,4 +47,3 @@ Object.entries(codePathMap).forEach(([filename, sourcePath]) => {
 });
 
 console.log('Code files copied to public/code/');
-

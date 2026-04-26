@@ -17,8 +17,15 @@ type DemoComponentLoader = () => Promise<{
 const componentLoaderMap: Record<string, DemoComponentLoader> = {
   'styleGuide/basics/Button': () => import('../../../styleGuide/basics/Button'),
   'styleGuide/basics/Badge': () => import('../../../styleGuide/basics/Badge'),
-  'styleGuide/basics/Label': () => import('../../../styleGuide/basics/Label'),
+  'styleGuide/basics/Pill': () => import('../../../styleGuide/basics/Pill'),
+  'styleGuide/basics/InfoText': () =>
+    import('../../../styleGuide/basics/InfoText'),
+  'styleGuide/basics/Image': () => import('../../../styleGuide/basics/Image'),
+  'styleGuide/basics/Video': () => import('../../../styleGuide/basics/Video'),
   'styleGuide/basics/Tab': () => import('../../../styleGuide/basics/Tab'),
+  'styleGuide/basics/Toggle': () => import('../../../styleGuide/basics/Toggle'),
+  'styleGuide/basics/Tooltip': () =>
+    import('../../../styleGuide/basics/Tooltip'),
   'styleGuide/basics/Card': () => import('../../../styleGuide/basics/Card'),
 };
 

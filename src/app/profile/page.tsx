@@ -4,6 +4,9 @@ import { Profile } from '../../components/pages/Profile';
 
 export default function ProfilePage() {
   return (
-    <SplitLayout leftContent={<ProfileVisual />} rightContent={<Profile />} />
+    <SplitLayout
+      leftContent={<ProfileVisual />}
+      rightContent={<Profile />}
+    />
   );
 }

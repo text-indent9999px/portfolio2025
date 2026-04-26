@@ -186,6 +186,7 @@ export function ProjectTabsContent({
     }
     return getInitialCodeSubTab(searchParams);
   });
+  const pendingCodeSubTabRef = useRef<string | null>(null);
 
   // URL 파라미터 변경 감지 (CodeTab 서브 탭)
   useEffect(() => {
@@ -194,9 +195,23 @@ export function ProjectTabsContent({
       highlight => highlight.title === codeSubTabParam
     );
 
+    if (!codeSubTabParam || !isValidCodeSubTab) {
+      return;
+    }
+
+    // 로컬 클릭 직후 URL 반영 전 stale query(이전 탭)로 롤백되는 것을 방지
     if (
-      isValidCodeSubTab &&
-      codeSubTabParam &&
+      pendingCodeSubTabRef.current &&
+      codeSubTabParam !== pendingCodeSubTabRef.current
+    ) {
+      return;
+    }
+
+    if (pendingCodeSubTabRef.current === codeSubTabParam) {
+      pendingCodeSubTabRef.current = null;
+    }
+
+    if (
       codeSubTabParam !== activeCodeSubTab
     ) {
       setActiveCodeSubTab(codeSubTabParam);
@@ -206,6 +221,7 @@ export function ProjectTabsContent({
   // 서브 탭 변경 핸들러
   const handleCodeSubTabChange = useCallback(
     (tab: string) => {
+      pendingCodeSubTabRef.current = tab;
       setActiveCodeSubTab(tab);
       const params = new URLSearchParams(searchParams.toString());
       params.set('codeSubTab', tab);

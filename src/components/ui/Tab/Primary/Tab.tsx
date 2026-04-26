@@ -37,27 +37,16 @@ const Tab: React.FC<TabProps> = ({
     orientation,
   });
 
-  const handleKeyDown = buildTabsKeydownHandler({
-    tabs,
-    activeTab,
-    onTabChange,
-    uniqueId,
-    orientation,
-  });
-
-  const containerClassName = React.useMemo(
-    () => getContainerClassName(orientation, className),
-    [orientation, className]
-  );
-
-  const indicatorClassName = React.useMemo(
-    () => getIndicatorClassName(orientation, shouldShowTransition),
-    [orientation, shouldShowTransition]
-  );
-
-  const indicatorStyleValue = React.useMemo(
-    () => getIndicatorStyle(indicatorStyle, orientation),
-    [indicatorStyle, orientation]
+  const handleKeyDown = React.useMemo(
+    () =>
+      buildTabsKeydownHandler({
+        tabs,
+        activeTab,
+        onTabChange,
+        uniqueId,
+        orientation,
+      }),
+    [tabs, activeTab, onTabChange, uniqueId, orientation]
   );
 
   return (
@@ -66,7 +55,7 @@ const Tab: React.FC<TabProps> = ({
       role="tablist"
       aria-orientation={orientation}
       onKeyDown={handleKeyDown}
-      className={containerClassName}
+      className={getContainerClassName(orientation, className)}
     >
       {tabs.map(tab => {
         const isActive = activeTab === tab.id;
@@ -77,7 +66,7 @@ const Tab: React.FC<TabProps> = ({
             key={tab.id}
             role="tab"
             id={`tab-${tab.id}-${uniqueId}`}
-            aria-selected={isActive ? 'true' : 'false'}
+            aria-selected={isActive}
             aria-controls={`panel-${tab.id}-${uniqueId}`}
             tabIndex={isActive ? 0 : -1}
             onClick={() => handleTabChange(tab.id, onTabChange)}
@@ -87,7 +76,9 @@ const Tab: React.FC<TabProps> = ({
           >
             <div
               className={getTabButtonContainerClassName(hasNotification)}
-              data-text={`${tab.label}`}
+              // CSS에서 content: attr(data-text)로 숨은 bold 폭을 미리 확보해
+              // active 전환 시 라벨 너비 흔들림을 줄인다.
+              data-text={tab.label}
             >
               <span className={getTabLabelClassName(isActive)}>
                 {tab.label}
@@ -95,8 +86,8 @@ const Tab: React.FC<TabProps> = ({
               {hasNotification && (
                 <Badge
                   size="xs"
-                  variant={isActive ? 'tonal' : 'tonal'}
-                  color={isActive ? 'secondary' : 'gray'}
+                  variant={isActive ? 'solid' : 'soft'}
+                  color={isActive ? 'info' : 'neutral'}
                   className={getBadgeClassName(isActive)}
                 >
                   {tab.notification}
@@ -107,7 +98,10 @@ const Tab: React.FC<TabProps> = ({
         );
       })}
       {isInitialized && (
-        <span className={indicatorClassName} style={indicatorStyleValue} />
+        <span
+          className={getIndicatorClassName(orientation, shouldShowTransition)}
+          style={getIndicatorStyle(indicatorStyle, orientation)}
+        />
       )}
     </div>
   );

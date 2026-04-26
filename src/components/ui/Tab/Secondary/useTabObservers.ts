@@ -8,7 +8,6 @@ export interface UseTabObserversProps {
   isInitialMountRef: React.MutableRefObject<boolean>;
   setMounted: React.Dispatch<React.SetStateAction<boolean>>;
   updateIndicatorState: (source?: string) => void;
-  updateScrollState: () => void;
   handleResize: () => void;
   scrollAnimationCancelRef: React.MutableRefObject<(() => void) | null>;
 }
@@ -19,7 +18,6 @@ export function useTabObservers({
   isInitialMountRef,
   setMounted,
   updateIndicatorState,
-  updateScrollState,
   handleResize,
   scrollAnimationCancelRef,
 }: UseTabObserversProps) {
@@ -63,6 +61,13 @@ export function useTabObservers({
         scrollAnimationCancelRef.current = null;
       }
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [
+    handleResize,
+    isInitialMountRef,
+    scrollAnimationCancelRef,
+    scrollContainerRef,
+    setMounted,
+    tabListRef,
+    updateIndicatorState,
+  ]);
 }

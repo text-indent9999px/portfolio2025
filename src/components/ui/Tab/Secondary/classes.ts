@@ -49,7 +49,7 @@ export const getScrollLeftButtonClassName = () => {
  */
 export const getScrollRightButtonClassName = () => {
   return [
-    'absolute right-6 xl:right-0 top-0 bottom-0',
+    'absolute right-0 xl:right-0 top-0 bottom-0',
     'z-10',
     'flex items-center justify-center',
     'pl-3 mb-[0.75rem] mt-[0.25rem]',

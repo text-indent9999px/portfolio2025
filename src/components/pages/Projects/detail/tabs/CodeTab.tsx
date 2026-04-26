@@ -104,13 +104,10 @@ const CodeTab: React.FC<CodeTabProps> = React.memo(
       (tab: string) => {
         if (tab === activeTab) return;
         setIsCodeLoaded(false);
+        // useCodeTabState 내부에서 onSubTabChange를 호출하므로 여기서 중복 호출하지 않는다.
         setActiveTab(tab);
-        // 부모 컴포넌트에 서브 탭 변경 알림 (쿼리 파라미터 업데이트용)
-        if (onSubTabChange) {
-          onSubTabChange(tab);
-        }
       },
-      [setActiveTab, activeTab, onSubTabChange]
+      [setActiveTab, activeTab]
     );
 
     // 코드 로드 완료 핸들러 (displayedTab이 변경될 때마다 새로운 콜백 생성)

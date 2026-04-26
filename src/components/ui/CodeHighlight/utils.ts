@@ -81,6 +81,8 @@ export const registerHighlighterUser = (): (() => void) => {
     }
 
     // 모든 사용자가 해제되면 인스턴스 정리
+    // highlighterPromise만 있고 인스턴스는 아직 없는(초기화 진행 중) 경우에는
+    // 손대지 않는다 — getHighlighter 내부에서 완료 후 정리된다.
     if (activeUsers === 0 && highlighterInstance) {
       // Shiki highlighter는 명시적인 dispose 메서드가 없지만,
       // 참조를 null로 설정하여 가비지 컬렉션을 돕습니다.
