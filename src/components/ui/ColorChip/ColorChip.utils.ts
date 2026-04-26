@@ -1,4 +1,35 @@
 import { useCallback, useEffect, useState } from 'react';
+import type { SemanticTone } from './ColorChip.types';
+
+export const SEMANTIC_TONE_TO_RAW_COLOR: Record<SemanticTone, string> = {
+  brand: 'primary',
+  subBrand: 'secondary',
+  success: 'success',
+  warning: 'warning',
+  error: 'danger',
+  info: 'info',
+  neutral: 'gray',
+};
+
+export const resolveColorType = (
+  tone?: SemanticTone,
+  colorType?: string
+): string => {
+  if (tone) {
+    const raw = SEMANTIC_TONE_TO_RAW_COLOR[tone];
+    if (raw !== undefined) {
+      return raw;
+    }
+    if (process.env.NODE_ENV === 'development') {
+      console.warn(
+        `[ColorChip] 알 수 없는 tone "${String(tone)}" — primary로 대체합니다.`
+      );
+    }
+    return 'primary';
+  }
+
+  return colorType ?? 'primary';
+};
 
 // RGB를 HEX로 변환하는 유틸리티 함수
 export const rgbToHex = (r: number, g: number, b: number): string => {
@@ -57,9 +88,17 @@ export const useColorValue = (colorType: string, shade: string | number) => {
   useEffect(() => {
     updateColorValue();
 
-    // 다크모드 변경 감지
+    // 테마(`html` class) 변경 시 칩 옆 HEX를 다시 읽는다.
+    // 연속 attribute 변화는 requestAnimationFrame으로 한 프레임에 합친다.
+    let rafId: number | null = null;
     const observer = new MutationObserver(() => {
-      updateColorValue();
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
+      rafId = requestAnimationFrame(() => {
+        rafId = null;
+        updateColorValue();
+      });
     });
 
     observer.observe(document.documentElement, {
@@ -67,7 +106,12 @@ export const useColorValue = (colorType: string, shade: string | number) => {
       attributeFilter: ['class'],
     });
 
-    return () => observer.disconnect();
+    return () => {
+      if (rafId !== null) {
+        cancelAnimationFrame(rafId);
+      }
+      observer.disconnect();
+    };
   }, [updateColorValue]);
 
   return hexCode;

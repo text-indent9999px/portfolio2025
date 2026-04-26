@@ -23,8 +23,8 @@ const ExperienceSection: React.FC = () => {
               {/* 타임라인 점 */}
               <div className="relative z-10 hidden xl:block">
                 <Badge
-                  variant="filled"
-                  color="primary"
+                  variant="solid"
+                  color="brand"
                   size={isXlOrAbove ? 'md' : 'sm'}
                 >
                   {index + 1}
@@ -43,8 +43,8 @@ const ExperienceSection: React.FC = () => {
                     {/* 서브 타임라인 점 */}
                     <div className="relative z-10 hidden xl:block">
                       <Badge
-                        variant="tonal"
-                        color="primary"
+                        variant="soft"
+                        color="brand"
                         size={isXlOrAbove ? 'sm' : 'xs'}
                       >
                         {projectIndex + 1}

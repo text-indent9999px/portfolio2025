@@ -6,7 +6,7 @@ import React, { useEffect, useState } from 'react';
 import { useMediaQuery } from '../../../hooks';
 import { ThemeState, useThemeDetector } from '../../../utils/themeDetector';
 import { Toggle } from '../Toggle';
-import Tooltip from '../Tooltip/Tooltip';
+import { Tooltip } from '../Tooltip';
 
 import { ThemeToggleProps } from './ThemeToggle.types';
 
@@ -87,7 +87,9 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
         onBlur={() => isXlOrAbove && setIsTooltipVisible(false)}
         onMouseEnter={() => isXlOrAbove && setIsTooltipVisible(true)}
         onMouseLeave={() => isXlOrAbove && setIsTooltipVisible(false)}
-        aria-describedby="theme-toggle-tooltip"
+        ariaDescribedBy={
+          isTooltipVisible ? 'theme-toggle-tooltip' : undefined
+        }
         renderThumb={isDark => {
           return (
             <span className="absolute w-[190%] h-[100%] flex items-center justify-between left-[50%] transform -translate-x-[50%]">
@@ -110,6 +112,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
 
       {isXlOrAbove && (
         <Tooltip
+          id="theme-toggle-tooltip"
           isVisible={isTooltipVisible}
           className={`pointer-events-none`}
           arrow={true}
@@ -117,7 +120,7 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
           tooltipPosition="bottom"
           offset={{ top: '5px' }}
         >
-          <span id="theme-toggle-tooltip">라이트/다크 모드 전환</span>
+          <span>라이트/다크 모드 전환</span>
         </Tooltip>
       )}
 

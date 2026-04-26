@@ -1,6 +1,6 @@
 import React, { unstable_ViewTransition as ViewTransition } from 'react';
 import { PageHeader } from '../../../ui/Heading';
-import { Label } from '../../../ui/Label';
+import { Pill } from '../../../ui/Pill';
 import type { ProjectDetail } from '../types';
 
 interface ProjectHeaderProps {
@@ -34,9 +34,9 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
       >
         <div className="flex flex-wrap gap-2 mb-4">
           {project.meta.tags.map(tag => (
-            <Label key={tag} variant="tonal" color="primary" size="sm">
+            <Pill key={tag} variant="soft" color="brand" size="sm">
               {tag}
-            </Label>
+            </Pill>
           ))}
         </div>
       </ViewTransition>

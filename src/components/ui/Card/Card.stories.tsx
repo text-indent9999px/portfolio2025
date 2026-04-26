@@ -9,7 +9,7 @@ const meta: Meta<typeof Card> = {
     docs: {
       description: {
         component:
-          'Card 컴포넌트는 콘텐츠를 그룹화하고 표시하는 컨테이너입니다. Compound 패턴을 사용하여 Header, Thumb, Body, Footer를 구성할 수 있습니다.',
+          'Card는 `slots` prop으로 header / thumb / body / footer 콘텐츠를 넘깁니다. Body 안에서 블록 간 세로 간격은 CardStack을 사용합니다.',
       },
       controls: {
         expanded: true,
@@ -18,41 +18,43 @@ const meta: Meta<typeof Card> = {
     },
   },
   argTypes: {
-    variant: {
+    appearance: {
       control: 'radio',
-      options: ['default', 'outlined'],
-      description: 'Card의 스타일 변형을 선택합니다.',
+      options: ['solid', 'outline'],
+      description:
+        'solid는 테두리 없음, outline은 surfaceLevel 기준 테두리 색.',
       table: {
         type: { summary: 'string' },
-        defaultValue: { summary: 'default' },
+        defaultValue: { summary: 'solid' },
         category: '스타일',
-        description: 'Card의 스타일 변형을 선택합니다.',
+        description:
+          'solid는 테두리 없음, outline은 surfaceLevel 기준 테두리 색.',
       },
     },
     elevation: {
       control: 'radio',
       options: [0, 1, 2, 3, 4],
       description:
-        'Card의 그림자 레벨을 선택합니다. variant가 outlined일 때는 기본값이 0입니다.',
+        '0이면 그림자 없음. 1~4는 단계별 그림자. appearance가 outline이면 기본 0.',
       table: {
         type: { summary: 'number' },
         defaultValue: { summary: '1' },
         category: '스타일',
         description:
-          'Card의 그림자 레벨을 선택합니다. variant가 outlined일 때는 기본값이 0입니다.',
+          '0이면 그림자 없음. appearance가 outline이면 기본값 0.',
       },
     },
     surfaceLevel: {
       control: 'radio',
       options: ['min', 1, 2, 3, 4, 5, 6, 7, 'max'],
       description:
-        'Card의 배경 색상 레벨을 선택합니다. variant가 outlined일 때는 기본값이 min입니다.',
+        'Card의 배경 색상 레벨을 선택합니다. appearance가 outline일 때는 기본값이 min입니다.',
       table: {
         type: { summary: 'string | number' },
         defaultValue: { summary: '1' },
         category: '스타일',
         description:
-          'Card의 배경 색상 레벨을 선택합니다. variant가 outlined일 때는 기본값이 min입니다.',
+          'Card의 배경 색상 레벨을 선택합니다. appearance가 outline일 때는 기본값이 min입니다.',
       },
     },
     padding: {
@@ -69,11 +71,11 @@ const meta: Meta<typeof Card> = {
     thumbPosition: {
       control: 'radio',
       options: ['left', 'right', 'top', 'bottom'],
-      description: 'Card.Thumb이 배치될 위치를 선택합니다.',
+      description: 'thumb 슬롯이 배치될 위치를 선택합니다.',
       table: {
         type: { summary: 'string' },
         category: '레이아웃',
-        description: 'Card.Thumb이 배치될 위치를 선택합니다.',
+        description: 'thumb 슬롯이 배치될 위치를 선택합니다.',
       },
     },
     ratio: {
@@ -107,61 +109,58 @@ type Story = StoryObj<typeof Card>;
 
 export const Default: Story = {
   args: {
-    variant: 'default',
+    appearance: 'solid',
     elevation: 1,
     surfaceLevel: 1,
     padding: 'md',
     thumbPosition: 'left',
     ratio: '120px 1fr',
     gap: '12px',
+    thumbAspect: '16/9',
   },
   render: args => (
     <Card
-      variant={args.variant}
+      appearance={args.appearance}
       elevation={args.elevation}
       surfaceLevel={args.surfaceLevel}
       padding={args.padding}
       thumbPosition={args.thumbPosition}
       ratio={args.ratio}
       gap={args.gap}
-    >
-      <Card.Thumb aspect="16/9">
-        <div className="w-full h-full bg-success-500 rounded flex items-center justify-center">
-          <span className="text-[#fff] font-bold">Thumb</span>
-        </div>
-      </Card.Thumb>
-      <Card.Body>
-        {/* 
-          surfaceLevel에 따른 텍스트 색상 조정
-          - surfaceLevel 4, 5: 배경이 밝아져서 어두운 텍스트 필요
-          - 그 외: mix-blend-difference로 배경과 대비되는 색상 자동 적용
-          주의: 실제 프로덕션에서는 Card 컴포넌트 내부에서 자동 처리하거나 
-          별도 유틸 함수로 분리하는 것을 권장합니다.
-        */}
-        {(() => {
-          // surfaceLevel에 따라 텍스트 색상 클래스 결정
-          let textColorClass = 'text-[#fff]';
-          if (args.surfaceLevel === 4) {
-            textColorClass = 'text-[#555] dark:text-[#fff]';
-          } else if (args.surfaceLevel === 5) {
-            textColorClass = 'text-[#555] dark:text-[#ccc]';
-          }
+      thumbAspect={args.thumbAspect}
+      slots={{
+        thumb: (
+          <div className="w-full h-full bg-success-500 rounded flex items-center justify-center">
+            <span className="text-[#fff] font-bold">Thumb</span>
+          </div>
+        ),
+        body: (
+          <>
+            {(() => {
+              let textColorClass = 'text-[#fff]';
+              if (args.surfaceLevel === 4) {
+                textColorClass = 'text-[#555] dark:text-[#fff]';
+              } else if (args.surfaceLevel === 5) {
+                textColorClass = 'text-[#555] dark:text-[#ccc]';
+              }
 
-          return (
-            <>
-              <h3
-                className={`text-lg mb-2 mix-blend-difference ${textColorClass}`}
-              >
-                카드 제목
-              </h3>
-              <p className={`mix-blend-difference ${textColorClass}`}>
-                카드 본문 내용입니다. 컨트롤 패널에서 다양한 옵션을
-                조정해보세요.
-              </p>
-            </>
-          );
-        })()}
-      </Card.Body>
-    </Card>
+              return (
+                <>
+                  <h3
+                    className={`text-lg mb-2 mix-blend-difference ${textColorClass}`}
+                  >
+                    카드 제목
+                  </h3>
+                  <p className={`mix-blend-difference ${textColorClass}`}>
+                    카드 본문 내용입니다. 컨트롤 패널에서 다양한 옵션을
+                    조정해보세요.
+                  </p>
+                </>
+              );
+            })()}
+          </>
+        ),
+      }}
+    />
   ),
 };

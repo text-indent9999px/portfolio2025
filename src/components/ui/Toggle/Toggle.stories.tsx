@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { useState } from 'react';
-import Toggle from './Toggle';
+import { Toggle } from './Toggle';
 
 const meta: Meta<typeof Toggle> = {
   title: 'UI/Toggle',

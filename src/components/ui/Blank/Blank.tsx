@@ -1,15 +1,16 @@
+import { cn } from '@/utils/cn';
 import { BlankProps } from './Blank.types';
 
 export default function Blank({
   margin,
-  height = '0.5',
+  height = '0.5rem',
   width = '100%',
   bgColor = 'var(--color-surface-level-1)',
   className,
 }: BlankProps) {
   return (
     <div
-      className={`${className}`}
+      className={cn(className)}
       style={{
         margin: margin,
         height: height,

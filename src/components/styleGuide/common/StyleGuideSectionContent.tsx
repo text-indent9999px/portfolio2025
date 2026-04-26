@@ -1,4 +1,4 @@
-import { Card, CardContent } from '../../ui/Card';
+import { Card, CardStack } from '../../ui/Card';
 import { SectionHeader } from '../../ui/Heading';
 import type { HeadingLevel, SizeType } from '../../ui/Heading/Heading.types';
 
@@ -37,7 +37,7 @@ export function StyleGuideSectionContent({
     : className;
 
   const cardContent = (
-    <CardContent spacing={contentSpacing}>{children}</CardContent>
+    <CardStack spacing={contentSpacing}>{children}</CardStack>
   );
 
   return (
@@ -54,12 +54,11 @@ export function StyleGuideSectionContent({
         />
       )}
       <Card
-        variant="default"
+        appearance="solid"
         elevation={1}
         padding={isXlOrAbove ? 'lg' : 'md'}
-      >
-        {cardContent}
-      </Card>
+        slots={{ body: cardContent }}
+      />
     </div>
   );
 }

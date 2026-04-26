@@ -1,8 +1,11 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
+
+import { cn } from '@/utils/cn';
+
 import { buildClickHandler, buildKeydownHandler } from './Toggle.handlers';
-import { ToggleProps } from './Toggle.types';
+import { ToggleProps, ToggleSize } from './Toggle.types';
 import {
   getFocusRingClasses,
   getThumbSizeClass,
@@ -11,7 +14,6 @@ import {
   getTrackBaseClass,
   getTrackSizeClass,
   getTrackStateClasses,
-  ToggleSize,
 } from './Toggle.utils';
 
 export const Toggle: React.FC<ToggleProps> = ({
@@ -21,6 +23,7 @@ export const Toggle: React.FC<ToggleProps> = ({
   className = '',
   id,
   ariaLabel,
+  ariaDescribedBy,
   renderThumb,
   toggleType,
   placeholder = false,
@@ -33,6 +36,7 @@ export const Toggle: React.FC<ToggleProps> = ({
   onMouseEnter,
   onMouseLeave,
 }) => {
+  /** 마운트 후에만 트랙/썸을 그린다. SSR 첫 페인트와 하이드레이션 직후에 부모가 준 `checked`와 기본 스냅샷이 잠깐 달라져 레이아웃·트랜지션이 어색해 보이는 것을 줄이기 위함. */
   const [isInitialized, setIsInitialized] = useState(false);
 
   useEffect(() => {
@@ -41,12 +45,11 @@ export const Toggle: React.FC<ToggleProps> = ({
 
   const [isUserInteraction, setIsUserInteraction] = useState(false);
 
-  // 사용자 상호작용 애니메이션 처리
   useEffect(() => {
     if (isUserInteraction) {
       const timer = setTimeout(() => {
         setIsUserInteraction(false);
-      }, 300); // 애니메이션 지속 시간과 맞춤
+      }, 300);
 
       return () => clearTimeout(timer);
     }
@@ -68,22 +71,7 @@ export const Toggle: React.FC<ToggleProps> = ({
     setIsUserInteraction,
   });
 
-  const isDisabled = React.useMemo(() => {
-    return disabled || placeholder;
-  }, [disabled, placeholder]);
-
-  // Button className 병합 (useMemo로 최적화)
-  const buttonClassName = React.useMemo(() => {
-    return [
-      'flex',
-      'items-center',
-      'relative',
-      getFocusRingClasses(),
-      className,
-    ]
-      .filter(Boolean)
-      .join(' ');
-  }, [className]);
+  const isDisabled = disabled || placeholder;
 
   return (
     <button
@@ -91,10 +79,10 @@ export const Toggle: React.FC<ToggleProps> = ({
       role="switch"
       aria-checked={checked}
       aria-label={ariaLabel}
+      aria-describedby={ariaDescribedBy}
       aria-controls={ariaControls}
       id={id}
       disabled={isDisabled}
-      aria-disabled={placeholder || undefined}
       tabIndex={placeholder ? -1 : undefined}
       onClick={handleClick}
       onKeyDown={handleKeyDown}
@@ -102,13 +90,17 @@ export const Toggle: React.FC<ToggleProps> = ({
       onBlur={onBlur}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
-      className={buttonClassName}
+      className={cn(
+        'flex items-center relative',
+        getFocusRingClasses(),
+        className
+      )}
       data-toggle-type={toggleType}
     >
       {isInitialized && (
         <>
           <ToggleTrack
-            size={size as ToggleSize}
+            size={size}
             enableTransition={enableTransition || isUserInteraction}
             data-toggle-type={toggleType}
             checked={checked}
@@ -116,7 +108,7 @@ export const Toggle: React.FC<ToggleProps> = ({
             isDisabled={isDisabled}
           />
           <ToggleThumb
-            size={size as ToggleSize}
+            size={size}
             checked={checked}
             enableTransition={enableTransition || isUserInteraction}
             data-toggle-type={toggleType}
@@ -143,31 +135,18 @@ const ToggleTrack: React.FC<{
   isDisabled,
   ...rest
 }) => {
-  // Track className 병합 (useMemo로 최적화)
-  const trackClassName = React.useMemo(() => {
-    const trackBasicClass = getTrackBaseClass();
-    const stateClasses = getTrackStateClasses(
-      isOnOffToggle,
-      checked,
-      isDisabled
-    );
-    const transition = enableTransition
-      ? 'transition-[colors, width, height]'
-      : 'transition-[width, height]';
+  const transition = enableTransition
+    ? 'transition-[colors, width, height]'
+    : 'transition-[width, height]';
 
-    return [
-      trackBasicClass,
-      getTrackSizeClass(size),
-      'border-2',
-      'shadow-lg',
-      stateClasses,
-      transition,
-      'duration-200',
-      'ease-in-out',
-    ]
-      .filter(Boolean)
-      .join(' ');
-  }, [size, enableTransition, isOnOffToggle, checked, isDisabled]);
+  const trackClassName = cn(
+    getTrackBaseClass(),
+    getTrackSizeClass(size),
+    'border-2 shadow-lg',
+    getTrackStateClasses(isOnOffToggle, checked, isDisabled),
+    transition,
+    'duration-200 ease-in-out'
+  );
 
   return <span className={trackClassName} {...rest} />;
 };
@@ -178,35 +157,21 @@ const ToggleThumb: React.FC<{
   enableTransition: boolean;
   isDisabled: boolean;
 }> = ({ size, checked, enableTransition, isDisabled, ...rest }) => {
-  // Thumb className 병합 (useMemo로 최적화)
-  const thumbClassName = React.useMemo(() => {
-    const thumbClasses = getThumbStateClasses(isDisabled);
-    const transition = enableTransition
-      ? 'transition-[transform, width, height]'
-      : 'transition-[width, height]';
+  const thumbClasses = getThumbStateClasses(isDisabled);
+  const transition = enableTransition
+    ? 'transition-[transform, width, height]'
+    : 'transition-[width, height]';
 
-    return [
-      'flex',
-      'items-center',
-      'justify-center',
-      'absolute',
-      getThumbSizeClass(size),
-      'rounded-full',
-      'shadow-md',
-      'text-xs',
-      thumbClasses,
-      transition,
-      'duration-200',
-      'ease-in-out',
-      getThumbTranslateClasses(size, checked),
-      'top-1/2',
-      '-translate-y-1/2',
-    ]
-      .filter(Boolean)
-      .join(' ');
-  }, [size, checked, enableTransition, isDisabled]);
+  const thumbClassName = cn(
+    'flex items-center justify-center absolute',
+    getThumbSizeClass(size),
+    'rounded-full shadow-md text-xs',
+    thumbClasses,
+    transition,
+    'duration-200 ease-in-out',
+    getThumbTranslateClasses(size, checked),
+    'top-1/2 -translate-y-1/2'
+  );
 
   return <span className={thumbClassName} {...rest} />;
 };
-
-export default Toggle;

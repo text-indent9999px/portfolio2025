@@ -1,6 +1,6 @@
 import { DISABLED_CLASSES, getColorClasses } from '../shared/UI.config';
 
-export type ToggleSize = 'sm' | 'md' | 'lg';
+import type { ToggleSize } from './Toggle.types';
 
 export const getTrackBaseClass = (): string => 'rounded-full';
 
@@ -53,20 +53,18 @@ export const getTrackStateClasses = (
   isDisabled: boolean
 ): string => {
   if (isDisabled) {
-    return DISABLED_CLASSES.filled;
+    return DISABLED_CLASSES.solid;
   }
   if (isOnOffToggle) {
     if (checked) {
-      // on/off 토글의 on 상태: success tonal
-      return getColorClasses('success', 'tonal', true);
-    } else {
-      // on/off 토글의 off 상태: gray tonal
-      return getColorClasses('gray', 'tonal', true);
+      // on/off 토글의 on 상태: success soft
+      return getColorClasses('success', 'soft', true);
     }
-  } else {
-    // 기본 토글: primary tonal
-    return getColorClasses('primary', 'tonal', true);
+    // on/off 토글의 off 상태: gray soft
+    return getColorClasses('neutral', 'soft', true);
   }
+  // 기본 토글: primary soft
+  return getColorClasses('brand', 'soft', true);
 };
 
 // thumb 상태 스타일링
@@ -74,6 +72,5 @@ export const getThumbStateClasses = (isDisabled: boolean): string => {
   if (isDisabled) {
     return 'bg-[var(--color-disabled-text)] opacity-80 dark:opacity-100 dark:brightness-50';
   }
-  const className = 'bg-surface-0 ';
-  return className;
+  return 'bg-surface-0 ';
 };

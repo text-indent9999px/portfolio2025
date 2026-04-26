@@ -1,8 +1,8 @@
 import React from 'react';
 
-import { CardContentProps } from './Card.types';
+import { cn } from '@/utils/cn';
+import type { CardStackProps } from './Card.types';
 
-// Spacing 스타일
 const SPACING_STYLES = {
   none: '',
   tight: 'space-y-2',
@@ -10,17 +10,18 @@ const SPACING_STYLES = {
   loose: 'space-y-6',
 } as const;
 
-const CardContent: React.FC<CardContentProps> = ({
+const CardStack: React.FC<CardStackProps> = ({
   children,
   className = '',
   spacing = 'normal',
 }) => {
-  // className 병합
   const mergedClassName = React.useMemo(() => {
-    return [SPACING_STYLES[spacing], className].filter(Boolean).join(' ');
+    return cn(SPACING_STYLES[spacing], className);
   }, [spacing, className]);
 
   return <div className={mergedClassName}>{children}</div>;
 };
 
-export default CardContent;
+CardStack.displayName = 'CardStack';
+
+export default CardStack;

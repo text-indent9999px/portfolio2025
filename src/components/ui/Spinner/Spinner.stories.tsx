@@ -58,7 +58,7 @@ const meta: Meta<typeof Spinner> = {
         '표시할 로딩 텍스트를 지정합니다. showText가 true일 때만 표시됩니다.',
       table: {
         type: { summary: 'string' },
-        defaultValue: { summary: ' Loading...' },
+        defaultValue: { summary: 'Loading...' },
         category: '콘텐츠',
         description:
           '표시할 로딩 텍스트를 지정합니다. showText가 true일 때만 표시됩니다.',

@@ -32,10 +32,18 @@
   .icon:first-child:not(:only-child) {
     margin-left: calc(
       var(--spacing) * -1
-    ); /* 아이콘 있을 경우 좌측 여백 조정 (시각적 위치 조정) */
+    ); /* 텍스트+아이콘(선행): 좌측 패딩 광학 보정 */
+    margin-right: calc(
+      var(--spacing) * 0.5
+    ); /* 텍스트+아이콘(선행): 우측 여백 조정 (시각적 위치 조정) */
   }
 
-  .label {
-    white-space: nowrap;
+  .icon:last-child:not(:only-child) {
+    margin-right: calc(
+      var(--spacing) * -0.5
+    ); /* 텍스트+아이콘(후행): 우측 패딩 광학 보정 */
+    margin-left: calc(
+      var(--spacing) * 0.5
+    ); /* 텍스트+아이콘(후행): 좌측 여백 조정 (시각적 위치 조정) */
   }
 }

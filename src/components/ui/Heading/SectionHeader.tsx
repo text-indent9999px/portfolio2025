@@ -1,26 +1,15 @@
 import React from 'react';
+
 import Blank from '../Blank';
 import { Description } from '../Description';
+import { VISUAL_SIZE_TO_LEVEL } from './Heading.config';
 import Heading from './Heading';
 import type {
   HeadingLevel,
   SectionHeaderProps,
-  SizeType,
   SpacingType,
 } from './Heading.types';
 import { PAGE_HEADER_SECTION_HEADER_BOTTOM_SPACING } from './Heading.types';
-
-// 시각적 사이즈 매핑
-const VISUAL_SIZE_TO_LEVEL: Record<SizeType, HeadingLevel> = {
-  '4xl': 1,
-  '3xl': 2,
-  '2xl': 3,
-  xl: 4,
-  lg: 5,
-  md: 6,
-  sm: 7,
-  xs: 8,
-} as const;
 
 // Heading 레벨별 bottom spacing 매핑
 const HEADING_BOTTOM_SPACING: Record<HeadingLevel, SpacingType> = {
@@ -44,42 +33,29 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
   bottomSpacing = 'none',
   visualSize,
 }) => {
-  // 효과적 레벨 계산
-  const effectiveLevel = React.useMemo(() => {
-    return visualSize ? VISUAL_SIZE_TO_LEVEL[visualSize] : size ?? 2;
-  }, [visualSize, size]);
+  // Heading 시각 레벨(1~8)과 같은 척도로 본문(Description) 크기를 맞춘다.
+  const effectiveLevel = visualSize
+    ? VISUAL_SIZE_TO_LEVEL[visualSize]
+    : (size ?? 2);
 
-  // Heading bottom spacing 계산
-  const headingBottomSpacingValue = React.useMemo(() => {
-    return HEADING_BOTTOM_SPACING[effectiveLevel];
-  }, [effectiveLevel]);
+  const headingBottomSpacingValue = HEADING_BOTTOM_SPACING[effectiveLevel];
 
-  // Bottom spacing 높이 계산
-  const bottomSpacingHeight = React.useMemo(() => {
-    return bottomSpacing
+  const bottomSpacingHeight =
+    bottomSpacing && bottomSpacing !== 'none'
       ? PAGE_HEADER_SECTION_HEADER_BOTTOM_SPACING[bottomSpacing]
       : undefined;
-  }, [bottomSpacing]);
 
-  // ClassName 계산
-  const rootClassName = React.useMemo(() => {
-    return className?.root || '';
-  }, [className?.root]);
-
-  const titleClassName = React.useMemo(() => {
-    return className?.title;
-  }, [className?.title]);
-
-  const descriptionClassName = React.useMemo(() => {
-    return className?.description || 'text-text-secondary';
-  }, [className?.description]);
+  const rootClassName = className?.root ?? '';
+  const titleClassName = className?.title;
+  const descriptionTextClassName =
+    className?.description ?? 'text-text-secondary';
 
   return (
     <div className={rootClassName}>
       {description && descriptionPosition === 'above' && (
         <Description
           size={effectiveLevel}
-          color={descriptionClassName}
+          textClassName={descriptionTextClassName}
           className="mb-2"
         >
           {description}
@@ -97,7 +73,10 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
       </Heading>
 
       {description && descriptionPosition === 'below' && (
-        <Description size={effectiveLevel} color={descriptionClassName}>
+        <Description
+          size={effectiveLevel}
+          textClassName={descriptionTextClassName}
+        >
           {description}
         </Description>
       )}

@@ -1,55 +1,97 @@
-// 패딩 스타일
+import type { CSSProperties } from 'react';
+import { cva } from 'class-variance-authority';
+import { ld } from '@/utils/cn';
+
+/**
+ * 카드 패딩 단계 — `cva`의 padding variant로만 클래스 문자열을 정의
+ */
+const paddingStyles = cva('', {
+  variants: {
+    padding: {
+      sm: 'p-4',
+      md: 'p-6',
+      lg: 'p-8',
+    },
+  },
+  defaultVariants: { padding: 'md' },
+});
+
 export const PADDING_STYLES = {
-  sm: 'p-4',
-  md: 'p-6',
-  lg: 'p-8',
+  sm: paddingStyles({ padding: 'sm' }),
+  md: paddingStyles({ padding: 'md' }),
+  lg: paddingStyles({ padding: 'lg' }),
 } as const;
 
-// 카드 변형 스타일
-export const VARIANT_STYLES = {
-  default: '',
-  outlined: 'border-1',
-} as const;
-
+/**
+ * surface 단계별 테두리 — 라이트/다크 토큰을 `ld`로 분리
+ */
 export const BORDER_STYLES = {
-  min: 'border-surface-level-1 dark:border-surface-level-4',
-  1: 'border-surface-level-2 dark:border-surface-level-4',
-  2: 'border-surface-level-3 dark:border-surface-level-4',
-  3: 'border-surface-level-4 dark:border-surface-level-4',
-  4: 'border-surface-level-5 dark:border-surface-level-5',
-  5: 'border-surface-level-3 dark:border-surface-level-6',
-  6: 'border-surface-level-3 dark:border-surface-level-max',
-  7: 'border-surface-level-3 dark:border-surface-level-max',
-  max: 'border-surface-level-4 dark:border-surface-level-5',
+  min: ld('border-surface-level-1', 'dark:border-surface-level-4'),
+  1: ld('border-surface-level-2', 'dark:border-surface-level-4'),
+  2: ld('border-surface-level-3', 'dark:border-surface-level-4'),
+  3: ld('border-surface-level-4', 'dark:border-surface-level-4'),
+  4: ld('border-surface-level-5', 'dark:border-surface-level-5'),
+  5: ld('border-surface-level-3', 'dark:border-surface-level-6'),
+  6: ld('border-surface-level-3', 'dark:border-surface-level-max'),
+  7: ld('border-surface-level-3', 'dark:border-surface-level-max'),
+  max: ld('border-surface-level-4', 'dark:border-surface-level-5'),
 } as const;
 
-// Elevation 공통 클래스
+/** Elevation(그림자) 단계 — 테마 공통 유틸만 사용 */
+const elevationStyles = cva('', {
+  variants: {
+    elevation: {
+      0: 'elevation-0',
+      1: 'elevation-1',
+      2: 'elevation-2',
+      3: 'elevation-3',
+      4: 'elevation-4',
+    },
+  },
+  defaultVariants: { elevation: 0 },
+});
+
 export const ELEVATION_CLASSES = {
-  0: 'elevation-0',
-  1: 'elevation-1',
-  2: 'elevation-2',
-  3: 'elevation-3',
-  4: 'elevation-4',
+  0: elevationStyles({ elevation: 0 }),
+  1: elevationStyles({ elevation: 1 }),
+  2: elevationStyles({ elevation: 2 }),
+  3: elevationStyles({ elevation: 3 }),
+  4: elevationStyles({ elevation: 4 }),
 } as const;
 
-// Surface level 배경 클래스
+/** Surface 배경 단계 */
+const surfaceStyles = cva('', {
+  variants: {
+    surface: {
+      min: 'bg-surface-level-min',
+      1: 'bg-surface-level-1',
+      2: 'bg-surface-level-2',
+      3: 'bg-surface-level-3',
+      4: 'bg-surface-level-4',
+      5: 'bg-surface-level-5',
+      6: 'bg-surface-level-6',
+      7: 'bg-surface-level-7',
+      max: 'bg-surface-level-max',
+    },
+  },
+  defaultVariants: { surface: 'min' },
+});
+
 export const SURFACE_LEVEL_CLASSES = {
-  min: 'bg-surface-level-min',
-  1: 'bg-surface-level-1',
-  2: 'bg-surface-level-2',
-  3: 'bg-surface-level-3',
-  4: 'bg-surface-level-4',
-  5: 'bg-surface-level-5',
-  6: 'bg-surface-level-6',
-  7: 'bg-surface-level-7',
-  max: 'bg-surface-level-max',
+  min: surfaceStyles({ surface: 'min' }),
+  1: surfaceStyles({ surface: 1 }),
+  2: surfaceStyles({ surface: 2 }),
+  3: surfaceStyles({ surface: 3 }),
+  4: surfaceStyles({ surface: 4 }),
+  5: surfaceStyles({ surface: 5 }),
+  6: surfaceStyles({ surface: 6 }),
+  7: surfaceStyles({ surface: 7 }),
+  max: surfaceStyles({ surface: 'max' }),
 } as const;
 
-// 타입 가드 함수들
 export type ElevationKey = keyof typeof ELEVATION_CLASSES;
 export type SurfaceLevelKey = keyof typeof SURFACE_LEVEL_CLASSES;
 export type PaddingKey = keyof typeof PADDING_STYLES;
-export type VariantKey = keyof typeof VARIANT_STYLES;
 
 export const isElevationKey = (value: number): value is ElevationKey => {
   return value in ELEVATION_CLASSES;
@@ -65,13 +107,8 @@ export const isPaddingKey = (value: string): value is PaddingKey => {
   return value in PADDING_STYLES;
 };
 
-export const isVariantKey = (value: string): value is VariantKey => {
-  return value in VARIANT_STYLES;
-};
-
-// 클래스 계산 함수들
 export const getClickableStyles = (isClickable: boolean): string => {
-  return isClickable ? 'cursor-pointer transition-all duration-400' : '';
+  return isClickable ? 'cursor-pointer' : '';
 };
 
 export const getGridClasses = (
@@ -96,8 +133,10 @@ export const getGridClasses = (
     .join(' ');
 };
 
+/** `elevation === 0`이면 그림자 유틸을 붙이지 않는다. 1~4만 `elevation-*` 적용. */
 export const getElevationClass = (elevation: number): string => {
   const effectiveElevation = isElevationKey(elevation) ? elevation : 0;
+  if (effectiveElevation === 0) return '';
   return ELEVATION_CLASSES[effectiveElevation];
 };
 
@@ -112,25 +151,17 @@ export const getPaddingClass = (padding: string): string => {
   return isPaddingKey(padding) ? PADDING_STYLES[padding] : PADDING_STYLES.md;
 };
 
-export const getVariantClass = (variant: string): string => {
-  return isVariantKey(variant)
-    ? VARIANT_STYLES[variant]
-    : VARIANT_STYLES.default;
-};
-
+/** `outline`일 때만 `surfaceLevel`에 대응하는 테두리 색. `solid`는 투명 테두리만 유지. */
 export const getBorderClass = (
-  variant: string,
+  appearance: string,
   surfaceLevel: string | number
 ): string => {
-  if (variant !== 'outlined') {
+  if (appearance === 'solid') {
     return 'border-2 border-transparent';
   }
 
-  // surfaceLevel을 BORDER_STYLES의 키로 변환
-  // elevation에 따라 적절한 border 스타일 선택
   const borderKey = isSurfaceLevelKey(surfaceLevel) ? surfaceLevel : 'min';
 
-  // BORDER_STYLES에 해당 키가 있는지 확인
   if (borderKey in BORDER_STYLES) {
     return 'border-2 ' + BORDER_STYLES[borderKey as keyof typeof BORDER_STYLES];
   }
@@ -138,23 +169,20 @@ export const getBorderClass = (
   return 'border-2 border-transparent';
 };
 
+type CardInlineStyle = CSSProperties & {
+  ['--card-columns']?: string;
+  ['--card-rows']?: string;
+  ['--card-gap']?: string;
+};
+
 export const getInlineStyle = (
   ratio?: string,
   gap?: string,
   thumbPosition?: 'left' | 'right' | 'top' | 'bottom'
-): React.CSSProperties & {
-  ['--card-columns']?: string;
-  ['--card-rows']?: string;
-  ['--card-gap']?: string;
-} => {
-  const style: React.CSSProperties & {
-    ['--card-columns']?: string;
-    ['--card-rows']?: string;
-    ['--card-gap']?: string;
-  } = {};
+): CardInlineStyle => {
+  const style: CardInlineStyle = {};
 
   if (ratio) {
-    // thumbPosition에 따라 columns 또는 rows에 할당
     if (thumbPosition === 'top' || thumbPosition === 'bottom') {
       style['--card-rows'] = ratio;
     } else {

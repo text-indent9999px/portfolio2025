@@ -1,5 +1,5 @@
 import React from 'react';
-import type { CardHeaderProps } from '../../../ui/Card';
+import type { CardTitleSectionProps } from '../../../ui/Card';
 import { Heading } from '../../../ui/Heading';
 
 // Spacing 스타일
@@ -11,7 +11,7 @@ const SPACING_STYLES = {
 } as const;
 
 // 프로젝트 카드 제목 컴포넌트
-const ProjectTitle: React.FC<CardHeaderProps> = ({
+const ProjectTitle: React.FC<CardTitleSectionProps> = ({
   title,
   subtitle,
   size = 3,

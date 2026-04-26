@@ -5,6 +5,22 @@ export type BadgeVariant = Variant;
 
 export type BadgeShape = 'circle' | 'pill' | 'rounded' | 'square';
 
+/** `position="absolute"`일 때 부모 기준 배지 모서리·중앙 정렬 */
+export type BadgeAnchor =
+  | 'top-right'
+  | 'top-left'
+  | 'bottom-right'
+  | 'bottom-left'
+  | 'center-left'
+  | 'center-right';
+
+export type BadgeOffset = {
+  top?: string;
+  right?: string;
+  bottom?: string;
+  left?: string;
+};
+
 export interface BadgeProps {
   children?: React.ReactNode;
   variant?: BadgeVariant;
@@ -22,14 +38,8 @@ export interface BadgeProps {
   maxWidth?: string | number; // 예: '8rem' | 128
   // 배치 옵션
   position?: 'static' | 'relative' | 'absolute';
-  anchor?:
-    | 'top-right'
-    | 'top-left'
-    | 'bottom-right'
-    | 'bottom-left'
-    | 'center-left'
-    | 'center-right';
-  offset?: { top?: string; right?: string; bottom?: string; left?: string };
+  anchor?: BadgeAnchor;
+  offset?: BadgeOffset;
   // 아이콘 옵션
   icon?: React.ReactNode;
   iconPosition?: 'left' | 'right';

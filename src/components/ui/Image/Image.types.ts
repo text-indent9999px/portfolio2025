@@ -1,6 +1,8 @@
 import type { ImageProps as NextImageProps } from 'next/image';
+import type { MouseEventHandler } from 'react';
 
-export interface ImageProps extends Omit<NextImageProps, 'src' | 'alt'> {
+export interface ImageProps
+  extends Omit<NextImageProps, 'src' | 'alt' | 'onClick'> {
   /**
    * 이미지 파일 경로
    * - Next.js Image의 src 타입을 그대로 사용
@@ -33,4 +35,8 @@ export interface ImageProps extends Omit<NextImageProps, 'src' | 'alt'> {
    * - false: 모달 없이 부모에서 전달한 onClick만 동작
    */
   enableModal?: boolean;
+  /**
+   * 클릭은 래퍼 `div`에서 처리한다. (Next Image `img`용과 DOM 타입이 다름)
+   */
+  onClick?: MouseEventHandler<HTMLDivElement>;
 }

@@ -1,4 +1,5 @@
 import React from 'react';
+import { cn } from '@/utils/cn';
 
 interface CardThumbProps {
   children?: React.ReactNode;
@@ -23,7 +24,7 @@ const CardThumb: React.FC<CardThumbProps> = ({
     );
   }
   return (
-    <div data-area="thumb" className={`${className} relative`}>
+    <div data-area="thumb" className={cn('relative', className)}>
       {children}
     </div>
   );

@@ -1,4 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
+import React from 'react';
 import ColorChip from './ColorChip';
 
 const meta: Meta<typeof ColorChip> = {
@@ -8,7 +9,8 @@ const meta: Meta<typeof ColorChip> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'ColorChip 컴포넌트는 색상을 시각적으로 표시하는 칩입니다.',
+        component:
+          'ColorChip 컴포넌트는 raw palette 색상 칩을 시각적으로 표시합니다. semantic tone은 raw palette에 매핑된 별도 예시 스토리로 함께 제공합니다.',
       },
       controls: {
         expanded: true,
@@ -17,15 +19,38 @@ const meta: Meta<typeof ColorChip> = {
     },
   },
   argTypes: {
+    tone: {
+      control: 'select',
+      options: [
+        undefined,
+        'brand',
+        'subBrand',
+        'success',
+        'warning',
+        'error',
+        'info',
+        'neutral',
+      ],
+      description:
+        'semantic tone을 직접 지정합니다. 설정되면 colorType보다 우선합니다.',
+      table: {
+        type: { summary: 'Color' },
+        category: '기본',
+        description:
+          'semantic tone을 직접 지정합니다. 설정되면 colorType보다 우선합니다.',
+      },
+    },
     colorType: {
       control: 'select',
       options: ['primary', 'secondary', 'success', 'warning', 'danger', 'info', 'gray'],
-      description: '색상 타입을 선택합니다. CSS 변수(--color-{colorType}-{shade})를 사용하여 색상을 가져옵니다.',
+      description:
+        'raw palette 타입을 선택합니다. semantic tone preview는 아래 별도 스토리에서 확인할 수 있습니다.',
       table: {
         type: { summary: 'string' },
         defaultValue: { summary: 'primary' },
         category: '기본',
-        description: '색상 타입을 선택합니다. CSS 변수(--color-{colorType}-{shade})를 사용하여 색상을 가져옵니다.',
+        description:
+          'raw palette 타입을 직접 지정합니다. tone이 없을 때 사용됩니다.',
       },
     },
     shade: {
@@ -70,4 +95,48 @@ export default meta;
 type Story = StoryObj<typeof ColorChip>;
 
 export const Default: Story = {};
+
+export const SemanticTone: Story = {
+  args: {
+    tone: 'brand',
+    colorType: undefined,
+    shade: 500,
+  },
+};
+
+const semanticToneMap = [
+  { tone: 'brand', rawType: 'primary' },
+  { tone: 'subBrand', rawType: 'secondary' },
+  { tone: 'neutral', rawType: 'gray' },
+  { tone: 'success', rawType: 'success' },
+  { tone: 'warning', rawType: 'warning' },
+  { tone: 'error', rawType: 'danger' },
+  { tone: 'info', rawType: 'info' },
+] as const;
+
+export const SemanticTonePreview: Story = {
+  parameters: {
+    docs: {
+      description: {
+        story: '현재 semantic tone은 raw palette에 매핑되어 사용됩니다.',
+      },
+    },
+  },
+  render: args => (
+    <div className="space-y-4">
+      {semanticToneMap.map(item => (
+        <div key={item.tone} className="space-y-2">
+          <div className="text-sm font-medium">
+            {item.tone} ({item.rawType})
+          </div>
+          <div className="flex items-center gap-2">
+            {[100, 300, 500, 700, 900].map(shade => (
+              <ColorChip key={`${item.tone}-${shade}`} {...args} tone={item.tone} shade={shade} />
+            ))}
+          </div>
+        </div>
+      ))}
+    </div>
+  ),
+};
 

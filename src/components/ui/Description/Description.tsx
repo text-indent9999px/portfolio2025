@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { cn } from '@/utils/cn';
 import { DescriptionProps } from './Description.types';
 
 // 사이즈 매핑
@@ -29,41 +30,51 @@ const WEIGHT_STYLES: Record<'normal' | 'medium' | 'semibold', string> = {
   semibold: 'font-semibold',
 } as const;
 
+const DEFAULT_BODY_TEXT_CLASS = 'text-text-secondary';
+
+/**
+ * textClassName 미지정 시: layout용 className이 비어 있으면 본문 기본색, 아니면(부모가 className으로 톤 지정) 색 클래스 생략.
+ */
+function resolveTextClassName(
+  textClassName: string | undefined,
+  layoutClassName: string
+): string | undefined {
+  if (textClassName !== undefined) {
+    return textClassName;
+  }
+  if (layoutClassName.trim() === '') {
+    return DEFAULT_BODY_TEXT_CLASS;
+  }
+  return undefined;
+}
+
 const Description: React.FC<DescriptionProps> = ({
   children,
   size = 4,
-  color = 'text-text-secondary',
+  textClassName,
   className = '',
   leading = 'relaxed',
   weight = 'normal',
   preserveWhitespace = false,
   breakKeep = false,
 }) => {
-  // 추가 스타일 계산 (useMemo로 최적화)
-  const additionalStyles = React.useMemo(() => {
-    return [
-      preserveWhitespace ? 'whitespace-pre-line' : '',
-      breakKeep ? 'break-keep' : '',
-    ]
-      .filter(Boolean)
-      .join(' ');
-  }, [preserveWhitespace, breakKeep]);
+  const resolvedTextClassName = resolveTextClassName(textClassName, className);
 
-  // 전체 className 병합 (useMemo로 최적화)
-  const mergedClassName = React.useMemo(() => {
-    return [
-      color,
-      SIZE_TO_CLASS[size],
-      LEADING_STYLES[leading],
-      WEIGHT_STYLES[weight],
-      additionalStyles,
-      className,
-    ]
-      .filter(Boolean)
-      .join(' ');
-  }, [color, size, leading, weight, additionalStyles, className]);
-
-  return <p className={mergedClassName}>{children}</p>;
+  return (
+    <p
+      className={cn(
+        resolvedTextClassName,
+        SIZE_TO_CLASS[size],
+        LEADING_STYLES[leading],
+        WEIGHT_STYLES[weight],
+        preserveWhitespace && 'whitespace-pre-line',
+        breakKeep && 'break-keep',
+        className
+      )}
+    >
+      {children}
+    </p>
+  );
 };
 
 export default Description;

@@ -49,12 +49,12 @@ const StorybookTab: React.FC<StorybookTabProps> = ({ project }) => {
       )}
       <Blank height="2rem" bgColor="transparent" />
       <CustomButton
-        color="primary"
-        variant="filled"
+        color="brand"
+        variant="solid"
         data-cursor="hover"
         href={storybookUrl}
         cursorTrigger={true}
-        rounded="full"
+        rounded="pill"
         icon={<FontAwesomeIcon icon={faArrowRight} />}
       >
         Storybook 바로가기

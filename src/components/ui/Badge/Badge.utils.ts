@@ -1,6 +1,50 @@
 import type React from 'react';
 import type { RadiusKey } from '../shared/UI.config';
-import type { BadgeShape } from './Badge.types';
+import type { BadgeAnchor, BadgeOffset, BadgeShape } from './Badge.types';
+
+/**
+ * `position: absolute` + `anchor` 조합별 위치.
+ * 부모(보통 아바타·버튼 래퍼) 박스 기준으로 모서리/중앙에 붙이고,
+ * `transform`으로 배지 자체 크기만큼 바깥으로 밀어 겹치게 한다(기존 ±5px 보정 유지).
+ */
+const ANCHOR_STYLE_MAP: Record<BadgeAnchor, React.CSSProperties> = {
+  'top-left': {
+    top: 0,
+    left: 0,
+    transform: 'translateY(calc(-100% + 5px)) translateX(calc(-100% + 5px))',
+  },
+  'top-right': {
+    top: 0,
+    right: 0,
+    transform: 'translateY(calc(-100% + 5px)) translateX(calc(100% - 5px))',
+  },
+  'bottom-left': {
+    bottom: 0,
+    left: 0,
+    transform: 'translateY(calc(100% - 5px)) translateX(calc(-100% + 5px))',
+  },
+  'bottom-right': {
+    bottom: 0,
+    right: 0,
+    transform: 'translateY(calc(100% - 5px)) translateX(calc(100% - 5px))',
+  },
+  'center-left': {
+    top: '50%',
+    left: 0,
+    transform: 'translateY(-50%) translateX(calc(-100% + 5px))',
+  },
+  'center-right': {
+    top: '50%',
+    right: 0,
+    transform: 'translateY(-50%) translateX(calc(100% - 5px))',
+  },
+};
+
+const POS_MAP: Record<'absolute' | 'relative' | 'static', string> = {
+  absolute: 'absolute',
+  relative: 'relative',
+  static: 'static',
+};
 
 export const SIZE_MAP = {
   circle: {
@@ -17,28 +61,11 @@ export const SIZE_MAP = {
   },
 } as const;
 
-export const SHAPE_MAP: Record<BadgeShape, string> = {
-  circle: 'rounded-full',
-  pill: 'rounded-full',
-  rounded: 'rounded-md',
-  square: 'rounded-none',
-};
-
-export const POS_MAP: Record<'absolute' | 'relative' | 'static', string> = {
-  absolute: 'absolute',
-  relative: 'relative',
-  static: '',
-};
-
 export function getSizeClasses(
   size: 'xs' | 'sm' | 'md' | 'lg',
   shape: BadgeShape
 ) {
   return shape === 'circle' ? SIZE_MAP.circle[size] : SIZE_MAP.rect[size];
-}
-
-export function getShapeClasses(shape: BadgeShape) {
-  return SHAPE_MAP[shape];
 }
 
 export function getPositionClasses(
@@ -49,44 +76,23 @@ export function getPositionClasses(
 
 export function getAnchorStyle(
   position: 'static' | 'relative' | 'absolute',
-  anchor?:
-    | 'top-right'
-    | 'top-left'
-    | 'bottom-right'
-    | 'bottom-left'
-    | 'center-left'
-    | 'center-right'
-) {
-  if (position !== 'absolute' || !anchor) return {} as React.CSSProperties;
-  const style: React.CSSProperties = {};
-  const transforms: string[] = [];
+  anchor?: BadgeAnchor
+): React.CSSProperties {
+  if (position !== 'absolute' || !anchor) return {};
+  return { ...ANCHOR_STYLE_MAP[anchor] };
+}
 
-  if (anchor.includes('top')) {
-    style.top = '0';
-    transforms.push('translateY(calc(-100% + 5px))');
-  }
-  if (anchor.includes('bottom')) {
-    style.bottom = '0';
-    transforms.push('translateY(calc(100% - 5px))');
-  }
-  if (anchor.includes('center')) {
-    style.top = '50%';
-    transforms.push('translateY(-50%)');
-  }
-  if (anchor.includes('right')) {
-    style.right = '0';
-    transforms.push('translateX(calc(100% - 5px))');
-  }
-  if (anchor.includes('left')) {
-    style.left = '0';
-    transforms.push('translateX(calc(-100% + 5px))');
-  }
-
-  if (transforms.length > 0) {
-    style.transform = transforms.join(' ');
-  }
-
-  return style;
+/** `offset`을 margin으로 적용해 앵커 기준 미세 이동 */
+export function getOffsetMarginStyle(
+  offset?: BadgeOffset
+): React.CSSProperties {
+  if (!offset) return {};
+  return {
+    ...(offset.top ? { marginTop: offset.top } : {}),
+    ...(offset.right ? { marginRight: offset.right } : {}),
+    ...(offset.bottom ? { marginBottom: offset.bottom } : {}),
+    ...(offset.left ? { marginLeft: offset.left } : {}),
+  };
 }
 
 export function getLiveAttrs(ariaLive?: 'off' | 'polite' | 'assertive') {
@@ -118,13 +124,12 @@ export function resolveDisplayContent(
   return children;
 }
 
-// BadgeShape을 RadiusKey로 매핑
+/** Badge `shape` → 공통 `getRadiusClass`용 키 (SHAPE_MAP 등 이중 정의 없음) */
 export const mapBadgeShapeToRadius = (shape: BadgeShape): RadiusKey => {
   switch (shape) {
     case 'circle':
-      return 'circle';
     case 'pill':
-      return 'full';
+      return 'pill';
     case 'rounded':
       return 'lg';
     case 'square':

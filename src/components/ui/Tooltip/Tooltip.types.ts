@@ -1,17 +1,19 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 
 export interface TooltipProps {
   isVisible: boolean;
-  children: React.ReactNode;
+  children: ReactNode;
+  /** `role="tooltip"` 루트의 `id`. 생략 시 `useId()`로 안정적인 id가 붙습니다. 트리거에는 `aria-describedby={id}`를 표시 중일 때만 연결하는 것이 좋습니다. */
+  id?: string;
   className?: string;
-  // 새로운 기능들
   showCloseButton?: boolean;
   onClose?: () => void;
-  closeOnOutsideClick?: boolean; // 기본값: true (항상 외부 클릭으로 닫힘)
+  /** 바깥 영역 클릭 시 `onClose` 호출 여부 (컴포넌트 기본값: false) */
+  closeOnOutsideClick?: boolean;
   arrow?: boolean;
   tooltipPosition?: 'top' | 'bottom' | 'left' | 'right';
   arrowPosition?: 'start' | 'center' | 'end';
-  inverted?: boolean; // 색상 팔레트를 반전 (bg-surface-level-min 사용)
+  inverted?: boolean;
   offset?: {
     top?: string;
     right?: string;

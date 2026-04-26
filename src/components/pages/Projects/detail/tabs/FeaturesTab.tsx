@@ -31,8 +31,8 @@ const FeaturesTab: React.FC<FeaturesTabProps> = ({ project }) => {
         {features.map((feature, index) => (
           <li key={index} className="flex items-start gap-3">
             <Badge
-              variant="tonal"
-              color="primary"
+              variant="soft"
+              color="brand"
               size="sm"
               shape="circle"
               className="shrink-0"

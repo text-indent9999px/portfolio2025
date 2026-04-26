@@ -8,7 +8,8 @@ const meta: Meta<typeof Button> = {
     layout: 'centered',
     docs: {
       description: {
-        component: 'Button 컴포넌트는 사용자 액션을 트리거하는 클릭 가능한 요소입니다.',
+        component:
+          'Button 컴포넌트는 사용자 액션을 트리거하는 클릭 가능한 요소입니다. `solid/soft/outline/minimal/plain`은 프리셋 이름이고, 색상은 `brand/subBrand/neutral/error/info/...` 같은 semantic tone으로 선택합니다.',
       },
       controls: {
         expanded: true,
@@ -19,18 +20,18 @@ const meta: Meta<typeof Button> = {
   argTypes: {
     variant: {
       control: 'radio',
-      options: ['filled', 'tonal', 'outlined', 'ghost', 'text'],
-      description: 'Button의 스타일 변형을 선택합니다.',
+      options: ['solid', 'soft', 'outline', 'minimal', 'plain'],
+      description: 'Button의 프리셋 스타일을 선택합니다.',
       table: {
         type: { summary: 'string' },
-        defaultValue: { summary: 'filled' },
+        defaultValue: { summary: 'solid' },
         category: '스타일',
-        description: 'Button의 스타일 변형을 선택합니다.',
+        description: 'Button의 프리셋 스타일을 선택합니다.',
       },
     },
     size: {
       control: 'radio',
-      options: ['sm', 'md', 'lg'],
+      options: ['xs', 'sm', 'md', 'lg'],
       description: 'Button의 크기를 선택합니다.',
       table: {
         type: { summary: 'string' },
@@ -42,25 +43,25 @@ const meta: Meta<typeof Button> = {
     color: {
       control: 'radio',
       options: [
-        'primary',
-        'secondary',
+        'brand',
+        'subBrand',
         'success',
         'warning',
-        'danger',
+        'error',
         'info',
-        'gray',
+        'neutral',
       ],
-      description: 'Button의 색상을 선택합니다.',
+      description: 'Button의 semantic tone을 선택합니다.',
       table: {
         type: { summary: 'string' },
-        defaultValue: { summary: 'primary' },
+        defaultValue: { summary: 'brand' },
         category: '스타일',
-        description: 'Button의 색상을 선택합니다.',
+        description: 'Button의 semantic tone을 선택합니다.',
       },
     },
     rounded: {
       control: 'radio',
-      options: ['none', 'sm', 'lg', 'full', 'circle'],
+      options: ['none', 'sm', 'md', 'lg', 'pill', 'circle'],
       description: 'Button의 모서리 둥글기를 선택합니다.',
       table: {
         type: { summary: 'string' },
@@ -69,14 +70,14 @@ const meta: Meta<typeof Button> = {
         description: 'Button의 모서리 둥글기를 선택합니다.',
       },
     },
-    noHoverActive: {
+    interactive: {
       control: 'boolean',
-      description: 'hover 및 active 상태의 스타일 효과를 비활성화합니다.',
+      description: 'hover 및 active 상태의 스타일 효과를 활성화할지 설정합니다.',
       table: {
         type: { summary: 'boolean' },
-        defaultValue: { summary: 'false' },
+        defaultValue: { summary: 'true' },
         category: '동작',
-        description: 'hover 및 active 상태의 스타일 효과를 비활성화합니다.',
+        description: 'hover 및 active 상태의 스타일 효과를 활성화할지 설정합니다.',
       },
     },
     disabled: {
@@ -132,11 +133,11 @@ const meta: Meta<typeof Button> = {
   },
   args: {
     children: 'Button',
-    variant: 'filled',
+    variant: 'solid',
     size: 'md',
-    color: 'primary',
+    color: 'brand',
     rounded: 'lg',
-    noHoverActive: false,
+    interactive: true,
     disabled: false,
     fullWidth: false,
     cursorTrigger: true,

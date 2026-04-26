@@ -34,8 +34,8 @@ export default function ResumeDownloadButton({
   return (
     <span className="relative inline-flex group">
       <Button
-        variant="filled"
-        color={'primary'}
+        variant="solid"
+        color={'brand'}
         size={size}
         rounded={rounded}
         icon={<FontAwesomeIcon icon={faCircleArrowDown} />}

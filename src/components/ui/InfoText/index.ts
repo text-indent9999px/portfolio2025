@@ -1,2 +1,2 @@
 export { default } from './InfoText';
-export type { InfoTextType } from './InfoText.types';
+export type { InfoTextProps, InfoTextType } from './InfoText.types';

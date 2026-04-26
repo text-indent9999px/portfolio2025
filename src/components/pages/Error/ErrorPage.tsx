@@ -99,13 +99,13 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
           {actualErrorCode === 500 && (
             <>
               <CustomButton
-                variant="outlined"
-                color="primary"
+                variant="outline"
+                color="brand"
                 size="md"
                 onClick={() => {
                   window.location.reload();
                 }}
-                rounded="full"
+                rounded="pill"
                 fullWidth={true}
               >
                 새로 고침

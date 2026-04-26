@@ -1,19 +1,20 @@
 import React from 'react';
-import { Label } from '../../ui/Label';
+
+import { Pill } from '../../ui/Pill';
 import { StyleGuideDetailHeading, StyleGuideSection } from '../common';
 
-const LabelStyleGuide: React.FC = () => {
+const PillStyleGuide: React.FC = () => {
   const colors = [
-    'primary',
-    'secondary',
+    'brand',
+    'subBrand',
     'success',
     'warning',
-    'danger',
+    'error',
     'info',
-    'gray',
+    'neutral',
   ] as const;
-  const variants = ['filled', 'tonal', 'outlined', 'text'] as const;
-  const radii = ['none', 'sm', 'lg', 'full'] as const;
+  const variants = ['solid', 'soft', 'outline', 'plain'] as const;
+  const radii = ['none', 'sm', 'lg', 'pill'] as const;
   const sizes = ['xs', 'sm', 'md', 'lg'] as const;
 
   return (
@@ -26,14 +27,14 @@ const LabelStyleGuide: React.FC = () => {
             </StyleGuideDetailHeading>
             <div className="flex flex-wrap gap-4 w-full mb-4">
               {variants.map(variant => (
-                <Label
+                <Pill
                   key={`${color}-${variant}`}
                   variant={variant}
                   color={color}
                   size="md"
                 >
                   {variant}
-                </Label>
+                </Pill>
               ))}
             </div>
           </div>
@@ -43,15 +44,9 @@ const LabelStyleGuide: React.FC = () => {
           <StyleGuideDetailHeading>Radius</StyleGuideDetailHeading>
           <div className="flex flex-wrap items-center gap-4">
             {radii.map(r => (
-              <Label
-                key={r}
-                variant="filled"
-                color="primary"
-                size="md"
-                rounded={r}
-              >
+              <Pill key={r} variant="solid" color="brand" size="md" rounded={r}>
                 radius: {r}
-              </Label>
+              </Pill>
             ))}
           </div>
         </div>
@@ -59,24 +54,24 @@ const LabelStyleGuide: React.FC = () => {
           <StyleGuideDetailHeading>Sizes</StyleGuideDetailHeading>
           <div className="flex flex-wrap items-center gap-4">
             {sizes.map(s => (
-              <Label key={s} variant="filled" color="primary" size={s}>
+              <Pill key={s} variant="solid" color="brand" size={s}>
                 {s.toUpperCase()}
-              </Label>
+              </Pill>
             ))}
           </div>
         </div>
         <div className="space-y-1">
           <StyleGuideDetailHeading>Examples</StyleGuideDetailHeading>
           <div className="flex flex-wrap items-center gap-2">
-            <Label variant="outlined" color="primary" size="sm">
+            <Pill variant="outline" color="brand" size="sm">
               #리액트
-            </Label>
-            <Label variant="outlined" color="primary" size="sm">
+            </Pill>
+            <Pill variant="outline" color="brand" size="sm">
               #타입스크립트
-            </Label>
-            <Label variant="filled" color="gray" size="sm">
+            </Pill>
+            <Pill variant="solid" color="neutral" size="sm">
               + 3 more
-            </Label>
+            </Pill>
           </div>
         </div>
       </>
@@ -84,4 +79,4 @@ const LabelStyleGuide: React.FC = () => {
   );
 };
 
-export default LabelStyleGuide;
+export default PillStyleGuide;

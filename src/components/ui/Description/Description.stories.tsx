@@ -28,14 +28,16 @@ const meta: Meta<typeof Description> = {
         description: '텍스트의 크기를 선택합니다 (1-8).',
       },
     },
-    color: {
+    textClassName: {
       control: 'text',
-      description: '텍스트 색상을 지정합니다. Tailwind 클래스를 사용합니다.',
+      description:
+        '본문에 붙는 Tailwind 클래스(색·강조 등). 여러 클래스를 공백으로 나열할 수 있습니다.',
       table: {
         type: { summary: 'string' },
         defaultValue: { summary: 'text-text-secondary' },
         category: '스타일',
-        description: '텍스트 색상을 지정합니다. Tailwind 클래스를 사용합니다.',
+        description:
+          '본문에 붙는 Tailwind 클래스(색·강조 등). 여러 클래스를 공백으로 나열할 수 있습니다.',
       },
     },
     leading: {

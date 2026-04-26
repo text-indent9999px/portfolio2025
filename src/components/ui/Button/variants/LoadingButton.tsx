@@ -5,11 +5,7 @@ import Button from '../Button';
 import type { CustomButtonProps } from '../Button.types';
 import styles from './LoadingButton.module.scss';
 
-export interface LoadingButtonProps
-  extends Omit<
-    CustomButtonProps,
-    'spinner' | 'loading' | 'loadingLabel' | 'disableWhileLoading'
-  > {
+export interface LoadingButtonProps extends CustomButtonProps {
   loading?: boolean;
   loadingLabel?: string;
   tone?: 'auto' | 'light' | 'dark';

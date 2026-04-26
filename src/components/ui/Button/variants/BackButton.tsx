@@ -11,7 +11,7 @@ export type BackButtonProps = Omit<CustomButtonProps, 'icon'> & {
 };
 
 export default function BackButton({
-  variant = 'outlined',
+  variant = 'outline',
   size = 'sm',
   children,
   ariaLabel = '뒤로 가기',

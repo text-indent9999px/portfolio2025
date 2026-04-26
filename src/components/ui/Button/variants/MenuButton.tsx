@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { cn } from '@/utils/cn';
 import MenuTriggerIcon from '../../Icon/MenuTriggerIcon';
 import Button from '../Button';
 import type { CustomButtonProps } from '../Button.types';
@@ -26,9 +27,12 @@ const MenuButton: React.FC<MenuButtonProps> = ({
   return (
     <Button
       size={size}
-      className={`transition-all duration-300 ease-in-out cursor-pointer group ${className} ${
-        size === 'sm' ? 'scale-95' : size === 'lg' ? 'scale-110' : ''
-      }`}
+      className={cn(
+        'transition-all duration-300 ease-in-out cursor-pointer group',
+        size === 'sm' && 'scale-95',
+        size === 'lg' && 'scale-110',
+        className
+      )}
       {...props}
       aria-haspopup={hasPopup}
       aria-expanded={open}

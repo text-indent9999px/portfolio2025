@@ -61,9 +61,9 @@ const HeaderContent: React.FC = () => {
             onClick={handleMenuToggle}
             type="button"
             data-cursor="hover"
-            noHoverActive={true}
+            interactive={false}
             cursorTrigger={false}
-            variant="ghost"
+            variant="minimal"
             open={isMenuOpen}
             controlsId="global-menu"
             size={!isTransparent || !isXlOrAbove ? 'sm' : 'md'}

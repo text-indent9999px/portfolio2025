@@ -1,6 +1,6 @@
 import React from 'react';
 import { SectionHeader } from '../../../../ui/Heading';
-import { Label } from '../../../../ui/Label';
+import { Pill } from '../../../../ui/Pill';
 import type {
   ChallengesTab as ChallengesTabType,
   ProjectDetail,
@@ -35,14 +35,14 @@ const ChallengesTab: React.FC<ChallengesTabProps> = ({ project }) => {
               {/* 내용 */}
               <div className="flex-1 space-y-4 pb-2">
                 <div className="flex items-start gap-2">
-                  <Label
-                    variant="filled"
+                  <Pill
+                    variant="solid"
                     color="warning"
                     size="sm"
                     className="shrink-0"
                   >
                     문제
-                  </Label>
+                  </Pill>
                   <div className="text-text-secondary leading-relaxed">
                     {item.challenge}
                   </div>
@@ -50,14 +50,14 @@ const ChallengesTab: React.FC<ChallengesTabProps> = ({ project }) => {
 
                 {item.solution && (
                   <div className="flex items-start gap-2">
-                    <Label
-                      variant="filled"
+                    <Pill
+                      variant="solid"
                       color="success"
                       size="sm"
                       className="shrink-0"
                     >
                       해결
-                    </Label>
+                    </Pill>
                     <div className="text-text-secondary leading-relaxed  inline-flex">
                       {item.solution}
                     </div>

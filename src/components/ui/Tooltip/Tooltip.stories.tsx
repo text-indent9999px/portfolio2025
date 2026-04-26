@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
-import { useState } from 'react';
-import Tooltip from './Tooltip';
+import { useId, useState } from 'react';
+import { Tooltip } from './Tooltip';
 
 const meta: Meta<typeof Tooltip> = {
   title: 'UI/Tooltip',
@@ -9,8 +9,18 @@ const meta: Meta<typeof Tooltip> = {
     layout: 'centered',
     docs: {
       description: {
-        component:
-          'Tooltip 컴포넌트는 요소에 대한 추가 정보를 표시하는 작은 팝오버입니다.',
+        component: `
+**역할**  
+부모가 \`position: relative\` 인 컨테이너 안에서 **절대 위치**로 뜨는 보조 설명 레이어입니다. \`fixed\`·좌표 계산·포털은 이 컴포넌트 범위 밖에서 다룹니다.
+
+**접근성**  
+- 툴팁 루트에는 \`role="tooltip"\`과 \`id\`가 붙습니다 (\`id\` 미지정 시 \`useId()\`).  
+- **트리거** 요소에는 툴팁이 **보일 때만** \`aria-describedby={툴팁 id}\` 를 연결하는 것을 권장합니다. 숨긴 경우 DOM에서 툴팁이 사라지므로, 그때는 \`aria-describedby\`를 비워 두면 깨끗합니다.  
+- 닫기 버튼이 있으면 포커스 가능 요소가 툴팁 내부에 있게 됩니다. 순수 “호버만” 툴팁이라면 \`pointer-events-none\` 등 패턴을 부모에서 선택할 수 있습니다.
+
+**Default 스토리**  
+열기 버튼과 툴팁 \`id\`를 맞춰 \`aria-describedby\` 예시를 넣었습니다. \`arrow\`는 Controls와 연동됩니다.
+`.trim(),
       },
       controls: {
         expanded: true,
@@ -74,12 +84,13 @@ const meta: Meta<typeof Tooltip> = {
     },
     closeOnOutsideClick: {
       control: 'boolean',
-      description: '외부 클릭 시 Tooltip을 닫을지 여부를 결정합니다.',
+      description:
+        '외부 클릭 시 Tooltip을 닫을지 여부입니다. 컴포넌트 기본값은 false이며, 아래 샘플 args는 데모용으로 true일 수 있습니다.',
       table: {
         type: { summary: 'boolean' },
-        defaultValue: { summary: 'true' },
+        defaultValue: { summary: 'false' },
         category: '동작',
-        description: '외부 클릭 시 Tooltip을 닫을지 여부를 결정합니다.',
+        description: '외부 클릭 시 `onClose`를 호출할지 여부.',
       },
     },
     showCloseButton: {
@@ -97,6 +108,7 @@ const meta: Meta<typeof Tooltip> = {
     isVisible: true,
     children: 'Tooltip 내용\n여러줄 입력 가능합니다.',
     tooltipPosition: 'top',
+    arrow: true,
     closeOnOutsideClick: true,
   },
 };
@@ -106,13 +118,10 @@ type Story = StoryObj<typeof Tooltip>;
 
 export const Default: Story = {
   render: args => {
-    // Tooltip의 표시/숨김 상태를 관리하기 위한 로컬 state
-    // Storybook의 args.isVisible과 동기화하기 위해 useState 사용
-    // 실제 사용 시에는 부모 컴포넌트에서 상태를 관리합니다.
     const [isVisible, setIsVisible] = useState(args.isVisible ?? true);
+    const tooltipId = useId();
 
-    // inverted prop에 따라 배경색 변경 (밝은 배경에서 inverted 툴팁 테스트용)
-    const bgClass = args.inverted ? 'bg-surface-level-max' : 'transparent';
+    const bgClass = args.inverted ? 'bg-surface-level-max' : 'bg-transparent';
 
     return (
       <div
@@ -121,8 +130,12 @@ export const Default: Story = {
       >
         <div className="relative inline-flex items-center">
           <button
+            type="button"
+            aria-describedby={isVisible ? tooltipId : undefined}
             className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
-            onMouseDown={e => {
+            onPointerDown={e => {
+              // Tooltip의 바깥 클릭은 document `pointerdown`으로 처리됨. 트리거는 툴팁 밖이므로
+              // 전파를 막지 않으면 닫힌 뒤 같은 제스처의 click에서 토글이 한 번 더 먹는다.
               e.stopPropagation();
             }}
             onClick={e => {
@@ -134,10 +147,11 @@ export const Default: Story = {
           </button>
           <Tooltip
             {...args}
+            id={tooltipId}
             isVisible={isVisible}
             onClose={() => setIsVisible(false)}
             tooltipPosition={args.tooltipPosition || 'top'}
-            arrow={true}
+            arrow={args.arrow}
             closeOnOutsideClick={args.closeOnOutsideClick}
           >
             {args.children}

@@ -1,16 +1,16 @@
-import { COLOR_VARIANT_CLASSES } from './UI.colorClasses';
+import { getUiVariantClasses } from './UI.colorClasses';
 
 // 공통 타입 정의
 export type Color =
-  | 'primary'
-  | 'secondary'
+  | 'brand'
+  | 'subBrand'
   | 'success'
   | 'warning'
-  | 'danger'
+  | 'error'
   | 'info'
-  | 'gray';
+  | 'neutral';
 
-export type Variant = 'filled' | 'tonal' | 'outlined' | 'ghost' | 'text';
+export type Variant = 'solid' | 'soft' | 'outline' | 'minimal' | 'plain';
 
 export type Size = 'xs' | 'sm' | 'md' | 'lg';
 
@@ -20,65 +20,32 @@ const RADIUS_CONFIG = {
   sm: 'rounded-sm',
   md: 'rounded-md',
   lg: 'rounded-lg',
-  full: 'rounded-full',
-  circle: 'rounded-full',
+  /** 캡슐/풀 라운드 (`rounded-full`). 원형 아이콘 버튼은 Button 전용 `rounded="circle"`(+ aspect-square) 사용 */
+  pill: 'rounded-full',
 } as const;
 
 export type RadiusKey = keyof typeof RADIUS_CONFIG;
 
 export const getRadiusClass = (key: RadiusKey): string => RADIUS_CONFIG[key];
 
-// Disabled 상태 클래스
+// Disabled 상태에서는 일부 variant를 의도적으로 동일한 표현으로 수렴시킨다.
 export const DISABLED_CLASSES = {
-  filled:
+  solid:
     'bg-disabled-bg text-disabled-text border-transparent !cursor-not-allowed',
-  tonal:
-    'bg-disabled-bg text-disabled-text border-transparent !cursor-not-allowed',
-  outlined:
+  soft: 'bg-disabled-bg text-disabled-text border-transparent !cursor-not-allowed',
+  outline:
     'bg-disabled-bg text-disabled-text border-disabled-border !cursor-not-allowed',
-  ghost:
+  minimal:
     'text-disabled-bg dark:text-disabled-text !cursor-not-allowed border-transparent',
-  text: 'text-disabled-bg dark:text-disabled-text !cursor-not-allowed border-transparent',
-} as const;
-
-// Variant별 기본 클래스
-export const VARIANT_CLASSES = {
-  filled: 'hover:brightness-80 dark:hover:brightness-70',
-  tonal: 'hover:brightness-80 dark:hover:brightness-70',
-  outlined: 'bg-transparent',
-  ghost: 'bg-transparent border-transparent',
-  text: 'bg-transparent border-transparent hover:underline',
+  plain:
+    'text-disabled-bg dark:text-disabled-text !cursor-not-allowed border-transparent',
 } as const;
 
 // 색상별 클래스 생성 함수
 export const getColorClasses = (
   color: Color,
-  variant: string,
-  noHoverActive: boolean = false
+  variant: Variant,
+  interactive: boolean = true
 ): string => {
-  const baseClasses = VARIANT_CLASSES[variant as keyof typeof VARIANT_CLASSES];
-  const colorClasses = COLOR_VARIANT_CLASSES[color]?.[variant as Variant] || '';
-
-  if (noHoverActive) {
-    const hoverPattern = /(?:dark:)?hover:[^\s]+/g;
-    const cleanBaseClasses = baseClasses.replace(hoverPattern, '');
-    const cleanColorClasses = colorClasses.replace(hoverPattern, '');
-    return `${cleanBaseClasses} ${cleanColorClasses}`.trim();
-  }
-
-  const activeClasses =
-    'active:scale-95 active:transition-transform active:duration-100';
-  return `${baseClasses} ${colorClasses} ${activeClasses}`.trim();
-};
-
-// 기본 색상 클래스
-export const getDefaultColorClasses = (variant: string): string => {
-  const map = {
-    filled: 'bg-gray-600 text-white border-gray-600',
-    tonal: 'bg-gray-100 text-gray-900 border-gray-100',
-    outlined: 'bg-transparent text-gray-900 border-gray-600',
-    ghost: 'bg-transparent text-gray-900 border-transparent',
-    text: 'bg-transparent text-gray-900 border-transparent',
-  } as const;
-  return map[variant as keyof typeof map] ?? map.filled;
+  return getUiVariantClasses({ color, variant, interactive });
 };

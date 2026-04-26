@@ -23,7 +23,7 @@ const meta: Meta<typeof Blank> = {
       description: '간격 높이를 지정합니다. 예: "2rem", "3rem", "1.5rem"',
       table: {
         type: { summary: 'string' },
-        defaultValue: { summary: '0.5' },
+        defaultValue: { summary: '0.5rem' },
         category: '레이아웃',
         description: '간격 높이를 지정합니다. 예: "2rem", "3rem", "1.5rem"',
       },

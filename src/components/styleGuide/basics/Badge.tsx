@@ -4,15 +4,15 @@ import { StyleGuideDetailHeading, StyleGuideSection } from '../common';
 
 const BadgeStyleGuide: React.FC = () => {
   const colors = [
-    'primary',
-    'secondary',
+    'brand',
+    'subBrand',
     'success',
     'warning',
-    'danger',
+    'error',
     'info',
-    'gray',
+    'neutral',
   ] as const;
-  const variants = ['filled', 'tonal', 'outlined', 'text'] as const;
+  const variants = ['solid', 'soft', 'outline', 'plain'] as const;
 
   return (
     <StyleGuideSection>
@@ -42,20 +42,20 @@ const BadgeStyleGuide: React.FC = () => {
           <StyleGuideDetailHeading>Shape</StyleGuideDetailHeading>
           <div className="flex flex-wrap items-center gap-4">
             <Badge
-              variant="filled"
-              color="primary"
+              variant="solid"
+              color="brand"
               size="sm"
               shape="circle"
               count={120}
               showZero={true}
             />
-            <Badge variant="filled" color="secondary" size="md" shape="pill">
+            <Badge variant="solid" color="subBrand" size="md" shape="pill">
               shape: pill
             </Badge>
-            <Badge variant="outlined" color="primary" size="md" shape="rounded">
+            <Badge variant="outline" color="brand" size="md" shape="rounded">
               shape: rounded
             </Badge>
-            <Badge variant="filled" color="primary" size="md" shape="square">
+            <Badge variant="solid" color="brand" size="md" shape="square">
               shape: square
             </Badge>
           </div>
@@ -66,8 +66,8 @@ const BadgeStyleGuide: React.FC = () => {
             {(['xs', 'sm', 'md', 'lg'] as const).map(size => (
               <Badge
                 key={size}
-                variant="filled"
-                color="primary"
+                variant="solid"
+                color="brand"
                 size={size}
                 shape="square"
               >
@@ -78,13 +78,12 @@ const BadgeStyleGuide: React.FC = () => {
         </div>
         <div className="space-y-1">
           <StyleGuideDetailHeading>Examples</StyleGuideDetailHeading>
-
           <div className="space-y-3">
             <div className="flex flex-wrap items-center gap-4">
               <div className="relative">
                 <Badge
-                  variant="filled"
-                  color="gray"
+                  variant="solid"
+                  color="neutral"
                   size="xs"
                   shape="circle"
                   anchor="top-right"
@@ -95,7 +94,7 @@ const BadgeStyleGuide: React.FC = () => {
               </div>
               <div className="relative">
                 <Badge
-                  variant="tonal"
+                  variant="soft"
                   color="warning"
                   size="xs"
                   shape="circle"

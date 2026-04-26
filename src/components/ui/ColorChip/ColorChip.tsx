@@ -1,7 +1,14 @@
+'use client';
+
 import React from 'react';
+import { cn } from '@/utils/cn';
 import { Tooltip } from '../Tooltip';
 import { ColorChipProps } from './ColorChip.types';
-import { useColorValue, useHoverState } from './ColorChip.utils';
+import {
+  resolveColorType,
+  useColorValue,
+  useHoverState,
+} from './ColorChip.utils';
 
 // 크기별 스타일
 const SIZE_STYLES = {
@@ -16,57 +23,54 @@ const VARIANT_STYLES = {
   square: 'rounded-md',
 } as const;
 
+function tooltipLabel(
+  tone: ColorChipProps['tone'],
+  resolvedColorType: string,
+  shade: string | number
+): string {
+  if (!tone) {
+    return `${resolvedColorType}-${shade}`;
+  }
+  return `${tone} -> ${resolvedColorType}-${shade}`;
+}
+
 const ColorChip: React.FC<ColorChipProps> = ({
   colorType,
+  tone,
   shade,
   variant = 'circle',
   size = 'md',
   className = '',
 }) => {
-  const hexCode = useColorValue(colorType, shade);
+  const resolvedColorType = resolveColorType(tone, colorType);
+  const hexCode = useColorValue(resolvedColorType, shade);
   const { isHovered, handleMouseEnter, handleMouseLeave } = useHoverState();
+  const tooltipId = React.useId();
 
-  // hover 효과 계산
-  const hoverStyles = React.useMemo(() => {
-    return isHovered ? 'scale-125 shadow-lg z-50' : 'hover:scale-110';
-  }, [isHovered]);
-
-  // 전체 className 병합
-  const mergedClassName = React.useMemo(() => {
-    return [
-      SIZE_STYLES[size],
-      VARIANT_STYLES[variant],
-      'border-2',
-      'border-gray-200',
-      'shadow-sm',
-      'transition-all',
-      'duration-300',
-      'cursor-pointer',
-      hoverStyles,
-      className,
-    ]
-      .filter(Boolean)
-      .join(' ');
-  }, [size, variant, hoverStyles, className]);
-
-  // 인라인 스타일 계산
-  const inlineStyle = React.useMemo<React.CSSProperties>(() => {
-    return {
-      backgroundColor: `var(--color-${colorType}-${shade})`,
-      zIndex: isHovered ? 50 : 1,
-    };
-  }, [colorType, shade, isHovered]);
+  const hoverStyles = isHovered
+    ? 'scale-125 shadow-lg z-50'
+    : 'hover:scale-110';
 
   return (
     <div className="relative">
       <div
-        className={mergedClassName}
-        style={inlineStyle}
+        className={cn(
+          SIZE_STYLES[size],
+          VARIANT_STYLES[variant],
+          'border-2 border-gray-200 shadow-sm transition-all duration-300 cursor-pointer',
+          hoverStyles,
+          className
+        )}
+        style={{
+          backgroundColor: `var(--color-${resolvedColorType}-${shade})`,
+          zIndex: isHovered ? 50 : 1,
+        }}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       />
 
       <Tooltip
+        id={tooltipId}
         isVisible={isHovered}
         arrow={true}
         arrowPosition="center"
@@ -74,7 +78,7 @@ const ColorChip: React.FC<ColorChipProps> = ({
         offset={{ top: '10px' }}
       >
         <div className="font-medium">
-          {colorType}-{shade}
+          {tooltipLabel(tone, resolvedColorType, shade)}
         </div>
         <div className="text-xs opacity-80">{hexCode}</div>
       </Tooltip>

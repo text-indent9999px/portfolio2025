@@ -38,3 +38,16 @@
     opacity: 0.8;
   }
 }
+
+/* prefers-reduced-motion: 인라인 animation을 클래스로 끊기 위한 앵커 */
+.spinnerBall {
+  @media (prefers-reduced-motion: reduce) {
+    animation: none !important;
+  }
+}
+
+.spinnerText {
+  @media (prefers-reduced-motion: reduce) {
+    animation: none !important;
+  }
+}

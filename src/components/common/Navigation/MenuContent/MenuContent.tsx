@@ -8,14 +8,20 @@ import styles from '../navigation.module.scss';
 import { useMenu } from './MenuContext';
 
 const MenuContent: React.FC = () => {
-  const { isMenuOpen, isClosing } = useMenu();
+  const { isMenuOpen, isClosing, closeMenu } = useMenu();
+
+  const handleOverlayClose = () => {
+    void closeMenu();
+  };
 
   return (
     <>
-      {/* 메뉴 오버레이 */}
+      {/* 메뉴 오버레이 — Esc·배경(루트) 클릭은 Overlay가 onClose로 전달, 실제 닫힘·애니메이션은 closeMenu와 동일 */}
       <Overlay
         open={isMenuOpen}
         unstyled={true}
+        role="presentation"
+        onClose={handleOverlayClose}
         className={`${styles['menu-overlay']} ${
           isClosing ? styles['closing'] : ''
         } 
@@ -68,9 +74,9 @@ const MenuItem = ({ label, path }: { label: string; path: string }) => {
   return (
     <li>
       <CustomButton
-        noHoverActive={true}
-        color="primary"
-        variant="ghost"
+        interactive={false}
+        color="brand"
+        variant="minimal"
         data-cursor="hover"
         onClick={() => {
           // path를 전달하여 closeMenu 호출

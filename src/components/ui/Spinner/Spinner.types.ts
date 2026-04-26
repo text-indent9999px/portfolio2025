@@ -1,11 +1,13 @@
-import type React from 'react';
+import type { HTMLAttributes } from 'react';
 
 export type SpinnerSize = 'sm' | 'md' | 'lg';
-export type SpinnerColor = 'primary' | 'secondary';
 
-export interface SpinnerProps extends React.HTMLAttributes<HTMLDivElement> {
+/** 시각 모드: 기본(어두운 공) / inverted(밝은 배경 등) */
+export type SpinnerTone = 'normal' | 'inverted';
+
+export interface SpinnerProps extends HTMLAttributes<HTMLDivElement> {
   size?: SpinnerSize;
-  type?: 'inverted' | 'normal';
+  type?: SpinnerTone;
   className?: string;
   showText?: boolean;
   text?: string;

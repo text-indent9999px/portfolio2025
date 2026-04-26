@@ -1,12 +1,21 @@
 'use client';
 
 import React from 'react';
+import { cn } from '@/utils/cn';
 import { useRouter } from '../../../utils/router';
 import { DISABLED_CLASSES, getColorClasses } from '../shared/UI.config';
-import { BASE_CLASSES, STYLE_CLASSES } from './Button.config';
+import {
+  BASE_CLASSES,
+  EQUAL_RATIO_CLASSES,
+  ROUNDED_CLASSES,
+  SIZE_CLASSES,
+} from './Button.config';
 import { buildClickHandler } from './Button.handlers';
 import styles from './Button.module.scss';
 import { CustomButtonProps } from './Button.types';
+
+const BUTTON_ACTIVE_CLASSES =
+  'active:scale-95 active:transition-transform active:duration-100';
 
 const CustomButton: React.FC<CustomButtonProps> = ({
   icon,
@@ -15,10 +24,10 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   href,
   dataCursor = '',
   size = 'md',
-  variant = 'filled',
-  color = 'primary',
+  variant = 'solid',
+  color = 'brand',
   rounded = 'none',
-  noHoverActive = false,
+  interactive = true,
   cursorTrigger = false,
   className,
   children,
@@ -57,49 +66,34 @@ const CustomButton: React.FC<CustomButtonProps> = ({
     navigateToUrl,
   });
 
-  // 버튼 클래스 생성
   const buttonClasses = React.useMemo(() => {
-    const classList = [
+    return cn(
       BASE_CLASSES,
-      STYLE_CLASSES.rounded[rounded],
+      ROUNDED_CLASSES[rounded],
       rounded === 'circle' || isIconOnly
-        ? STYLE_CLASSES.equalRatio[size]
-        : STYLE_CLASSES.size[size],
-    ];
+        ? EQUAL_RATIO_CLASSES[size]
+        : SIZE_CLASSES[size],
+      disabled
+        ? DISABLED_CLASSES[variant]
+        : getColorClasses(color, variant, interactive),
+      !disabled && interactive && BUTTON_ACTIVE_CLASSES
+    );
+  }, [rounded, isIconOnly, size, disabled, variant, color, interactive]);
 
-    if (disabled) {
-      classList.push(DISABLED_CLASSES[variant]);
-    } else {
-      const colorClasses = getColorClasses(color, variant, noHoverActive);
-      classList.push(colorClasses);
-    }
-
-    return classList.filter(Boolean).join(' ');
-  }, [rounded, isIconOnly, size, disabled, variant, color, noHoverActive]);
-
-  // 전체 className 병합
   const mergedClassName = React.useMemo(() => {
-    return [
+    return cn(
       buttonClasses,
       styles.button,
       styles[color],
-      fullWidth ? 'w-full' : '',
-      className,
-    ]
-      .filter(Boolean)
-      .join(' ');
+      fullWidth && 'w-full',
+      className
+    );
   }, [buttonClasses, color, fullWidth, className]);
 
-  // 아이콘 요소 렌더링
   const iconElement = React.useMemo(() => {
     if (!icon) return null;
-
-    return iconPosition === 'left' ? (
-      <span className={styles.icon}>{icon}</span>
-    ) : (
-      <span className="inline-flex items-center">{icon}</span>
-    );
-  }, [icon, iconPosition]);
+    return <span className={styles.icon}>{icon}</span>;
+  }, [icon]);
 
   // whiteSpace className 결정
   const labelWhiteSpaceClass =
@@ -119,7 +113,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
     >
       {iconPosition === 'left' && iconElement}
       {children && (
-        <span className={`${styles.label} ${labelWhiteSpaceClass}`}>
+        <span className={cn(styles.label, labelWhiteSpaceClass)}>
           {children}
         </span>
       )}

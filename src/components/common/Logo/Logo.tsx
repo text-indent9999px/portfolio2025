@@ -21,9 +21,9 @@ const Logo: React.FC<LogoProps> = ({
   const { navigateToUrl } = useRouter();
   return (
     <CustomButton
-      noHoverActive={true}
-      color="primary"
-      variant="ghost"
+      interactive={false}
+      color="brand"
+      variant="minimal"
       className={`${className} font-kor-point`}
       data-cursor="hover"
       cursorTrigger={true}
