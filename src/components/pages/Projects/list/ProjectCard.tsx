@@ -1,6 +1,7 @@
 'use client';
 
-import { useId } from 'react';
+import { useEffect, useId, useState } from 'react';
+import { usePathname } from 'next/navigation';
 import { ViewTransitionCompat as ViewTransition } from '@/components/common/ViewTransitionCompat';
 import { useRouter } from '../../../../utils/router';
 import { Card, CardStack } from '../../../ui/Card';
@@ -12,18 +13,109 @@ interface ProjectCardProps {
   project: ProjectDetail;
 }
 
+interface ProjectTransitionState {
+  timestamp?: string | number;
+  transitionToken?: string;
+  transitionScope?: 'projects-list-detail';
+  transitionTargetId?: string;
+  transitionFrom?: 'list-forward' | 'detail-back';
+  transitionRunId?: number;
+}
+
+const detailBackTransitionClaims = new Map<string, string>();
+
 export function ProjectCard({ project }: ProjectCardProps) {
   const { navigateToUrl, getNavigationState } = useRouter();
-  const fallbackTransitionKey = useId().replace(/:/g, '');
-  const state = getNavigationState() as { timestamp?: string | number } | undefined;
-  const timestamp = state?.timestamp ?? fallbackTransitionKey;
+  const pathname = usePathname();
+  const instanceId = useId();
+  const state = getNavigationState() as ProjectTransitionState | undefined;
+  const [localTransitionTimestamp, setLocalTransitionTimestamp] = useState<
+    string | number | undefined
+  >(undefined);
+  const [localTransitionToken, setLocalTransitionToken] = useState<
+    string | undefined
+  >(undefined);
+  const isDetailBackTransition =
+    state?.transitionScope === 'projects-list-detail' &&
+    state?.transitionTargetId === project.meta.id &&
+    state?.transitionFrom === 'detail-back';
+  const detailBackClaimKey =
+    isDetailBackTransition &&
+    state?.timestamp &&
+    state?.transitionRunId &&
+    state?.transitionToken
+      ? `${state.transitionRunId}-${state.transitionToken}-${project.meta.id}-${state.timestamp}`
+      : undefined;
+
+  let detailBackOwnerId: string | undefined;
+  if (detailBackClaimKey) {
+    detailBackOwnerId = detailBackTransitionClaims.get(detailBackClaimKey);
+    if (!detailBackOwnerId) {
+      detailBackTransitionClaims.set(detailBackClaimKey, instanceId);
+      detailBackOwnerId = instanceId;
+    }
+  }
+
+  const shouldUseSharedTransition =
+    isDetailBackTransition &&
+    !!detailBackClaimKey &&
+    detailBackOwnerId === instanceId;
+  const isListForwardTransition =
+    state?.transitionScope === 'projects-list-detail' &&
+    state?.transitionTargetId === project.meta.id &&
+    state?.transitionFrom === 'list-forward' &&
+    state?.transitionToken === localTransitionToken;
+  const timestamp =
+    isListForwardTransition && state?.timestamp === localTransitionTimestamp
+      ? state?.timestamp
+    : shouldUseSharedTransition
+      ? state?.timestamp
+      : undefined;
+  const transitionNameMode: 'forward' | 'back' = isListForwardTransition
+    ? 'forward'
+    : 'back';
+  const titleName = timestamp
+    ? `project-title-${transitionNameMode}-${project.meta.id}-${timestamp}`
+    : undefined;
+  const descriptionName = timestamp
+    ? `project-description-${transitionNameMode}-${project.meta.id}-${timestamp}`
+    : undefined;
+  const tagsName = timestamp
+    ? `project-tags-${transitionNameMode}-${project.meta.id}-${timestamp}`
+    : undefined;
+
+  useEffect(() => {
+    if (pathname !== '/projects' || !isListForwardTransition) {
+      setLocalTransitionTimestamp(undefined);
+      setLocalTransitionToken(undefined);
+    }
+  }, [pathname, isListForwardTransition]);
+
+  useEffect(() => {
+    return () => {
+      if (
+        detailBackClaimKey &&
+        detailBackTransitionClaims.get(detailBackClaimKey) === instanceId
+      ) {
+        detailBackTransitionClaims.delete(detailBackClaimKey);
+      }
+    };
+  }, [detailBackClaimKey, instanceId]);
 
   const handleClick = () => {
+    const nextTimestamp = Date.now();
+    const nextTransitionToken = `${nextTimestamp}-${project.meta.id}`;
+    setLocalTransitionTimestamp(nextTimestamp);
+    setLocalTransitionToken(nextTransitionToken);
     navigateToUrl({
       url: `/projects/${project.meta.id}`,
       useDefaultTransition: true,
       state: {
-        timestamp,
+        timestamp: nextTimestamp,
+        transitionToken: nextTransitionToken,
+        transitionScope: 'projects-list-detail',
+        transitionTargetId: project.meta.id,
+        transitionFrom: 'list-forward',
       },
     });
   };
@@ -41,13 +133,13 @@ export function ProjectCard({ project }: ProjectCardProps) {
         body: (
           <CardStack spacing="normal">
             <ViewTransition
-              name={`project-title-${project.meta.id}-${timestamp}`}
+              name={titleName}
               update="none"
             >
               <ProjectTitle title={project.meta.title} size={2} visualSize="lg" />
             </ViewTransition>
             <ViewTransition
-              name={`project-description-${project.meta.id}-${timestamp}`}
+              name={descriptionName}
               update="none"
             >
               <p className="text-text-secondary mb-4 whitespace-pre-line">
@@ -56,7 +148,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
             </ViewTransition>
 
             <ViewTransition
-              name={`project-tags-${project.meta.id}-${timestamp}`}
+              name={tagsName}
               update="none"
             >
               <div className="flex flex-wrap gap-2">

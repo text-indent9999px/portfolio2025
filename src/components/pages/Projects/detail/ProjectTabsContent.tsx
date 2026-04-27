@@ -33,6 +33,7 @@ const SIMPLE_TAB_COMPONENTS = {
   features: FeaturesTab,
   challenges: ChallengesTab,
 } as const;
+const MAIN_TAB_PANEL_DELAY_MS = 300;
 
 // 타입 가드 함수들
 const isValidProjectTabType = (value: string): value is ProjectTab['type'] => {
@@ -56,7 +57,8 @@ const isSimpleTabType = (
 interface ProjectTabsContentProps {
   mainTabs: Array<{ id: string; label: string }>;
   project: ProjectDetail;
-  timestamp: string | number;
+  timestamp?: string | number;
+  transitionNameMode?: 'forward' | 'back';
   initialTab?: string;
   initialCodeSubTab?: string;
 }
@@ -65,6 +67,7 @@ export function ProjectTabsContent({
   mainTabs,
   project,
   timestamp,
+  transitionNameMode = 'forward',
   initialTab,
   initialCodeSubTab,
 }: ProjectTabsContentProps) {
@@ -95,6 +98,7 @@ export function ProjectTabsContent({
       ? firstTabId
       : 'overview';
   });
+  const pendingMainTabRef = useRef<string | null>(null);
 
   // URL 파라미터 변경 감지 (클라이언트 사이드 네비게이션)
   useEffect(() => {
@@ -102,12 +106,25 @@ export function ProjectTabsContent({
     const tabInMainTabs = mainTabs.some(tab => tab.id === tabParam);
     const isValidTab = tabParam && isValidProjectTabType(tabParam);
 
-    if (tabParam && isValidTab && tabInMainTabs && tabParam !== activeTab) {
+    if (!tabParam || !isValidTab || !tabInMainTabs) {
+      return;
+    }
+
+    if (pendingMainTabRef.current && tabParam !== pendingMainTabRef.current) {
+      return;
+    }
+
+    if (pendingMainTabRef.current === tabParam) {
+      pendingMainTabRef.current = null;
+    }
+
+    if (tabParam !== activeTab) {
       setActiveTab(tabParam);
     }
   }, [searchParams, mainTabs, activeTab]);
 
-  // activeTab 변경 시 displayedTab 지연 업데이트 (SecondaryTab 애니메이션 완료 후)
+  // activeTab 변경 시 displayedTab 지연 업데이트
+  // 인디케이터 이동과 패널 재렌더를 분리해 탭 전환 끝 구간의 끊김을 줄인다.
   const isMountedRef = useRef(true);
   const previousTabRef = useRef<ProjectTab['type'] | null>(null);
 
@@ -131,25 +148,15 @@ export function ProjectTabsContent({
       // (displayedTab은 나중에 업데이트되지만, key 변경으로 인해 React가 자동으로 처리)
     }
 
-    // SecondaryTab일 때만 지연 적용 (PrimaryTab은 즉시 업데이트)
-    if (!isXlOrAbove) {
-      // SecondaryTab 애니메이션 시간(300ms) 후 패널 내용 업데이트
-      const timeoutId = setTimeout(() => {
-        if (isMountedRef.current) {
-          previousTabRef.current = activeTab;
-          setDisplayedTab(activeTab);
-        }
-      }, 300);
-
-      return () => clearTimeout(timeoutId);
-    } else {
-      // PrimaryTab은 즉시 업데이트
+    const timeoutId = setTimeout(() => {
       if (isMountedRef.current) {
         previousTabRef.current = activeTab;
         setDisplayedTab(activeTab);
       }
-    }
-  }, [activeTab, displayedTab, isXlOrAbove]);
+    }, MAIN_TAB_PANEL_DELAY_MS);
+
+    return () => clearTimeout(timeoutId);
+  }, [activeTab, displayedTab]);
 
   // CodeTab의 코드 하이라이트 데이터 추출
   const codeTab = useMemo(
@@ -240,6 +247,7 @@ export function ProjectTabsContent({
   const handleTabChange = useCallback(
     (tabId: string) => {
       if (!isValidProjectTabType(tabId)) return;
+      pendingMainTabRef.current = tabId;
 
       // 탭 인디케이터는 즉시 업데이트 (displayedTab은 useEffect에서 지연 업데이트)
       startTransition(() => {
@@ -274,7 +282,13 @@ export function ProjectTabsContent({
     }
 
     if (displayedTab === 'overview') {
-      return <OverviewTab project={project} timestamp={timestamp} />;
+      return (
+        <OverviewTab
+          project={project}
+          timestamp={timestamp}
+          transitionNameMode={transitionNameMode}
+        />
+      );
     }
 
     if (displayedTab === 'code') {

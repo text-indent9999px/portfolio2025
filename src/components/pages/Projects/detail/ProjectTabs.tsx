@@ -1,4 +1,4 @@
-import { Suspense } from 'react';
+import { Suspense, useMemo } from 'react';
 import { PageSpinner } from '../../../ui/Spinner';
 import type { ProjectDetail } from '../types';
 import type { ProjectTab } from '../types/project-tabs';
@@ -19,7 +19,8 @@ const isValidProjectTabType = (value: string): value is ProjectTab['type'] => {
 
 interface ProjectTabsProps {
   project: ProjectDetail;
-  timestamp: string | number;
+  timestamp?: string | number;
+  transitionNameMode?: 'forward' | 'back';
   initialTab?: string;
   initialCodeSubTab?: string;
 }
@@ -27,14 +28,19 @@ interface ProjectTabsProps {
 const ProjectTabs: React.FC<ProjectTabsProps> = ({
   project,
   timestamp,
+  transitionNameMode = 'forward',
   initialTab,
   initialCodeSubTab,
 }) => {
   // 서버에서 mainTabs 계산
-  const mainTabs = project.tabs
-    .filter(t => t.visible !== false)
-    .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
-    .map(t => ({ id: t.type, label: t.label || t.type }));
+  const mainTabs = useMemo(
+    () =>
+      project.tabs
+        .filter(t => t.visible !== false)
+        .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+        .map(t => ({ id: t.type, label: t.label || t.type })),
+    [project.tabs]
+  );
 
   // 초기 탭 검증
   const firstTabId = mainTabs[0]?.id;
@@ -51,6 +57,7 @@ const ProjectTabs: React.FC<ProjectTabsProps> = ({
         mainTabs={mainTabs}
         project={project}
         timestamp={timestamp}
+        transitionNameMode={transitionNameMode}
         initialTab={finalInitialTab}
         initialCodeSubTab={initialCodeSubTab}
       />

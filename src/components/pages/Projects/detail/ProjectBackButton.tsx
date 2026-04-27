@@ -9,7 +9,7 @@ interface DetailBackButtonProps {
   timestamp?: string | number;
 }
 
-const DetailBackButton: React.FC<DetailBackButtonProps> = ({ timestamp }) => {
+const DetailBackButton: React.FC<DetailBackButtonProps> = () => {
   const { history, canGoBack } = useNavigationHistory();
   const { navigateBack, navigateToUrl } = useRouter();
 
@@ -26,14 +26,12 @@ const DetailBackButton: React.FC<DetailBackButtonProps> = ({ timestamp }) => {
     if (canGoBack) {
       navigateBack({
         useDefaultTransition: true,
-        state: timestamp ? { timestamp } : undefined,
       });
     } else {
       // 리스트 페이지로
       navigateToUrl({
         url: '/projects',
         useDefaultTransition: true,
-        state: timestamp ? { timestamp } : undefined,
       });
     }
   };

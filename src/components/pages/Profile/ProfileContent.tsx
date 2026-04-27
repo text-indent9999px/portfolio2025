@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname, useSearchParams } from 'next/navigation';
-import { startTransition, useEffect, useId, useState } from 'react';
+import { startTransition, useEffect, useId, useRef, useState } from 'react';
 import { profileTabItems, skillTabItems } from '../../../data/profile';
 import { useRouter as useCustomRouter } from '../../../utils/router';
 import Blank from '../../ui/Blank';
@@ -49,13 +49,27 @@ export function ProfileContent() {
   const [displayedSkillTab, setDisplayedSkillTab] = useState(() =>
     getInitialSkillTab(searchParams)
   );
+  const pendingMainTabRef = useRef<string | null>(null);
+  const pendingSkillTabRef = useRef<string | null>(null);
 
   // URL 파라미터 변경 감지 (메인 탭)
   useEffect(() => {
     const tabParam = searchParams.get('tab');
     const isValidTab = profileTabItems.some(tab => tab.value === tabParam);
 
-    if (isValidTab && tabParam && tabParam !== activeTab) {
+    if (!isValidTab || !tabParam) {
+      return;
+    }
+
+    if (pendingMainTabRef.current && tabParam !== pendingMainTabRef.current) {
+      return;
+    }
+
+    if (pendingMainTabRef.current === tabParam) {
+      pendingMainTabRef.current = null;
+    }
+
+    if (tabParam !== activeTab) {
       setActiveTab(tabParam);
     }
   }, [searchParams, activeTab]);
@@ -76,13 +90,29 @@ export function ProfileContent() {
     const skillTabParam = searchParams.get('skillTab');
     const isValidSkillTab = skillTabItems.some(tab => tab.id === skillTabParam);
 
-    if (isValidSkillTab && skillTabParam && skillTabParam !== activeSkillTab) {
+    if (!isValidSkillTab || !skillTabParam) {
+      return;
+    }
+
+    if (
+      pendingSkillTabRef.current &&
+      skillTabParam !== pendingSkillTabRef.current
+    ) {
+      return;
+    }
+
+    if (pendingSkillTabRef.current === skillTabParam) {
+      pendingSkillTabRef.current = null;
+    }
+
+    if (skillTabParam !== activeSkillTab) {
       setActiveSkillTab(skillTabParam);
     }
   }, [searchParams, activeSkillTab]);
 
   const handleTabChange = (tab: string) => {
     // 인디케이터는 즉시 바꾸고, 패널은 effect에서 지연 반영
+    pendingMainTabRef.current = tab;
     startTransition(() => {
       setActiveTab(tab);
     });
@@ -102,6 +132,7 @@ export function ProfileContent() {
   };
 
   const handleSkillTabChange = (skillTab: string) => {
+    pendingSkillTabRef.current = skillTab;
     setActiveSkillTab(skillTab);
     const params = new URLSearchParams(searchParams.toString());
     params.set('skillTab', skillTab);

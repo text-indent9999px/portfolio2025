@@ -11,15 +11,24 @@ import type {
 
 interface OverviewTabProps {
   project: ProjectDetail;
-  timestamp: string | number;
+  timestamp?: string | number;
+  transitionNameMode?: 'forward' | 'back';
 }
 
-const OverviewTab: React.FC<OverviewTabProps> = ({ project, timestamp }) => {
+const OverviewTab: React.FC<OverviewTabProps> = ({
+  project,
+  timestamp,
+  transitionNameMode = 'forward',
+}) => {
   const tab = project.tabs.find(
     (t): t is OverviewTabType => t.type === 'overview'
   );
   const title = tab?.label ?? '제작 배경';
   const isXlOrAbove = useMediaQuery('--breakpoint-xl', 'min');
+  const descriptionName = timestamp
+    ? `project-description-${transitionNameMode}-${project.meta.id}-${timestamp}`
+    : undefined;
+
   return (
     <div>
       <SectionHeader
@@ -29,7 +38,7 @@ const OverviewTab: React.FC<OverviewTabProps> = ({ project, timestamp }) => {
         visualSize="lg"
       />
       <ViewTransition
-        name={`project-description-${project.meta.id}-${timestamp}`}
+        name={descriptionName}
         update="none"
       >
         <p className="text-text-secondary whitespace-pre-line">

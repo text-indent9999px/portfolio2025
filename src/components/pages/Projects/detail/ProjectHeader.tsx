@@ -6,19 +6,27 @@ import type { ProjectDetail } from '../types';
 
 interface ProjectHeaderProps {
   project: ProjectDetail;
-  timestamp: string | number;
+  timestamp?: string | number;
+  transitionNameMode?: 'forward' | 'back';
 }
 
 const ProjectHeader: React.FC<ProjectHeaderProps> = ({
   project,
   timestamp,
+  transitionNameMode = 'forward',
 }) => {
+  const titleName = timestamp
+    ? `project-title-${transitionNameMode}-${project.meta.id}-${timestamp}`
+    : undefined;
+  const tagsName = timestamp
+    ? `project-tags-${transitionNameMode}-${project.meta.id}-${timestamp}`
+    : undefined;
   return (
     <div className="mb-8">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5">
         <div>
           <ViewTransition
-            name={`project-title-${project.meta.id}-${timestamp}`}
+            name={titleName}
             update="none"
           >
             <PageHeader
@@ -30,7 +38,7 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
         </div>
       </div>
       <ViewTransition
-        name={`project-tags-${project.meta.id}-${timestamp}`}
+        name={tagsName}
         update="none"
       >
         <div className="flex flex-wrap gap-2 mb-4">

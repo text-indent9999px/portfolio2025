@@ -7,9 +7,17 @@ import { BackButton } from '../../../ui/Button';
 
 interface DetailBackButtonProps {
   timestamp?: string | number;
+  transitionToken?: string;
+  projectId?: string;
+  onBeforeBack?: () => void;
 }
 
-const DetailBackButton: React.FC<DetailBackButtonProps> = ({ timestamp }) => {
+const DetailBackButton: React.FC<DetailBackButtonProps> = ({
+  timestamp,
+  transitionToken,
+  projectId,
+  onBeforeBack,
+}) => {
   const { history, canGoBack } = useNavigationHistory();
   const { navigateBack, navigateToUrl } = useRouter();
 
@@ -23,17 +31,39 @@ const DetailBackButton: React.FC<DetailBackButtonProps> = ({ timestamp }) => {
   };
 
   const handleBack = () => {
+    onBeforeBack?.();
+    const transitionRunId = Date.now();
     if (canGoBack) {
       navigateBack({
         useDefaultTransition: true,
-        state: timestamp ? { timestamp } : undefined,
+        state:
+          timestamp && transitionToken && projectId
+            ? {
+                timestamp,
+                transitionToken,
+                transitionScope: 'projects-list-detail',
+                transitionTargetId: projectId,
+                transitionFrom: 'detail-back',
+                transitionRunId,
+              }
+            : undefined,
       });
     } else {
       // 리스트 페이지로
       navigateToUrl({
         url: '/projects',
         useDefaultTransition: true,
-        state: timestamp ? { timestamp } : undefined,
+        state:
+          timestamp && transitionToken && projectId
+            ? {
+                timestamp,
+                transitionToken,
+                transitionScope: 'projects-list-detail',
+                transitionTargetId: projectId,
+                transitionFrom: 'detail-back',
+                transitionRunId,
+              }
+            : undefined,
         replace: true,
       });
     }
