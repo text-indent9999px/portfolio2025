@@ -5,15 +5,11 @@ const meta: Meta<typeof Card> = {
   title: 'UI/Card',
   component: Card,
   parameters: {
-    layout: 'centered',
+    layout: 'padded',
     docs: {
       description: {
         component:
           'Card는 `slots` prop으로 header / thumb / body / footer 콘텐츠를 넘깁니다. Body 안에서 블록 간 세로 간격은 CardStack을 사용합니다.',
-      },
-      controls: {
-        expanded: true,
-        sort: 'requiredFirst',
       },
     },
   },
@@ -45,7 +41,7 @@ const meta: Meta<typeof Card> = {
       },
     },
     surfaceLevel: {
-      control: 'radio',
+      control: 'select',
       options: ['min', 1, 2, 3, 4, 5, 6, 7, 'max'],
       description:
         'Card의 배경 색상 레벨을 선택합니다. appearance가 outline일 때는 기본값이 min입니다.',
@@ -79,7 +75,7 @@ const meta: Meta<typeof Card> = {
       },
     },
     ratio: {
-      control: 'radio',
+      control: 'select',
       options: ['120px 1fr', '1fr 120px', 'auto 1fr', '1fr auto'],
       description:
         'Thumb과 Body의 비율을 선택합니다. 필요한 경우 코드를 수정해 직접 값을 지정할 수 있습니다.',
@@ -102,12 +98,6 @@ const meta: Meta<typeof Card> = {
       },
     },
   },
-};
-
-export default meta;
-type Story = StoryObj<typeof Card>;
-
-export const Default: Story = {
   args: {
     appearance: 'solid',
     elevation: 1,
@@ -118,49 +108,35 @@ export const Default: Story = {
     gap: '12px',
     thumbAspect: '16/9',
   },
-  render: args => (
-    <Card
-      appearance={args.appearance}
-      elevation={args.elevation}
-      surfaceLevel={args.surfaceLevel}
-      padding={args.padding}
-      thumbPosition={args.thumbPosition}
-      ratio={args.ratio}
-      gap={args.gap}
-      thumbAspect={args.thumbAspect}
-      slots={{
-        thumb: (
-          <div className="w-full h-full bg-success-500 rounded flex items-center justify-center">
-            <span className="text-[#fff] font-bold">Thumb</span>
-          </div>
-        ),
-        body: (
-          <>
-            {(() => {
-              let textColorClass = 'text-[#fff]';
-              if (args.surfaceLevel === 4) {
-                textColorClass = 'text-[#555] dark:text-[#fff]';
-              } else if (args.surfaceLevel === 5) {
-                textColorClass = 'text-[#555] dark:text-[#ccc]';
-              }
+};
 
-              return (
-                <>
-                  <h3
-                    className={`text-lg mb-2 mix-blend-difference ${textColorClass}`}
-                  >
-                    카드 제목
-                  </h3>
-                  <p className={`mix-blend-difference ${textColorClass}`}>
-                    카드 본문 내용입니다. 컨트롤 패널에서 다양한 옵션을
-                    조정해보세요.
-                  </p>
-                </>
-              );
-            })()}
-          </>
-        ),
-      }}
-    />
-  ),
+export default meta;
+type Story = StoryObj<typeof Card>;
+
+const thumbSlot = (
+  <div className="w-full h-full bg-success-500 rounded flex items-center justify-center">
+    <span className="text-white font-bold">Thumb</span>
+  </div>
+);
+
+const bodySlot = (
+  <>
+    <h3 className="text-lg mb-2 text-text-primary">카드 제목</h3>
+    <p className="text-text-secondary">
+      카드 본문 내용입니다. 컨트롤 패널에서 다양한 옵션을 조정해보세요.
+    </p>
+  </>
+);
+
+export const Default: Story = {
+  render: args => <Card {...args} slots={{ thumb: thumbSlot, body: bodySlot }} />,
+};
+
+export const Outline: Story = {
+  args: {
+    appearance: 'outline',
+    surfaceLevel: 'min',
+    elevation: 0,
+  },
+  render: args => <Card {...args} slots={{ thumb: thumbSlot, body: bodySlot }} />,
 };
