@@ -5,13 +5,30 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '../Button';
 import type { CustomButtonProps } from '../Button.types';
 
-const downloadResume = () => {
-  const link = document.createElement('a');
-  link.href = '/resume/resume.pdf';
-  link.download = '프론트엔드_개발_지원자_김남영.pdf';
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+const RESUME_FILE_NAME = '프론트엔드_개발_지원자_김남영.pdf';
+
+const downloadResume = async () => {
+  try {
+    const response = await fetch('/api/resume', {
+      method: 'GET',
+    });
+
+    if (!response.ok) {
+      throw new Error('resume-download-failed');
+    }
+
+    const blob = await response.blob();
+    const objectUrl = URL.createObjectURL(blob);
+    const link = document.createElement('a');
+    link.href = objectUrl;
+    link.download = RESUME_FILE_NAME;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    URL.revokeObjectURL(objectUrl);
+  } catch {
+    alert('이력서 파일을 다운로드하지 못했습니다. 잠시 후 다시 시도해주세요.');
+  }
 };
 
 export type ResumeDownloadButtonProps = Omit<CustomButtonProps, 'onClick'> & {
