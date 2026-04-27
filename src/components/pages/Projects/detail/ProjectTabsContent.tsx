@@ -34,6 +34,8 @@ const SIMPLE_TAB_COMPONENTS = {
   challenges: ChallengesTab,
 } as const;
 const MAIN_TAB_PANEL_DELAY_MS = 300;
+const MAIN_TAB_URL_SYNC_DELAY_MS = 260;
+const CODE_SUB_TAB_URL_SYNC_DELAY_MS = 260;
 
 // 타입 가드 함수들
 const isValidProjectTabType = (value: string): value is ProjectTab['type'] => {
@@ -99,6 +101,7 @@ export function ProjectTabsContent({
       : 'overview';
   });
   const pendingMainTabRef = useRef<string | null>(null);
+  const pendingMainTabUrlSyncRef = useRef<number | null>(null);
 
   // URL 파라미터 변경 감지 (클라이언트 사이드 네비게이션)
   useEffect(() => {
@@ -194,6 +197,7 @@ export function ProjectTabsContent({
     return getInitialCodeSubTab(searchParams);
   });
   const pendingCodeSubTabRef = useRef<string | null>(null);
+  const pendingCodeSubTabUrlSyncRef = useRef<number | null>(null);
 
   // URL 파라미터 변경 감지 (CodeTab 서브 탭)
   useEffect(() => {
@@ -229,16 +233,26 @@ export function ProjectTabsContent({
   const handleCodeSubTabChange = useCallback(
     (tab: string) => {
       pendingCodeSubTabRef.current = tab;
+
+      if (pendingCodeSubTabUrlSyncRef.current !== null) {
+        window.clearTimeout(pendingCodeSubTabUrlSyncRef.current);
+        pendingCodeSubTabUrlSyncRef.current = null;
+      }
+
       setActiveCodeSubTab(tab);
-      const params = new URLSearchParams(searchParams.toString());
-      params.set('codeSubTab', tab);
-      const url = `${pathname}?${params.toString()}`;
-      navigateToUrl({
-        url,
-        useDefaultTransition: false,
-        transitionType: 'nav-forward',
-        replace: true,
-      });
+
+      pendingCodeSubTabUrlSyncRef.current = window.setTimeout(() => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('codeSubTab', tab);
+        const url = `${pathname}?${params.toString()}`;
+        navigateToUrl({
+          url,
+          useDefaultTransition: false,
+          transitionType: 'nav-forward',
+          replace: true,
+        });
+        pendingCodeSubTabUrlSyncRef.current = null;
+      }, CODE_SUB_TAB_URL_SYNC_DELAY_MS);
     },
     [pathname, navigateToUrl, searchParams]
   );
@@ -249,27 +263,46 @@ export function ProjectTabsContent({
       if (!isValidProjectTabType(tabId)) return;
       pendingMainTabRef.current = tabId;
 
+      if (pendingMainTabUrlSyncRef.current !== null) {
+        window.clearTimeout(pendingMainTabUrlSyncRef.current);
+        pendingMainTabUrlSyncRef.current = null;
+      }
+
       // 탭 인디케이터는 즉시 업데이트 (displayedTab은 useEffect에서 지연 업데이트)
       startTransition(() => {
         setActiveTab(tabId);
       });
 
-      const params = new URLSearchParams(searchParams.toString());
-      params.set('tab', tabId);
-      // 메인 탭이 code가 아닌 경우 codeSubTab 파라미터 제거
-      if (tabId !== 'code') {
-        params.delete('codeSubTab');
-      }
-      const url = `${pathname}?${params.toString()}`;
-      navigateToUrl({
-        url,
-        useDefaultTransition: false,
-        transitionType: 'nav-forward',
-        replace: true,
-      });
+      pendingMainTabUrlSyncRef.current = window.setTimeout(() => {
+        const params = new URLSearchParams(searchParams.toString());
+        params.set('tab', tabId);
+        // 메인 탭이 code가 아닌 경우 codeSubTab 파라미터 제거
+        if (tabId !== 'code') {
+          params.delete('codeSubTab');
+        }
+        const url = `${pathname}?${params.toString()}`;
+        navigateToUrl({
+          url,
+          useDefaultTransition: false,
+          transitionType: 'nav-forward',
+          replace: true,
+        });
+        pendingMainTabUrlSyncRef.current = null;
+      }, MAIN_TAB_URL_SYNC_DELAY_MS);
     },
     [pathname, navigateToUrl, searchParams]
   );
+
+  useEffect(() => {
+    return () => {
+      if (pendingMainTabUrlSyncRef.current !== null) {
+        window.clearTimeout(pendingMainTabUrlSyncRef.current);
+      }
+      if (pendingCodeSubTabUrlSyncRef.current !== null) {
+        window.clearTimeout(pendingCodeSubTabUrlSyncRef.current);
+      }
+    };
+  }, []);
 
   // 탭 패널 속성들 (activeTab 사용 - 인디케이터와 동기화)
   const tabPanelId = `panel-${activeTab}-${uniqueId}`;

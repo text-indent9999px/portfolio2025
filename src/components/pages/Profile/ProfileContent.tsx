@@ -17,6 +17,9 @@ import type {
   SkillTabItem,
 } from './types';
 
+const MAIN_TAB_URL_SYNC_DELAY_MS = 260;
+const SKILL_TAB_URL_SYNC_DELAY_MS = 260;
+
 interface ProfileContentProps {
   skillTabItems: SkillTabItem[];
   skillCategories: Record<string, SkillCategory>;
@@ -75,6 +78,8 @@ export function ProfileContent({
   );
   const pendingMainTabRef = useRef<string | null>(null);
   const pendingSkillTabRef = useRef<string | null>(null);
+  const pendingMainTabUrlSyncRef = useRef<number | null>(null);
+  const pendingSkillTabUrlSyncRef = useRef<number | null>(null);
 
   // URL 파라미터 변경 감지 (메인 탭)
   useEffect(() => {
@@ -137,36 +142,56 @@ export function ProfileContent({
   const handleTabChange = (tab: string) => {
     // 인디케이터는 즉시 바꾸고, 패널은 effect에서 지연 반영
     pendingMainTabRef.current = tab;
+
+    if (pendingMainTabUrlSyncRef.current !== null) {
+      window.clearTimeout(pendingMainTabUrlSyncRef.current);
+      pendingMainTabUrlSyncRef.current = null;
+    }
+
     startTransition(() => {
       setActiveTab(tab);
     });
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('tab', tab);
-    // 메인 탭이 skill이 아닌 경우 skillTab 파라미터 제거
-    if (tab !== 'skill') {
-      params.delete('skillTab');
-    }
-    const url = `${pathname}?${params.toString()}`;
-    navigateToUrl({
-      url,
-      useDefaultTransition: false,
-      transitionType: 'nav-forward',
-      replace: true,
-    });
+
+    pendingMainTabUrlSyncRef.current = window.setTimeout(() => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('tab', tab);
+      // 메인 탭이 skill이 아닌 경우 skillTab 파라미터 제거
+      if (tab !== 'skill') {
+        params.delete('skillTab');
+      }
+      const url = `${pathname}?${params.toString()}`;
+      navigateToUrl({
+        url,
+        useDefaultTransition: false,
+        transitionType: 'nav-forward',
+        replace: true,
+      });
+      pendingMainTabUrlSyncRef.current = null;
+    }, MAIN_TAB_URL_SYNC_DELAY_MS);
   };
 
   const handleSkillTabChange = (skillTab: string) => {
     pendingSkillTabRef.current = skillTab;
+
+    if (pendingSkillTabUrlSyncRef.current !== null) {
+      window.clearTimeout(pendingSkillTabUrlSyncRef.current);
+      pendingSkillTabUrlSyncRef.current = null;
+    }
+
     setActiveSkillTab(skillTab);
-    const params = new URLSearchParams(searchParams.toString());
-    params.set('skillTab', skillTab);
-    const url = `${pathname}?${params.toString()}`;
-    navigateToUrl({
-      url,
-      useDefaultTransition: false,
-      transitionType: 'nav-forward',
-      replace: true,
-    });
+
+    pendingSkillTabUrlSyncRef.current = window.setTimeout(() => {
+      const params = new URLSearchParams(searchParams.toString());
+      params.set('skillTab', skillTab);
+      const url = `${pathname}?${params.toString()}`;
+      navigateToUrl({
+        url,
+        useDefaultTransition: false,
+        transitionType: 'nav-forward',
+        replace: true,
+      });
+      pendingSkillTabUrlSyncRef.current = null;
+    }, SKILL_TAB_URL_SYNC_DELAY_MS);
   };
 
   // activeSkillTab 변경 시 displayedSkillTab 지연 업데이트 (SecondaryTab 애니메이션 완료 후)
@@ -180,6 +205,17 @@ export function ProfileContent({
 
     return () => clearTimeout(timeoutId);
   }, [activeSkillTab, displayedSkillTab]);
+
+  useEffect(() => {
+    return () => {
+      if (pendingMainTabUrlSyncRef.current !== null) {
+        window.clearTimeout(pendingMainTabUrlSyncRef.current);
+      }
+      if (pendingSkillTabUrlSyncRef.current !== null) {
+        window.clearTimeout(pendingSkillTabUrlSyncRef.current);
+      }
+    };
+  }, []);
 
   if (!displayedTabConfig) return null;
 

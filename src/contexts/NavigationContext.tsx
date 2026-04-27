@@ -168,11 +168,12 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
       setHistory(prev => {
         const updatedHistory = [...prev];
         if (updatedHistory[currentIndex]) {
+          const previousState = updatedHistory[currentIndex].state;
           updatedHistory[currentIndex] = {
             url,
             scrollY: currentScrollY,
             timestamp: Date.now(),
-            state,
+            state: state ?? previousState,
           };
         }
         return updatedHistory;
@@ -187,11 +188,12 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
       // 같은 URL로 이동하는 경우: 해당 엔트리만 업데이트 (배열 복사 최소화)
       if (isSameUrl) {
         const updatedHistory = [...prev];
+        const previousState = updatedHistory[currentIndex]?.state;
         updatedHistory[currentIndex] = {
           ...updatedHistory[currentIndex],
           scrollY: currentScrollY,
           timestamp: Date.now(),
-          state, // state 업데이트
+          state: state ?? previousState, // state 미전달 시 기존 state 보존
         };
         return updatedHistory;
       }

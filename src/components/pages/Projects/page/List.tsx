@@ -1,7 +1,7 @@
 'use client';
 
 import { usePathname, useSearchParams } from 'next/navigation';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useScrollRestoration } from '../../../../hooks/useScrollRestoration';
 import { useRouter } from '../../../../utils/router';
 import Blank from '../../../ui/Blank';
@@ -20,12 +20,16 @@ const List: React.FC<ListProps> = ({ projects, errorMessage }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { getNavigationState, navigateToUrl } = useRouter();
+  const consumedBackStateRef = useRef<string | null>(null);
 
   useEffect(() => {
     const state = getNavigationState() as
       | {
           transitionScope?: string;
           transitionFrom?: 'list-forward' | 'detail-back';
+          transitionRunId?: number;
+          timestamp?: string | number;
+          transitionTargetId?: string;
         }
       | undefined;
 
@@ -36,6 +40,15 @@ const List: React.FC<ListProps> = ({ projects, errorMessage }) => {
       return;
     }
 
+    const runMarker = String(
+      state.transitionRunId ??
+        `${state.transitionTargetId ?? ''}:${state.timestamp ?? ''}`
+    );
+    if (consumedBackStateRef.current === runMarker) {
+      return;
+    }
+    consumedBackStateRef.current = runMarker;
+
     const query = searchParams.toString();
     const url = query ? `${pathname}?${query}` : pathname;
 
@@ -44,6 +57,7 @@ const List: React.FC<ListProps> = ({ projects, errorMessage }) => {
       navigateToUrl({
         url,
         useDefaultTransition: false,
+        state: {},
         replace: true,
       });
     });

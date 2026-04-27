@@ -37,6 +37,8 @@
   ],
   "exclude": [
     "node_modules",
-    "public/code"
+    "public/code",
+    "scripts/**/*.ts",
+    "local-data/**"
   ]
 }
