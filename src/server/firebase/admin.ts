@@ -15,15 +15,53 @@ function resolveServiceAccountPath() {
     : DEFAULT_SERVICE_ACCOUNT_PATH;
 }
 
+function parseServiceAccountFromEnv() {
+  const raw =
+    process.env.FIREBASE_SERVICE_ACCOUNT_KEY ??
+    process.env.FIREBASE_SERVICE_ACCOUNT_JSON;
+
+  if (!raw) {
+    return null;
+  }
+
+  const tryParse = (value: string) => {
+    try {
+      return JSON.parse(value);
+    } catch {
+      return null;
+    }
+  };
+
+  const parsed = tryParse(raw);
+  if (parsed) {
+    return parsed;
+  }
+
+  try {
+    const decoded = Buffer.from(raw, 'base64').toString('utf8');
+    return tryParse(decoded);
+  } catch {
+    return null;
+  }
+}
+
 function initializeFirebaseAdmin() {
   if (getApps().length > 0) {
+    return;
+  }
+
+  const serviceAccountFromEnv = parseServiceAccountFromEnv();
+  if (serviceAccountFromEnv) {
+    initializeApp({
+      credential: cert(serviceAccountFromEnv),
+    });
     return;
   }
 
   const serviceAccountPath = resolveServiceAccountPath();
   if (!fs.existsSync(serviceAccountPath)) {
     throw new Error(
-      `Firebase 서비스 계정 키 파일을 찾을 수 없습니다: ${serviceAccountPath}`
+      `Firebase 서비스 계정 키를 찾을 수 없습니다. Vercel에서는 FIREBASE_SERVICE_ACCOUNT_KEY(권장) 또는 FIREBASE_SERVICE_ACCOUNT_JSON 환경변수를 설정하세요. 로컬 파일 경로 확인: ${serviceAccountPath}`
     );
   }
 
