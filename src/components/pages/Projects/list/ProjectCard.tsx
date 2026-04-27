@@ -1,6 +1,7 @@
 'use client';
 
-import { unstable_ViewTransition as ViewTransition } from 'react';
+import { useId } from 'react';
+import { ViewTransitionCompat as ViewTransition } from '@/components/common/ViewTransitionCompat';
 import { useRouter } from '../../../../utils/router';
 import { Card, CardStack } from '../../../ui/Card';
 import { Pill } from '../../../ui/Pill';
@@ -13,15 +14,14 @@ interface ProjectCardProps {
 
 export function ProjectCard({ project }: ProjectCardProps) {
   const { navigateToUrl, getNavigationState } = useRouter();
-
-  // timestamp를 직접 가져오기
-  const state = getNavigationState() as { timestamp?: number } | undefined;
-  const timestamp = state?.timestamp ?? Date.now();
+  const fallbackTransitionKey = useId().replace(/:/g, '');
+  const state = getNavigationState() as { timestamp?: string | number } | undefined;
+  const timestamp = state?.timestamp ?? fallbackTransitionKey;
 
   const handleClick = () => {
     navigateToUrl({
       url: `/projects/${project.meta.id}`,
-      useDefaultTransition: false,
+      useDefaultTransition: true,
       state: {
         timestamp,
       },

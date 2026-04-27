@@ -1,11 +1,12 @@
-import React, { unstable_ViewTransition as ViewTransition } from 'react';
+import React from 'react';
+import { ViewTransitionCompat as ViewTransition } from '@/components/common/ViewTransitionCompat';
 import { PageHeader } from '../../../ui/Heading';
 import { Pill } from '../../../ui/Pill';
 import type { ProjectDetail } from '../types';
 
 interface ProjectHeaderProps {
   project: ProjectDetail;
-  timestamp: number;
+  timestamp: string | number;
 }
 
 const ProjectHeader: React.FC<ProjectHeaderProps> = ({

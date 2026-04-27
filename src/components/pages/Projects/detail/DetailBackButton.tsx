@@ -1,12 +1,12 @@
 'use client';
 
-import React, { unstable_ViewTransition as ViewTransition } from 'react';
+import React from 'react';
 import { useNavigationHistory } from '../../../../contexts/NavigationContext';
 import { useRouter } from '../../../../utils/router';
 import { BackButton } from '../../../ui/Button';
 
 interface DetailBackButtonProps {
-  timestamp?: number;
+  timestamp?: string | number;
 }
 
 const DetailBackButton: React.FC<DetailBackButtonProps> = ({ timestamp }) => {
@@ -25,14 +25,14 @@ const DetailBackButton: React.FC<DetailBackButtonProps> = ({ timestamp }) => {
   const handleBack = () => {
     if (canGoBack) {
       navigateBack({
-        useDefaultTransition: false,
+        useDefaultTransition: true,
         state: timestamp ? { timestamp } : undefined,
       });
     } else {
       // 리스트 페이지로
       navigateToUrl({
         url: '/projects',
-        useDefaultTransition: false,
+        useDefaultTransition: true,
         state: timestamp ? { timestamp } : undefined,
         replace: true,
       });
@@ -40,13 +40,11 @@ const DetailBackButton: React.FC<DetailBackButtonProps> = ({ timestamp }) => {
   };
 
   return (
-    <ViewTransition name={`back-button-${timestamp}`} update="none">
-      <BackButton
-        enablePageTransition={getEnablePageTransition()}
-        onClick={handleBack}
-        href={undefined}
-      />
-    </ViewTransition>
+    <BackButton
+      enablePageTransition={getEnablePageTransition()}
+      onClick={handleBack}
+      href={undefined}
+    />
   );
 };
 

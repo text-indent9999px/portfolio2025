@@ -5,11 +5,8 @@ import {
   usePathname,
   useSearchParams,
 } from 'next/navigation';
-import React, {
-  unstable_addTransitionType as addTransitionType,
-  useTransition,
-} from 'react';
-import { useNavigationHistory } from '../contexts/NavigationContext';
+import React, { useTransition } from 'react';
+import { useNavigationHistoryOptional } from '../contexts/NavigationContext';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import { performNavigation, waitForRipple } from './router.utils';
 
@@ -19,15 +16,23 @@ export function useTransitionNavigation() {
   const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const isXlOrAbove = useMediaQuery('--breakpoint-xl', 'min');
-  const {
-    history,
-    navigateTo,
-    setHistoryIndexBack,
-    setHistoryIndexForward,
-    currentIndex,
-    getCurrentNavigationState,
-    setRippleComplete,
-  } = useNavigationHistory();
+  const navigation = useNavigationHistoryOptional();
+  const history = navigation?.history ?? [];
+  const currentIndex = navigation?.currentIndex ?? 0;
+  const navigateTo = navigation?.navigateTo;
+  const setHistoryIndexBack = navigation?.setHistoryIndexBack;
+  const setHistoryIndexForward = navigation?.setHistoryIndexForward;
+  const getCurrentNavigationState =
+    navigation?.getCurrentNavigationState ?? (() => undefined);
+  const setRippleComplete = navigation?.setRippleComplete ?? (() => {});
+  const addTransitionType = (
+    React as typeof React & {
+      unstable_addTransitionType?: (type: string) => void;
+      addTransitionType?: (type: string) => void;
+    }
+  ).unstable_addTransitionType ??
+    (React as typeof React & { addTransitionType?: (type: string) => void })
+      .addTransitionType;
 
   const isNavigatingRef = React.useRef(false);
   const [isNavigating, setIsNavigating] = React.useState(false);
@@ -76,7 +81,7 @@ export function useTransitionNavigation() {
 
       // replace인 경우: 히스토리만 교체하고 router.replace 호출 (네비게이션 상태 변경 없음)
       if (replace) {
-        navigateTo(url, state, replace);
+        navigateTo?.(url, state, replace);
         router.replace(url);
         return;
       }
@@ -96,7 +101,7 @@ export function useTransitionNavigation() {
         setIsNavigating(true);
         window.dispatchEvent(new CustomEvent('cursor-reset'));
 
-        navigateTo(url, state, replace);
+        navigateTo?.(url, state, replace);
 
         performNavigation(
           router,
@@ -161,7 +166,7 @@ export function useTransitionNavigation() {
         setRippleComplete(true);
         isNavigatingRef.current = true;
         setIsNavigating(true);
-        setHistoryIndexBack(state);
+        setHistoryIndexBack?.(state);
         window.dispatchEvent(new CustomEvent('cursor-reset'));
 
         // 단일 requestAnimationFrame으로 변경
@@ -209,7 +214,7 @@ export function useTransitionNavigation() {
         if (!nextEntry || !nextEntry.url) return;
 
         isNavigatingRef.current = true;
-        setHistoryIndexForward();
+        setHistoryIndexForward?.();
         window.dispatchEvent(new CustomEvent('cursor-reset'));
 
         requestAnimationFrame(() => {

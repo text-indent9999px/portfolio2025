@@ -1,7 +1,7 @@
 'use client';
 
-import React, { unstable_ViewTransition as ViewTransition } from 'react';
-import { useDevice } from '../../contexts/DeviceContext';
+import * as React from 'react';
+import { ViewTransitionCompat as ViewTransition } from '@/components/common/ViewTransitionCompat';
 import { SplitLayoutContent } from './SplitLayoutContent';
 
 interface SplitLayoutClientProps {
@@ -23,8 +23,8 @@ export function SplitLayoutClient({
   useViewTransition = true,
   viewTransitionName = 'page-content',
 }: SplitLayoutClientProps) {
-  const { isXlOrAbove } = useDevice();
-  const shouldShowLeftSection = showLeftSection && isXlOrAbove;
+  const shouldShowLeftSection = showLeftSection;
+  const shouldUseViewTransition = useViewTransition;
 
   const content = (
     <div
@@ -47,7 +47,7 @@ export function SplitLayoutClient({
     </div>
   );
 
-  return useViewTransition ? (
+  return shouldUseViewTransition ? (
     <ViewTransition
       name={viewTransitionName}
       share={{
@@ -55,7 +55,6 @@ export function SplitLayoutClient({
         'nav-forward': 'slide-in',
         'nav-back': 'slide-out',
       }}
-      update="none"
     >
       {content}
     </ViewTransition>

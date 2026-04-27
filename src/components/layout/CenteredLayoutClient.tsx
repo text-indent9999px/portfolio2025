@@ -1,6 +1,7 @@
 'use client';
 
-import { unstable_ViewTransition as ViewTransition } from 'react';
+import * as React from 'react';
+import { ViewTransitionCompat as ViewTransition } from '@/components/common/ViewTransitionCompat';
 import { useRouter } from '../../utils/router';
 import { PageSpinner } from '../ui/Spinner';
 
@@ -14,12 +15,13 @@ export function CenteredLayoutClient({
   children,
 }: CenteredLayoutClientProps) {
   const { isPending } = useRouter();
+  const shouldUseViewTransition = useViewTransition;
 
   const content = <>{children}</>;
 
   return (
     <>
-      {useViewTransition ? (
+      {shouldUseViewTransition ? (
         <ViewTransition
           name="page-content"
           share={{
@@ -27,7 +29,6 @@ export function CenteredLayoutClient({
             'nav-forward': 'slide-in',
             'nav-back': 'slide-out',
           }}
-          update="none"
         >
           {content}
         </ViewTransition>

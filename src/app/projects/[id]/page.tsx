@@ -27,7 +27,7 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = async ({
   }
 
   return (
-    <CenteredLayout maxWidth="4xl">
+    <CenteredLayout maxWidth="4xl" useViewTransition={false}>
       <Detail
         project={project}
         initialTab={tab}

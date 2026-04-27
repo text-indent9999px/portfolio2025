@@ -37,26 +37,7 @@ const CustomButton: React.FC<CustomButtonProps> = ({
   ...props
 }) => {
   const isIconOnly = !!icon && !children;
-
-  let navigateToUrl, navigateBack;
-
-  try {
-    const router = useRouter();
-    navigateToUrl = router.navigateToUrl;
-    navigateBack = router.navigateBack;
-  } catch {
-    // Storybook 환경에서 useRouter가 실패할 경우 기본 동작 사용
-    navigateToUrl = ({ url }: { url: string }) => {
-      if (typeof window !== 'undefined') {
-        window.location.href = url;
-      }
-    };
-    navigateBack = () => {
-      if (typeof window !== 'undefined') {
-        window.history.back();
-      }
-    };
-  }
+  const { navigateToUrl, navigateBack } = useRouter();
 
   const handleClick = buildClickHandler({
     disabled: disabled,

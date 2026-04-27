@@ -324,3 +324,7 @@ export function useNavigationHistory() {
   }
   return context;
 }
+
+export function useNavigationHistoryOptional() {
+  return useContext(NavigationContext);
+}

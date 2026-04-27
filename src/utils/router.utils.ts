@@ -2,6 +2,8 @@ import { WindowWithRipple } from './router.types';
 
 export const waitForRipple = (isXlOrAbove?: boolean): Promise<void> => {
   return new Promise(resolve => {
+    const FALLBACK_TIMEOUT_MS = 500;
+
     // 모바일에서는 리플 이펙트가 없으므로 바로 resolve
     if (isXlOrAbove === false) {
       resolve();
@@ -13,7 +15,18 @@ export const waitForRipple = (isXlOrAbove?: boolean): Promise<void> => {
 
     if (isRippleActive) {
       // ripple이 이미 시작되었으므로 완료 이벤트만 기다림
+      let isResolved = false;
+      const timeoutId = window.setTimeout(() => {
+        if (isResolved) return;
+        isResolved = true;
+        window.removeEventListener('cursor-ripple-end', rippleEndHandler);
+        resolve();
+      }, FALLBACK_TIMEOUT_MS);
+
       const rippleEndHandler = () => {
+        if (isResolved) return;
+        isResolved = true;
+        window.clearTimeout(timeoutId);
         window.removeEventListener('cursor-ripple-end', rippleEndHandler);
         resolve();
       };
@@ -37,9 +50,16 @@ export const waitForRipple = (isXlOrAbove?: boolean): Promise<void> => {
           window.removeEventListener('cursor-ripple-end', endHandler);
           if (!isResolved) {
             isResolved = true;
+            window.clearTimeout(timeoutId);
             resolve();
           }
         };
+        const timeoutId = window.setTimeout(() => {
+          if (isResolved) return;
+          isResolved = true;
+          window.removeEventListener('cursor-ripple-end', endHandler);
+          resolve();
+        }, FALLBACK_TIMEOUT_MS);
         window.addEventListener('cursor-ripple-end', endHandler);
       };
 
@@ -88,7 +108,7 @@ export const performNavigation = (
   url: string,
   useDefaultTransition: boolean,
   transitionType: string,
-  addTransitionType: (type: string) => void,
+  addTransitionType: ((type: string) => void) | undefined,
   startTransition: (callback: () => void) => void,
   replace = false
 ) => {
@@ -100,7 +120,9 @@ export const performNavigation = (
 
   if (useDefaultTransition) {
     startTransition(() => {
-      addTransitionType(transitionType);
+      if (typeof addTransitionType === 'function') {
+        addTransitionType(transitionType);
+      }
       navigate(url);
     });
   } else {

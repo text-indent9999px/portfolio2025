@@ -56,7 +56,7 @@ const isSimpleTabType = (
 interface ProjectTabsContentProps {
   mainTabs: Array<{ id: string; label: string }>;
   project: ProjectDetail;
-  timestamp: number;
+  timestamp: string | number;
   initialTab?: string;
   initialCodeSubTab?: string;
 }

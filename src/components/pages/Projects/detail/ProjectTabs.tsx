@@ -19,7 +19,7 @@ const isValidProjectTabType = (value: string): value is ProjectTab['type'] => {
 
 interface ProjectTabsProps {
   project: ProjectDetail;
-  timestamp: number;
+  timestamp: string | number;
   initialTab?: string;
   initialCodeSubTab?: string;
 }

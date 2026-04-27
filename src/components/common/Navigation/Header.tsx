@@ -16,10 +16,16 @@ interface HeaderProps {
 
 const HeaderContent: React.FC = () => {
   const { isXlOrAbove } = useDevice();
+  const [isMounted, setIsMounted] = React.useState(false);
   const { isMenuOpen, isClosing, openMenu, closeMenu } = useMenu();
   const isScrolled = useScrollDetection(0);
+  const isDesktopReady = isMounted && isXlOrAbove;
 
   const isTransparent = !isScrolled || isMenuOpen || isClosing;
+
+  React.useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   const handleMenuToggle = () => {
     if (isMenuOpen) {
@@ -47,14 +53,14 @@ const HeaderContent: React.FC = () => {
         <div className="flex items-center">
           <Logo
             onClick={isMenuOpen ? closeMenu : undefined}
-            width={isXlOrAbove ? (isTransparent ? 50 : 45) : 40}
-            height={isXlOrAbove ? (isTransparent ? 50 : 45) : 40}
+            width={isDesktopReady ? (isTransparent ? 50 : 45) : 40}
+            height={isDesktopReady ? (isTransparent ? 50 : 45) : 40}
           />
         </div>
 
         {/* 우측 메뉴 버튼과 테마 토글 */}
         <div className="flex items-center gap-10">
-          <ThemeToggle size={!isTransparent || !isXlOrAbove ? 'sm' : 'md'} />
+          <ThemeToggle size={!isTransparent || !isDesktopReady ? 'sm' : 'md'} />
           <MenuButton
             className={isMenuOpen ? 'menu-button-active' : ''}
             ariaLabel={isMenuOpen ? '메뉴 닫기' : '메뉴 열기'}
@@ -66,7 +72,7 @@ const HeaderContent: React.FC = () => {
             variant="minimal"
             open={isMenuOpen}
             controlsId="global-menu"
-            size={!isTransparent || !isXlOrAbove ? 'sm' : 'md'}
+            size={!isTransparent || !isDesktopReady ? 'sm' : 'md'}
           />
         </div>
 

@@ -1,6 +1,7 @@
 'use client';
 
-import React, { unstable_ViewTransition as ViewTransition } from 'react';
+import React from 'react';
+import { ViewTransitionCompat as ViewTransition } from '@/components/common/ViewTransitionCompat';
 import { useMediaQuery } from '../../../../../hooks';
 import { SectionHeader } from '../../../../ui/Heading';
 import type {
@@ -10,7 +11,7 @@ import type {
 
 interface OverviewTabProps {
   project: ProjectDetail;
-  timestamp: number;
+  timestamp: string | number;
 }
 
 const OverviewTab: React.FC<OverviewTabProps> = ({ project, timestamp }) => {

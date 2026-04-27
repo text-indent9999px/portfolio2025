@@ -1,15 +1,11 @@
 'use client';
 
-import React, { unstable_ViewTransition as ViewTransition } from 'react';
+import React from 'react';
 import { useNavigationHistory } from '../../../../contexts/NavigationContext';
 import { useRouter } from '../../../../utils/router';
 import { BackButton } from '../../../ui/Button';
 
-interface ListBackButtonProps {
-  timestamp?: number;
-}
-
-const ListBackButton: React.FC<ListBackButtonProps> = ({ timestamp }) => {
+const ListBackButton: React.FC = () => {
   const { history, canGoBack } = useNavigationHistory();
   const { navigateBack, navigateToUrl } = useRouter();
 
@@ -36,13 +32,11 @@ const ListBackButton: React.FC<ListBackButtonProps> = ({ timestamp }) => {
   };
 
   return (
-    <ViewTransition name={`back-button-${timestamp}`} update="none">
-      <BackButton
-        enablePageTransition={getEnablePageTransition()}
-        onClick={handleBack}
-        href={undefined}
-      />
-    </ViewTransition>
+    <BackButton
+      enablePageTransition={getEnablePageTransition()}
+      onClick={handleBack}
+      href={undefined}
+    />
   );
 };
 
