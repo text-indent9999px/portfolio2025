@@ -1,9 +1,18 @@
 import Blank from '../../ui/Blank';
 import { BackButton } from '../../ui/Button';
 import { PageHeader } from '../../ui/Heading';
+import { getProfileExperienceData } from '../../../server/profile/experience';
+import { getProfileIntroData } from '../../../server/profile/intro';
+import { getProfileSkillsData } from '../../../server/profile/skills';
 import { ProfileContent } from './ProfileContent';
 
-export default function Profile() {
+export default async function Profile() {
+  const [skillsResult, experienceResult, introResult] = await Promise.all([
+    getProfileSkillsData(),
+    getProfileExperienceData(),
+    getProfileIntroData(),
+  ]);
+
   return (
     <div className="text-left break-keep">
       <BackButton />
@@ -14,7 +23,15 @@ export default function Profile() {
         bottomSpacing="none"
         visualSize="3xl"
       />
-      <ProfileContent />
+      <ProfileContent
+        skillTabItems={skillsResult.data?.tabItems ?? []}
+        skillCategories={skillsResult.data?.categories ?? {}}
+        skillDataError={skillsResult.errorMessage}
+        experienceData={experienceResult.data?.experience ?? []}
+        experienceDataError={experienceResult.errorMessage}
+        introSections={introResult.data?.sections ?? []}
+        introDataError={introResult.errorMessage}
+      />
     </div>
   );
 }

@@ -1,12 +1,30 @@
 'use client';
 
-import { experienceData } from '../../../../data/profile';
+import type { ExperienceItem } from '../types';
 import { useMediaQuery } from '../../../../hooks';
 import { Badge } from '../../../ui/Badge';
+import InfoText from '../../../ui/InfoText';
 import ExperienceCard from './ExperienceCard';
 
-const ExperienceSection: React.FC = () => {
+interface ExperienceSectionProps {
+  experienceData: ExperienceItem[];
+  errorMessage?: string | null;
+}
+
+const ExperienceSection: React.FC<ExperienceSectionProps> = ({
+  experienceData,
+  errorMessage,
+}) => {
   const isXlOrAbove = useMediaQuery('--breakpoint-xl', 'min');
+
+  if (errorMessage) {
+    return (
+      <InfoText type="danger" title="데이터를 불러오지 못했습니다">
+        {errorMessage}
+      </InfoText>
+    );
+  }
+
   return (
     <div className="relative">
       {/* 타임라인 라인 */}

@@ -48,3 +48,8 @@ storybook-static
 public/storybook
 public/code
 /.cursor/rules/ai-work-guide.mdc
+
+# firebase admin secrets
+/secrets/*
+!/secrets/.gitkeep
+/local-data/**

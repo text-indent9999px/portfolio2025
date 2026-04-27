@@ -2,7 +2,7 @@
 
 import { usePathname, useSearchParams } from 'next/navigation';
 import { startTransition, useEffect, useId, useRef, useState } from 'react';
-import { profileTabItems, skillTabItems } from '../../../data/profile';
+import { profileTabItems } from '../../../data/profile/tabs';
 import { useRouter as useCustomRouter } from '../../../utils/router';
 import Blank from '../../ui/Blank';
 import { SectionHeader } from '../../ui/Heading';
@@ -10,8 +10,32 @@ import { PrimaryTab } from '../../ui/Tab';
 import { ExperienceSection } from './Experience';
 import { IntroSection } from './Intro';
 import { SkillSection } from './Skill';
+import type {
+  ExperienceItem,
+  IntroSectionItem,
+  SkillCategory,
+  SkillTabItem,
+} from './types';
 
-export function ProfileContent() {
+interface ProfileContentProps {
+  skillTabItems: SkillTabItem[];
+  skillCategories: Record<string, SkillCategory>;
+  skillDataError?: string | null;
+  experienceData: ExperienceItem[];
+  experienceDataError?: string | null;
+  introSections: IntroSectionItem[];
+  introDataError?: string | null;
+}
+
+export function ProfileContent({
+  skillTabItems,
+  skillCategories,
+  skillDataError,
+  experienceData,
+  experienceDataError,
+  introSections,
+  introDataError,
+}: ProfileContentProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
   const { navigateToUrl } = useCustomRouter();
@@ -162,17 +186,30 @@ export function ProfileContent() {
   const renderComponent = () => {
     switch (displayedTab) {
       case 'introduction':
-        return <IntroSection />;
+        return (
+          <IntroSection
+            sections={introSections}
+            errorMessage={introDataError}
+          />
+        );
       case 'skill':
         return (
           <SkillSection
             activeTab={activeSkillTab}
             displayedTab={displayedSkillTab}
             onTabChange={handleSkillTabChange}
+            skillTabItems={skillTabItems}
+            skillCategories={skillCategories}
+            errorMessage={skillDataError}
           />
         );
       case 'experience':
-        return <ExperienceSection />;
+        return (
+          <ExperienceSection
+            experienceData={experienceData}
+            errorMessage={experienceDataError}
+          />
+        );
       default:
         return null;
     }

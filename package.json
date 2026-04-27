@@ -12,6 +12,7 @@
     "build-storybook": "storybook build",
     "build:all": "npm run build-storybook && npm run build",
     "update:last-updated": "node scripts/update-last-updated.js",
+    "seed:portfolio": "tsx scripts/seed-portfolio.ts",
     "prepare": "node -e \"try { if(process.env.CI !== 'true' && !process.env.VERCEL) require('husky').install(); } catch(e) {}\""
   },
   "dependencies": {
@@ -20,6 +21,7 @@
     "@fortawesome/react-fontawesome": "^0.2.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "firebase-admin": "^13.8.0",
     "next": "^16.2.4",
     "react": "^0.0.0-experimental-6de32a5a-20250822",
     "react-dom": "^0.0.0-experimental-6de32a5a-20250822",
@@ -51,6 +53,7 @@
     "stylelint-config-standard": "^38.0.0",
     "stylelint-order": "^7.0.0",
     "tailwindcss": "^4.1.11",
+    "tsx": "^4.21.0",
     "typescript": "^5"
   }
 }

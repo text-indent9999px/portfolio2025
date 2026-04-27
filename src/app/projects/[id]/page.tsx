@@ -1,7 +1,7 @@
 import React from 'react';
 import { CenteredLayout } from '../../../components/layout';
 import { Detail } from '../../../components/pages/Projects';
-import { projectData } from '../../../data/projects';
+import { getProjectsData } from '../../../server/projects/projects';
 import NotFound from '../../not-found';
 
 interface ProjectDetailPageProps {
@@ -18,9 +18,14 @@ const ProjectDetailPage: React.FC<ProjectDetailPageProps> = async ({
   const { id } = await params;
   const { tab, codeSubTab } = await searchParams;
   const projectId = id;
+  const projectsResult = await getProjectsData();
+
+  if (!projectsResult.data) {
+    return <NotFound backHref="/projects" />;
+  }
 
   // 프로젝트 ID로 프로젝트 찾기
-  const project = projectData.find(p => p.meta.id === projectId);
+  const project = projectsResult.data.projects.find(p => p.meta.id === projectId);
 
   if (!project) {
     return <NotFound backHref="/projects" />;

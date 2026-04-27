@@ -1,7 +1,8 @@
 'use client';
 
 import { useId } from 'react';
-import { skillCategories, skillTabItems } from '../../../../data/profile';
+import type { SkillCategory, SkillTabItem } from '../types';
+import InfoText from '../../../ui/InfoText';
 import { SecondaryTab } from '../../../ui/Tab/Secondary';
 import SkillList from './SkillList';
 
@@ -9,14 +10,28 @@ interface SkillSectionProps {
   activeTab: string;
   displayedTab: string;
   onTabChange: (tab: string) => void;
+  skillTabItems: SkillTabItem[];
+  skillCategories: Record<string, SkillCategory>;
+  errorMessage?: string | null;
 }
 
 export default function SkillSection({
   activeTab,
   displayedTab,
   onTabChange,
+  skillTabItems,
+  skillCategories,
+  errorMessage,
 }: SkillSectionProps) {
   const uniqueId = useId();
+
+  if (errorMessage) {
+    return (
+      <InfoText type="danger" title="데이터를 불러오지 못했습니다">
+        {errorMessage}
+      </InfoText>
+    );
+  }
 
   return (
     <div className="flex flex-col gap-6">

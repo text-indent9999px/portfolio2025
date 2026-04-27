@@ -5,10 +5,16 @@ import { useEffect } from 'react';
 import { useScrollRestoration } from '../../../../hooks/useScrollRestoration';
 import { useRouter } from '../../../../utils/router';
 import Blank from '../../../ui/Blank';
+import InfoText from '../../../ui/InfoText';
 import { ProjectList } from '../list';
-import { projectData } from '../../../../data/projects';
+import type { ProjectDetail } from '../types';
 
-const List: React.FC = () => {
+interface ListProps {
+  projects: ProjectDetail[];
+  errorMessage?: string | null;
+}
+
+const List: React.FC<ListProps> = ({ projects, errorMessage }) => {
   // 스크롤 복원 훅 사용
   useScrollRestoration();
   const pathname = usePathname();
@@ -45,7 +51,13 @@ const List: React.FC = () => {
 
   return (
     <div className="min-h-screen">
-      <ProjectList projects={projectData} />
+      {errorMessage ? (
+        <InfoText type="danger" title="데이터를 불러오지 못했습니다">
+          {errorMessage}
+        </InfoText>
+      ) : (
+        <ProjectList projects={projects} />
+      )}
       <Blank height="5rem" bgColor="transparent" />
     </div>
   );
