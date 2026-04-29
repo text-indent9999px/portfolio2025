@@ -84,7 +84,7 @@ const Image: React.FC<ImageProps> = ({
     <NextImage
       {...nextImageShared}
       className={cn('w-full h-auto')}
-      quality={80}
+      quality={70}
     />
   );
 

@@ -6,7 +6,7 @@ const nextConfig: NextConfig = {
     viewTransition: true,
   },
   images: {
-    qualities: [50, 70, 75, 100],
+    qualities: [50, 70, 100],
   },
 };
 
