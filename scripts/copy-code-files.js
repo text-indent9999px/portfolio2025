@@ -17,7 +17,16 @@ const codePathMap = {
   'Toggle.tsx': 'src/components/ui/Toggle/Toggle.tsx',
   'Tooltip.tsx': 'src/components/ui/Tooltip/Tooltip.tsx',
   'router.ts': 'src/utils/router.ts',
+  'router.utils.ts': 'src/utils/router.utils.ts',
+  'NavigationContext.tsx': 'src/contexts/NavigationContext.tsx',
+  'ViewTransitionCompat.tsx':
+    'src/components/common/ViewTransitionCompat.tsx',
+  'ProjectCard.tsx': 'src/components/pages/Projects/list/ProjectCard.tsx',
   'themeDetector.ts': 'src/utils/themeDetector.ts',
+  'themeDetector.types.ts': 'src/utils/themeDetector.types.ts',
+  'AppProviders.tsx': 'src/components/providers/AppProviders.tsx',
+  'colors-theme.css': 'src/styles/colors-theme.css',
+  'colors-modes.css': 'src/styles/colors-modes.css',
   'ThemeToggle.tsx': 'src/components/ui/ThemeToggle/ThemeToggle.tsx',
   'Card.tsx': 'src/components/ui/Card/Card.tsx',
 };

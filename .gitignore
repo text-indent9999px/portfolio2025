@@ -53,3 +53,4 @@ public/code
 /secrets/*
 !/secrets/.gitkeep
 /local-data/**
+/scripts-local/**
