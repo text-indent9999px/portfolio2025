@@ -23,15 +23,20 @@ const DetailBackButton: React.FC<DetailBackButtonProps> = () => {
   };
 
   const handleBack = () => {
+    if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('data-vt-scope', 'projects-back');
+    }
     if (canGoBack) {
       navigateBack({
         useDefaultTransition: true,
+        transitionType: 'projects-back',
       });
     } else {
       // 리스트 페이지로
       navigateToUrl({
         url: '/projects',
         useDefaultTransition: true,
+        transitionType: 'projects-back',
       });
     }
   };

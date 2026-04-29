@@ -19,6 +19,19 @@ const Logo: React.FC<LogoProps> = ({
   height = 50,
 }) => {
   const { navigateToUrl } = useRouter();
+
+  const handleLogoClick = React.useCallback(async () => {
+    if (onClick) {
+      await onClick();
+    }
+
+    navigateToUrl({
+      url: '/',
+      useDefaultTransition: true,
+      transitionType: 'nav-forward',
+    });
+  }, [onClick, navigateToUrl]);
+
   return (
     <CustomButton
       interactive={false}
@@ -27,15 +40,7 @@ const Logo: React.FC<LogoProps> = ({
       className={`${className} font-kor-point`}
       data-cursor="hover"
       cursorTrigger={true}
-      onClick={
-        onClick
-          ? async () => {
-              await onClick();
-              navigateToUrl({ url: '/' });
-            }
-          : undefined
-      }
-      href={onClick ? undefined : '/'}
+      onClick={handleLogoClick}
       aria-label="포트폴리오 홈으로 이동"
       aria-roledescription="로고 버튼"
       style={{ padding: 0 }}

@@ -2,7 +2,6 @@
 
 import { usePathname, useSearchParams } from 'next/navigation';
 import {
-  startTransition,
   useCallback,
   useEffect,
   useId,
@@ -10,8 +9,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import { useMediaQuery } from '../../../../hooks';
-import { useRouter as useCustomRouter } from '../../../../utils/router';
+import { Skeleton } from '../../../ui/Skeleton';
 import { PrimaryTab } from '../../../ui/Tab';
 import { SecondaryTab } from '../../../ui/Tab/Secondary';
 import type {
@@ -74,10 +72,20 @@ export function ProjectTabsContent({
   initialCodeSubTab,
 }: ProjectTabsContentProps) {
   const uniqueId = useId();
-  const isXlOrAbove = useMediaQuery('--breakpoint-xl', 'min');
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const { navigateToUrl } = useCustomRouter();
+
+  const replaceQueryParams = useCallback(
+    (updater: (params: URLSearchParams) => void) => {
+      if (typeof window === 'undefined') return;
+      const params = new URLSearchParams(window.location.search);
+      updater(params);
+      const query = params.toString();
+      const url = query ? `${pathname}?${query}` : pathname;
+      window.history.replaceState(window.history.state, '', url);
+    },
+    [pathname]
+  );
 
   // 활성 탭 상태 - 서버에서 전달받은 initialTab 사용 (탭 인디케이터용)
   const [activeTab, setActiveTab] = useState<ProjectTab['type']>(() => {
@@ -222,9 +230,7 @@ export function ProjectTabsContent({
       pendingCodeSubTabRef.current = null;
     }
 
-    if (
-      codeSubTabParam !== activeCodeSubTab
-    ) {
+    if (codeSubTabParam !== activeCodeSubTab) {
       setActiveCodeSubTab(codeSubTabParam);
     }
   }, [searchParams, codeHighlights, activeCodeSubTab]);
@@ -242,19 +248,14 @@ export function ProjectTabsContent({
       setActiveCodeSubTab(tab);
 
       pendingCodeSubTabUrlSyncRef.current = window.setTimeout(() => {
-        const params = new URLSearchParams(searchParams.toString());
-        params.set('codeSubTab', tab);
-        const url = `${pathname}?${params.toString()}`;
-        navigateToUrl({
-          url,
-          useDefaultTransition: false,
-          transitionType: 'nav-forward',
-          replace: true,
+        replaceQueryParams(params => {
+          params.set('tab', 'code');
+          params.set('codeSubTab', tab);
         });
         pendingCodeSubTabUrlSyncRef.current = null;
       }, CODE_SUB_TAB_URL_SYNC_DELAY_MS);
     },
-    [pathname, navigateToUrl, searchParams]
+    [replaceQueryParams]
   );
 
   // 탭 변경 핸들러
@@ -269,28 +270,20 @@ export function ProjectTabsContent({
       }
 
       // 탭 인디케이터는 즉시 업데이트 (displayedTab은 useEffect에서 지연 업데이트)
-      startTransition(() => {
-        setActiveTab(tabId);
-      });
+      setActiveTab(tabId);
 
       pendingMainTabUrlSyncRef.current = window.setTimeout(() => {
-        const params = new URLSearchParams(searchParams.toString());
-        params.set('tab', tabId);
-        // 메인 탭이 code가 아닌 경우 codeSubTab 파라미터 제거
-        if (tabId !== 'code') {
-          params.delete('codeSubTab');
-        }
-        const url = `${pathname}?${params.toString()}`;
-        navigateToUrl({
-          url,
-          useDefaultTransition: false,
-          transitionType: 'nav-forward',
-          replace: true,
+        replaceQueryParams(params => {
+          params.set('tab', tabId);
+          // 메인 탭이 code가 아닌 경우 codeSubTab 파라미터 제거
+          if (tabId !== 'code') {
+            params.delete('codeSubTab');
+          }
         });
         pendingMainTabUrlSyncRef.current = null;
       }, MAIN_TAB_URL_SYNC_DELAY_MS);
     },
-    [pathname, navigateToUrl, searchParams]
+    [replaceQueryParams]
   );
 
   useEffect(() => {
@@ -357,36 +350,47 @@ export function ProjectTabsContent({
   };
 
   const tabContent = renderTabContent();
-  if (!tabContent) return null;
 
   // 공통 탭 네비게이션 및 패널 렌더링
   return (
     <>
       {/* 메인 탭 네비게이션 */}
-      {isXlOrAbove ? (
+      <div className="hidden xl:block">
         <PrimaryTab
           tabs={mainTabs}
           activeTab={activeTab}
           onTabChange={handleTabChange}
-          uniqueId={uniqueId}
-          className="mb-10"
+          uniqueId={`${uniqueId}-primary`}
+          className="mb-10 mt-8"
         />
-      ) : (
+      </div>
+      <div className="block xl:hidden">
         <SecondaryTab
           tabs={mainTabs}
           activeTab={activeTab}
           onTabChange={handleTabChange}
-          uniqueId={uniqueId}
-          className="mb-10"
+          uniqueId={`${uniqueId}-secondary`}
+          className="mb-5 mt-5"
         />
-      )}
+      </div>
       <div
         role="tabpanel"
         id={tabPanelId}
         aria-labelledby={tabPanelLabelledBy}
         className="space-y-6"
       >
-        {tabContent}
+        {tabContent ?? (
+          <div className="space-y-5">
+            <Skeleton width="34%" height="30px" radius="0.7rem" />
+            <div className="flex flex-col gap-4">
+              <Skeleton width="100%" height="18px" radius="0.6rem" />
+              <Skeleton width="96%" height="18px" radius="0.6rem" />
+              <Skeleton width="92%" height="18px" radius="0.6rem" />
+              <Skeleton width="98%" height="18px" radius="0.6rem" />
+              <Skeleton width="88%" height="18px" radius="0.6rem" />
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

@@ -1,9 +1,9 @@
-import Blank from '../../ui/Blank';
-import { BackButton } from '../../ui/Button';
-import { PageHeader } from '../../ui/Heading';
 import { getProfileExperienceData } from '../../../server/profile/experience';
 import { getProfileIntroData } from '../../../server/profile/intro';
 import { getProfileSkillsData } from '../../../server/profile/skills';
+import Blank from '../../ui/Blank';
+import { BackButton } from '../../ui/Button';
+import { PageHeader } from '../../ui/Heading';
 import { ProfileContent } from './ProfileContent';
 
 export default async function Profile() {

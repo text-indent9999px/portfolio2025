@@ -18,13 +18,13 @@ const DetailBackButton: React.FC<DetailBackButtonProps> = ({
   projectId,
   onBeforeBack,
 }) => {
-  const { history, canGoBack } = useNavigationHistory();
+  const { history, currentIndex, canGoBack } = useNavigationHistory();
   const { navigateBack, navigateToUrl } = useRouter();
 
   // 이전 페이지가 projects면 enablePageTransition false, 아니면 true
   const getEnablePageTransition = (): boolean => {
-    if (canGoBack && history.length > 1) {
-      const previousUrl = history[history.length - 2].url;
+    if (canGoBack && currentIndex > 0) {
+      const previousUrl = history[currentIndex - 1]?.url ?? '';
       return !previousUrl.includes('/projects');
     }
     return true; // 기본값
@@ -33,9 +33,13 @@ const DetailBackButton: React.FC<DetailBackButtonProps> = ({
   const handleBack = () => {
     onBeforeBack?.();
     const transitionRunId = Date.now();
+    if (typeof document !== 'undefined') {
+      document.documentElement.setAttribute('data-vt-scope', 'projects-back');
+    }
     if (canGoBack) {
       navigateBack({
         useDefaultTransition: true,
+        transitionType: 'projects-back',
         state:
           timestamp && transitionToken && projectId
             ? {
@@ -53,6 +57,7 @@ const DetailBackButton: React.FC<DetailBackButtonProps> = ({
       navigateToUrl({
         url: '/projects',
         useDefaultTransition: true,
+        transitionType: 'projects-back',
         state:
           timestamp && transitionToken && projectId
             ? {

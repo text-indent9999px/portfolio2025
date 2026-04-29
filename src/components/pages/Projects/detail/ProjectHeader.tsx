@@ -1,5 +1,5 @@
-import React from 'react';
 import { ViewTransitionCompat as ViewTransition } from '@/components/common/ViewTransitionCompat';
+import React from 'react';
 import { PageHeader } from '../../../ui/Heading';
 import { Pill } from '../../../ui/Pill';
 import type { ProjectDetail } from '../types';
@@ -22,13 +22,10 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
     ? `project-tags-${transitionNameMode}-${project.meta.id}-${timestamp}`
     : undefined;
   return (
-    <div className="mb-8">
+    <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-5">
         <div>
-          <ViewTransition
-            name={titleName}
-            update="none"
-          >
+          <ViewTransition name={titleName} update="none">
             <PageHeader
               title={project.meta.title}
               bottomSpacing="none"
@@ -37,11 +34,8 @@ const ProjectHeader: React.FC<ProjectHeaderProps> = ({
           </ViewTransition>
         </div>
       </div>
-      <ViewTransition
-        name={tagsName}
-        update="none"
-      >
-        <div className="flex flex-wrap gap-2 mb-4">
+      <ViewTransition name={tagsName} update="none">
+        <div className="flex flex-wrap gap-2">
           {project.meta.tags.map(tag => (
             <Pill key={tag} variant="soft" color="brand" size="sm">
               {tag}

@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { getThemeDetector } from '../../../utils/themeDetector';
 
 interface ProjectsVisualProps {
@@ -12,12 +12,29 @@ export const ProjectsVisual: React.FC<ProjectsVisualProps> = ({
   className = '',
   speed = 0.5,
 }) => {
+  const [isReady, setIsReady] = useState(false);
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const animationRef = useRef<number | undefined>(undefined);
   const timeRef = useRef<number>(0);
   const lastTimeRef = useRef<number>(0);
   const themeDetector =
     typeof window !== 'undefined' ? getThemeDetector() : null;
+
+  useEffect(() => {
+    let frameA = 0;
+    let frameB = 0;
+
+    frameA = requestAnimationFrame(() => {
+      frameB = requestAnimationFrame(() => {
+        setIsReady(true);
+      });
+    });
+
+    return () => {
+      cancelAnimationFrame(frameA);
+      cancelAnimationFrame(frameB);
+    };
+  }, []);
 
   // 색상 업데이트 함수
   const updateColors = () => {
@@ -47,6 +64,8 @@ export const ProjectsVisual: React.FC<ProjectsVisualProps> = ({
   };
 
   useEffect(() => {
+    if (!isReady) return;
+
     const canvas = canvasRef.current;
     if (!canvas) return;
 
@@ -287,7 +306,7 @@ export const ProjectsVisual: React.FC<ProjectsVisualProps> = ({
       unsubscribeTheme();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [speed]);
+  }, [speed, isReady]);
 
   return (
     <div
@@ -301,13 +320,15 @@ export const ProjectsVisual: React.FC<ProjectsVisualProps> = ({
         alignItems: 'center',
       }}
     >
-      <canvas
-        ref={canvasRef}
-        style={{
-          width: '80%',
-          height: '80%',
-        }}
-      />
+      {isReady && (
+        <canvas
+          ref={canvasRef}
+          style={{
+            width: '80%',
+            height: '80%',
+          }}
+        />
+      )}
     </div>
   );
 };

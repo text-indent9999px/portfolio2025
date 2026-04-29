@@ -11,6 +11,8 @@ import { useMediaQuery } from '../hooks/useMediaQuery';
 import { performNavigation, waitForRipple } from './router.utils';
 
 export function useTransitionNavigation() {
+  const TRANSITION_PRIME_TEST_ENABLED = true;
+
   const router = useNextRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -25,17 +27,23 @@ export function useTransitionNavigation() {
   const getCurrentNavigationState =
     navigation?.getCurrentNavigationState ?? (() => undefined);
   const setRippleComplete = navigation?.setRippleComplete ?? (() => {});
-  const addTransitionType = (
-    React as typeof React & {
-      unstable_addTransitionType?: (type: string) => void;
-      addTransitionType?: (type: string) => void;
-    }
-  ).unstable_addTransitionType ??
+  const setTransitionNavigating =
+    navigation?.setTransitionNavigating ?? (() => {});
+  const getIsTransitionNavigating =
+    navigation?.getIsTransitionNavigating ?? (() => false);
+  const transitionNavigatingState = navigation?.isTransitionNavigating ?? false;
+  const addTransitionType =
+    (
+      React as typeof React & {
+        unstable_addTransitionType?: (type: string) => void;
+        addTransitionType?: (type: string) => void;
+      }
+    ).unstable_addTransitionType ??
     (React as typeof React & { addTransitionType?: (type: string) => void })
       .addTransitionType;
 
-  const isNavigatingRef = React.useRef(false);
-  const [isNavigating, setIsNavigating] = React.useState(false);
+  const localNavigatingRef = React.useRef(false);
+  const [localIsNavigating, setLocalIsNavigating] = React.useState(false);
   const historyRef = React.useRef(history);
   const currentIndexRef = React.useRef(currentIndex);
   const previousPathnameRef = React.useRef<string>(pathname);
@@ -43,7 +51,59 @@ export function useTransitionNavigation() {
   const setIsNavigatingRef = React.useRef<((value: boolean) => void) | null>(
     null
   );
-  setIsNavigatingRef.current = setIsNavigating;
+  setIsNavigatingRef.current = setLocalIsNavigating;
+
+  const isNavigatingNow = () => {
+    if (navigation) {
+      return getIsTransitionNavigating();
+    }
+    return localNavigatingRef.current;
+  };
+
+  const setNavigating = (value: boolean) => {
+    if (navigation) {
+      setTransitionNavigating(value);
+      return;
+    }
+    localNavigatingRef.current = value;
+    setLocalIsNavigating(value);
+  };
+
+  const emitUiFreeze = () => {
+    if (typeof window === 'undefined') return;
+    window.dispatchEvent(new CustomEvent('vt-freeze-ui'));
+  };
+
+  const primeRouteForTransition = React.useCallback(
+    async (url: string) => {
+      if (!TRANSITION_PRIME_TEST_ENABLED) {
+        return;
+      }
+
+      const routerWithPrefetch = router as typeof router & {
+        prefetch?: (target: string) => Promise<void> | void;
+      };
+
+      if (typeof routerWithPrefetch.prefetch === 'function') {
+        try {
+          await Promise.race([
+            Promise.resolve(routerWithPrefetch.prefetch(url)),
+            new Promise(resolve => window.setTimeout(resolve, 300)),
+          ]);
+        } catch {
+          // 실험 단계에서는 prefetch 실패를 무시한다.
+        }
+      }
+
+      await new Promise<void>(resolve => {
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => resolve());
+        });
+      });
+
+    },
+    [router]
+  );
 
   React.useEffect(() => {
     historyRef.current = history;
@@ -53,13 +113,25 @@ export function useTransitionNavigation() {
   // pathname 변경 시 로딩 상태 해제
   React.useEffect(() => {
     const previousPathname = previousPathnameRef.current;
-    if (previousPathname !== pathname) {
+    const currentSearchParams = searchParams.toString();
+    const previousSearchParams = previousSearchParamsRef.current;
+    const hasUrlChanged =
+      previousPathname !== pathname ||
+      previousSearchParams !== currentSearchParams;
+
+    if (hasUrlChanged) {
       previousPathnameRef.current = pathname;
+      previousSearchParamsRef.current = currentSearchParams;
+
+      // 실제로 네비게이션을 시작한 인스턴스에서만 리셋 처리한다.
+      if (!isNavigatingNow()) {
+        return;
+      }
+
       setRippleComplete(false);
-      setIsNavigating(false);
-      isNavigatingRef.current = false;
+      setNavigating(false);
     }
-  }, [pathname, setRippleComplete]);
+  }, [pathname, searchParams, setRippleComplete, navigation]);
 
   const navigateToUrl = React.useCallback(
     ({
@@ -79,15 +151,33 @@ export function useTransitionNavigation() {
         return;
       }
 
-      // replace인 경우: 히스토리만 교체하고 router.replace 호출 (네비게이션 상태 변경 없음)
+      // replace 경로는 전환 트리거와 상태 후처리를 분리해 단순화한다.
       if (replace) {
         navigateTo?.(url, state, replace);
-        router.replace(url);
+        const currentUrl = (() => {
+          const query = searchParams.toString();
+          return query ? `${pathname}?${query}` : pathname;
+        })();
+
+        if (currentUrl === url) {
+          return;
+        }
+
+        emitUiFreeze();
+        performNavigation(
+          router,
+          url,
+          useDefaultTransition,
+          transitionType,
+          addTransitionType,
+          startTransition,
+          true
+        );
         return;
       }
 
       // replace가 아닌 경우: 기존 로직 유지
-      if (isNavigatingRef.current) {
+      if (isNavigatingNow()) {
         return;
       }
 
@@ -95,13 +185,14 @@ export function useTransitionNavigation() {
         return;
       }
 
-      waitForRipple(isXlOrAbove).then(() => {
+      waitForRipple(isXlOrAbove).then(async () => {
         setRippleComplete(true);
-        isNavigatingRef.current = true;
-        setIsNavigating(true);
+        setNavigating(true);
         window.dispatchEvent(new CustomEvent('cursor-reset'));
 
         navigateTo?.(url, state, replace);
+        await primeRouteForTransition(url);
+        emitUiFreeze();
 
         performNavigation(
           router,
@@ -121,6 +212,7 @@ export function useTransitionNavigation() {
       setRippleComplete,
       pathname,
       isXlOrAbove,
+      primeRouteForTransition,
     ]
   );
 
@@ -134,16 +226,18 @@ export function useTransitionNavigation() {
       transitionType?: string;
       state?: Record<string, unknown>;
     } = {}) => {
-      if (isNavigatingRef.current) return;
+      if (isNavigatingNow()) {
+        return;
+      }
 
-      waitForRipple(isXlOrAbove).then(() => {
+      waitForRipple(isXlOrAbove).then(async () => {
         const latestHistory = historyRef.current;
         const latestCurrentIndex = currentIndexRef.current;
         const latestCanGoBack = latestCurrentIndex > 0;
 
         if (!latestCanGoBack) {
-          isNavigatingRef.current = false;
-          setIsNavigating(false);
+          setNavigating(false);
+          emitUiFreeze();
           performNavigation(
             router,
             '/',
@@ -158,29 +252,26 @@ export function useTransitionNavigation() {
 
         const previousEntry = latestHistory[latestCurrentIndex - 1];
         if (!previousEntry || !previousEntry.url) {
-          isNavigatingRef.current = false;
-          setIsNavigating(false);
+          setNavigating(false);
           return;
         }
 
         setRippleComplete(true);
-        isNavigatingRef.current = true;
-        setIsNavigating(true);
+        setNavigating(true);
         setHistoryIndexBack?.(state);
         window.dispatchEvent(new CustomEvent('cursor-reset'));
+        await primeRouteForTransition(previousEntry.url);
+        emitUiFreeze();
 
-        // 단일 requestAnimationFrame으로 변경
-        requestAnimationFrame(() => {
-          performNavigation(
-            router,
-            previousEntry.url,
-            useDefaultTransition,
-            transitionType,
-            addTransitionType,
-            startTransition,
-            false
-          );
-        });
+        performNavigation(
+          router,
+          previousEntry.url,
+          useDefaultTransition,
+          transitionType,
+          addTransitionType,
+          startTransition,
+          false
+        );
       });
     },
     [
@@ -189,6 +280,7 @@ export function useTransitionNavigation() {
       router,
       setRippleComplete,
       isXlOrAbove,
+      primeRouteForTransition,
     ]
   );
 
@@ -200,9 +292,9 @@ export function useTransitionNavigation() {
       useDefaultTransition?: boolean;
       transitionType?: string;
     } = {}) => {
-      if (isNavigatingRef.current) return;
+      if (isNavigatingNow()) return;
 
-      waitForRipple(isXlOrAbove).then(() => {
+      waitForRipple(isXlOrAbove).then(async () => {
         const latestHistory = historyRef.current;
         const latestCurrentIndex = currentIndexRef.current;
         const latestCanGoForward =
@@ -213,11 +305,13 @@ export function useTransitionNavigation() {
         const nextEntry = latestHistory[latestCurrentIndex + 1];
         if (!nextEntry || !nextEntry.url) return;
 
-        isNavigatingRef.current = true;
+        setNavigating(true);
         setHistoryIndexForward?.();
         window.dispatchEvent(new CustomEvent('cursor-reset'));
+        await primeRouteForTransition(nextEntry.url);
 
         requestAnimationFrame(() => {
+          emitUiFreeze();
           performNavigation(
             router,
             nextEntry.url,
@@ -227,9 +321,9 @@ export function useTransitionNavigation() {
             startTransition,
             false
           );
-          // isNavigatingRef는 boolean이므로 resetNavigationFlag 대신 직접 설정
+          // forward 경로는 URL 변경 이펙트 전에 플래그를 한 번 더 안전 해제한다.
           requestAnimationFrame(() => {
-            isNavigatingRef.current = false;
+            setNavigating(false);
             if (setIsNavigatingRef.current) {
               setIsNavigatingRef.current(false);
             }
@@ -237,10 +331,17 @@ export function useTransitionNavigation() {
         });
       });
     },
-    [setHistoryIndexForward, startTransition, router, isXlOrAbove]
+    [
+      setHistoryIndexForward,
+      startTransition,
+      router,
+      isXlOrAbove,
+      primeRouteForTransition,
+    ]
   );
 
-  const finalIsPending = isNavigating || isPending;
+  const finalIsPending =
+    transitionNavigatingState || localIsNavigating || isPending;
 
   return {
     navigateToUrl,

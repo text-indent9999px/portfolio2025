@@ -6,13 +6,13 @@ import { useRouter } from '../../../../utils/router';
 import { BackButton } from '../../../ui/Button';
 
 const ListBackButton: React.FC = () => {
-  const { history, canGoBack } = useNavigationHistory();
+  const { history, currentIndex, canGoBack } = useNavigationHistory();
   const { navigateBack, navigateToUrl } = useRouter();
 
   // 이전 페이지가 projects detail면 enablePageTransition false, 아니면 true
   const getEnablePageTransition = (): boolean => {
-    if (canGoBack && history.length > 1) {
-      const previousUrl = history[history.length - 2].url;
+    if (canGoBack && currentIndex > 0) {
+      const previousUrl = history[currentIndex - 1]?.url ?? '';
       return !previousUrl.includes('/projects/');
     }
     return true; // 기본값

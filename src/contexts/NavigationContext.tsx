@@ -106,6 +106,9 @@ interface NavigationContextType {
   ) => void;
   isRippleComplete: boolean;
   setRippleComplete: (value: boolean) => void;
+  isTransitionNavigating: boolean;
+  setTransitionNavigating: (value: boolean) => void;
+  getIsTransitionNavigating: () => boolean;
 }
 
 const NavigationContext = createContext<NavigationContextType | null>(null);
@@ -114,8 +117,48 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
   const [history, setHistory] = useState<NavigationEntry[]>([]);
   const [currentIndex, setCurrentIndex] = useState(0);
   const [isRippleComplete, setIsRippleComplete] = useState(false);
+  const [isTransitionNavigating, setIsTransitionNavigatingState] =
+    useState(false);
   const previousUrlRef = useRef<string | null>(null);
+  const historyRef = useRef<NavigationEntry[]>([]);
+  const currentIndexRef = useRef(0);
+  const transitionNavigatingRef = useRef(false);
+  const transitionNavigatingTimeoutRef = useRef<number | null>(null);
   const { isXlOrAbove } = useDevice();
+
+  useEffect(() => {
+    historyRef.current = history;
+    currentIndexRef.current = currentIndex;
+  }, [history, currentIndex]);
+
+  const setTransitionNavigating = (value: boolean) => {
+    if (transitionNavigatingTimeoutRef.current !== null) {
+      window.clearTimeout(transitionNavigatingTimeoutRef.current);
+      transitionNavigatingTimeoutRef.current = null;
+    }
+
+    transitionNavigatingRef.current = value;
+    setIsTransitionNavigatingState(value);
+
+    if (value) {
+      // URL 변경 이벤트 누락/언마운트 경합 대비 안전 해제
+      transitionNavigatingTimeoutRef.current = window.setTimeout(() => {
+        transitionNavigatingRef.current = false;
+        setIsTransitionNavigatingState(false);
+        transitionNavigatingTimeoutRef.current = null;
+      }, 1800);
+    }
+  };
+
+  const getIsTransitionNavigating = () => transitionNavigatingRef.current;
+
+  useEffect(() => {
+    return () => {
+      if (transitionNavigatingTimeoutRef.current !== null) {
+        window.clearTimeout(transitionNavigatingTimeoutRef.current);
+      }
+    };
+  }, []);
 
   // 계산된 상태들
   const canGoBack = currentIndex > 0;
@@ -123,8 +166,9 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
 
   // 네비게이션 함수들 (상태만 업데이트, 실제 네비게이션은 router.ts에서 처리)
   const setHistoryIndexBack = (state?: Record<string, unknown>) => {
-    if (canGoBack) {
-      const newIndex = currentIndex - 1;
+    const latestIndex = currentIndexRef.current;
+    if (latestIndex > 0) {
+      const newIndex = latestIndex - 1;
 
       // state가 있으면 이전 엔트리의 state만 업데이트
       if (state !== undefined) {
@@ -145,8 +189,9 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
   };
 
   const setHistoryIndexForward = () => {
-    if (canGoForward) {
-      const newIndex = currentIndex + 1;
+    const latestIndex = currentIndexRef.current;
+    if (latestIndex < historyRef.current.length - 1) {
+      const newIndex = latestIndex + 1;
       setCurrentIndex(newIndex);
     }
   };
@@ -157,6 +202,9 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
     replace = false
   ) => {
     const currentScrollY = getScrollY(isXlOrAbove);
+    const latestHistory = historyRef.current;
+    const latestIndex = currentIndexRef.current;
+    const hasHistory = latestHistory.length > 0;
 
     // URL 변경 시 로그 출력 (navigateTo 호출 시점에 바로 출력)
     if (url && url !== previousUrlRef.current) {
@@ -164,12 +212,12 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
     }
 
     // replace가 true인 경우: 현재 인덱스의 엔트리만 교체 (히스토리 길이 유지)
-    if (replace && history.length > 0) {
+    if (replace && hasHistory) {
       setHistory(prev => {
         const updatedHistory = [...prev];
-        if (updatedHistory[currentIndex]) {
-          const previousState = updatedHistory[currentIndex].state;
-          updatedHistory[currentIndex] = {
+        if (updatedHistory[latestIndex]) {
+          const previousState = updatedHistory[latestIndex].state;
+          updatedHistory[latestIndex] = {
             url,
             scrollY: currentScrollY,
             timestamp: Date.now(),
@@ -182,15 +230,15 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
     }
 
     // 먼저 같은 URL인지 확인
-    const isSameUrl = history.length > 0 && history[currentIndex]?.url === url;
+    const isSameUrl = hasHistory && latestHistory[latestIndex]?.url === url;
 
     setHistory(prev => {
       // 같은 URL로 이동하는 경우: 해당 엔트리만 업데이트 (배열 복사 최소화)
       if (isSameUrl) {
         const updatedHistory = [...prev];
-        const previousState = updatedHistory[currentIndex]?.state;
-        updatedHistory[currentIndex] = {
-          ...updatedHistory[currentIndex],
+        const previousState = updatedHistory[latestIndex]?.state;
+        updatedHistory[latestIndex] = {
+          ...updatedHistory[latestIndex],
           scrollY: currentScrollY,
           timestamp: Date.now(),
           state: state ?? previousState, // state 미전달 시 기존 state 보존
@@ -200,7 +248,7 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
 
       // 다른 URL로 이동하는 경우
       // currentIndex 이후의 항목들을 제거하고 새 항목 추가
-      const updatedHistory = prev.slice(0, currentIndex + 1);
+      const updatedHistory = prev.slice(0, latestIndex + 1);
 
       // 마지막 엔트리의 스크롤 값만 업데이트 (새 엔트리 추가 전)
       if (updatedHistory.length > 0) {
@@ -225,11 +273,11 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
         : updatedHistory;
     });
 
-    // 같은 URL이 아닌 경우에만 currentIndex 증가 (setHistory 밖에서 처리)
+    // 같은 URL이 아닌 경우, 최신 인덱스 기준으로 다음 인덱스를 명시적으로 계산한다.
+    // (뒤로가기 직후 빠른 재이동 시 stale currentIndex 문제 방지)
     if (!isSameUrl) {
-      setCurrentIndex(prevIndex =>
-        Math.min(prevIndex + 1, MAX_HISTORY_LENGTH - 1)
-      );
+      const nextIndex = Math.min(latestIndex + 1, MAX_HISTORY_LENGTH - 1);
+      setCurrentIndex(nextIndex);
     }
   };
 
@@ -265,7 +313,8 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
 
       // 히스토리에서 현재 URL과 일치하는 항목 찾기
       setHistory(prev => {
-        const urlIndex = prev.findIndex(entry => entry.url === currentUrl);
+        // 같은 URL이 여러 번 존재할 수 있으므로, 가장 최근 인덱스를 기준으로 동기화
+        const urlIndex = prev.findLastIndex(entry => entry.url === currentUrl);
         if (urlIndex !== -1) {
           setCurrentIndex(urlIndex);
           const entry = prev[urlIndex];
@@ -308,6 +357,9 @@ export function NavigationProvider({ children }: { children: ReactNode }) {
     setUrlHistory: setHistory,
     isRippleComplete,
     setRippleComplete: setIsRippleComplete,
+    isTransitionNavigating,
+    setTransitionNavigating,
+    getIsTransitionNavigating,
   };
 
   return (

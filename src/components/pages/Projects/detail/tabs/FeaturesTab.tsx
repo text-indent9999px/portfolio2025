@@ -1,5 +1,4 @@
 import React from 'react';
-import { useMediaQuery } from '../../../../../hooks';
 import { Badge } from '../../../../ui/Badge';
 import { SectionHeader } from '../../../../ui/Heading';
 import type {
@@ -17,14 +16,14 @@ const FeaturesTab: React.FC<FeaturesTabProps> = ({ project }) => {
   );
   const features = featuresTab?.payload?.features ?? [];
   const title = featuresTab?.label ?? '주요 구현 사항';
-  const isXlOrAbove = useMediaQuery('--breakpoint-xl', 'min');
 
   return (
     <div>
       <SectionHeader
         size={2}
         title={title}
-        bottomSpacing={isXlOrAbove ? 'xs' : 'sm'}
+        bottomSpacing="none"
+        className={{ root: 'mb-6 xl:mb-4' }}
         visualSize="lg"
       />
       <ul className="space-y-3">

@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useCallback, useEffect, useId, useMemo, useState } from 'react';
-import { useMediaQuery } from '../../../../../hooks';
 import { SectionHeader } from '../../../../ui/Heading';
 import { SecondaryTab } from '../../../../ui/Tab/Secondary';
 import type { CodeTab as CodeTabType, ProjectDetail } from '../../types';
@@ -16,7 +15,6 @@ interface CodeTabProps {
 
 const CodeTab: React.FC<CodeTabProps> = React.memo(
   ({ project, activeSubTab, onSubTabChange }) => {
-    const isXlOrAbove = useMediaQuery('--breakpoint-xl', 'min');
     const uniqueId = useId();
 
     // 코드 탭 데이터 추출
@@ -134,7 +132,8 @@ const CodeTab: React.FC<CodeTabProps> = React.memo(
         <SectionHeader
           size={2}
           title={title}
-          bottomSpacing={isXlOrAbove ? 'xs' : 'sm'}
+          bottomSpacing="none"
+          className={{ root: 'mb-6 xl:mb-4' }}
           visualSize="lg"
         />
 
@@ -143,7 +142,7 @@ const CodeTab: React.FC<CodeTabProps> = React.memo(
           tabs={tabsArray}
           activeTab={activeTab}
           onTabChange={handleTabChange}
-          className="mb-4"
+          className="mb-4 -mt-3 max-xl:-mt-4"
         />
 
         <div

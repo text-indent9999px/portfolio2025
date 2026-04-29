@@ -1,12 +1,14 @@
 'use client';
 
 import { usePathname, useSearchParams } from 'next/navigation';
-import { startTransition, useEffect, useId, useRef, useState } from 'react';
+import { useEffect, useId, useRef, useState } from 'react';
 import { profileTabItems } from '../../../data/profile/tabs';
 import { useRouter as useCustomRouter } from '../../../utils/router';
 import Blank from '../../ui/Blank';
 import { SectionHeader } from '../../ui/Heading';
+import { Skeleton } from '../../ui/Skeleton';
 import { PrimaryTab } from '../../ui/Tab';
+import { SecondaryTab } from '../../ui/Tab/Secondary';
 import { ExperienceSection } from './Experience';
 import { IntroSection } from './Intro';
 import { SkillSection } from './Skill';
@@ -19,6 +21,8 @@ import type {
 
 const MAIN_TAB_URL_SYNC_DELAY_MS = 260;
 const SKILL_TAB_URL_SYNC_DELAY_MS = 260;
+const SKELETON_SHOW_DELAY_MS = 160;
+const SKELETON_MIN_VISIBLE_MS = 280;
 
 interface ProfileContentProps {
   skillTabItems: SkillTabItem[];
@@ -41,8 +45,65 @@ export function ProfileContent({
 }: ProfileContentProps) {
   const searchParams = useSearchParams();
   const pathname = usePathname();
-  const { navigateToUrl } = useCustomRouter();
+  const { isPending } = useCustomRouter();
   const uniqueId = useId();
+  const [hasRenderedContent, setHasRenderedContent] = useState(false);
+  const [showSkeleton, setShowSkeleton] = useState(false);
+  const skeletonShownAtRef = useRef<number | null>(null);
+  const showTimerRef = useRef<number | null>(null);
+  const hideTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    if (!isPending) {
+      setHasRenderedContent(true);
+    }
+  }, [isPending]);
+
+  useEffect(() => {
+    const shouldShowSkeleton = isPending && !hasRenderedContent;
+
+    if (showTimerRef.current !== null) {
+      window.clearTimeout(showTimerRef.current);
+      showTimerRef.current = null;
+    }
+    if (hideTimerRef.current !== null) {
+      window.clearTimeout(hideTimerRef.current);
+      hideTimerRef.current = null;
+    }
+
+    if (shouldShowSkeleton) {
+      showTimerRef.current = window.setTimeout(() => {
+        skeletonShownAtRef.current = Date.now();
+        setShowSkeleton(true);
+      }, SKELETON_SHOW_DELAY_MS);
+      return;
+    }
+
+    if (!showSkeleton) {
+      setShowSkeleton(false);
+      return;
+    }
+
+    const shownAt = skeletonShownAtRef.current ?? Date.now();
+    const elapsedMs = Date.now() - shownAt;
+    const remainingMs = Math.max(SKELETON_MIN_VISIBLE_MS - elapsedMs, 0);
+
+    hideTimerRef.current = window.setTimeout(() => {
+      skeletonShownAtRef.current = null;
+      setShowSkeleton(false);
+    }, remainingMs);
+  }, [isPending, hasRenderedContent, showSkeleton]);
+
+  useEffect(() => {
+    return () => {
+      if (showTimerRef.current !== null) {
+        window.clearTimeout(showTimerRef.current);
+      }
+      if (hideTimerRef.current !== null) {
+        window.clearTimeout(hideTimerRef.current);
+      }
+    };
+  }, []);
 
   // 메인 탭 초기값: URL 파라미터 또는 기본값
   const getInitialTab = (params: URLSearchParams) => {
@@ -80,6 +141,15 @@ export function ProfileContent({
   const pendingSkillTabRef = useRef<string | null>(null);
   const pendingMainTabUrlSyncRef = useRef<number | null>(null);
   const pendingSkillTabUrlSyncRef = useRef<number | null>(null);
+
+  const replaceQueryParams = (updater: (params: URLSearchParams) => void) => {
+    if (typeof window === 'undefined') return;
+    const params = new URLSearchParams(window.location.search);
+    updater(params);
+    const query = params.toString();
+    const url = query ? `${pathname}?${query}` : pathname;
+    window.history.replaceState(window.history.state, '', url);
+  };
 
   // URL 파라미터 변경 감지 (메인 탭)
   useEffect(() => {
@@ -148,23 +218,15 @@ export function ProfileContent({
       pendingMainTabUrlSyncRef.current = null;
     }
 
-    startTransition(() => {
-      setActiveTab(tab);
-    });
+    setActiveTab(tab);
 
     pendingMainTabUrlSyncRef.current = window.setTimeout(() => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set('tab', tab);
-      // 메인 탭이 skill이 아닌 경우 skillTab 파라미터 제거
-      if (tab !== 'skill') {
-        params.delete('skillTab');
-      }
-      const url = `${pathname}?${params.toString()}`;
-      navigateToUrl({
-        url,
-        useDefaultTransition: false,
-        transitionType: 'nav-forward',
-        replace: true,
+      replaceQueryParams(params => {
+        params.set('tab', tab);
+        // 메인 탭이 skill이 아닌 경우 skillTab 파라미터 제거
+        if (tab !== 'skill') {
+          params.delete('skillTab');
+        }
       });
       pendingMainTabUrlSyncRef.current = null;
     }, MAIN_TAB_URL_SYNC_DELAY_MS);
@@ -181,14 +243,9 @@ export function ProfileContent({
     setActiveSkillTab(skillTab);
 
     pendingSkillTabUrlSyncRef.current = window.setTimeout(() => {
-      const params = new URLSearchParams(searchParams.toString());
-      params.set('skillTab', skillTab);
-      const url = `${pathname}?${params.toString()}`;
-      navigateToUrl({
-        url,
-        useDefaultTransition: false,
-        transitionType: 'nav-forward',
-        replace: true,
+      replaceQueryParams(params => {
+        params.set('tab', 'skill');
+        params.set('skillTab', skillTab);
       });
       pendingSkillTabUrlSyncRef.current = null;
     }, SKILL_TAB_URL_SYNC_DELAY_MS);
@@ -218,6 +275,35 @@ export function ProfileContent({
   }, []);
 
   if (!displayedTabConfig) return null;
+
+  if (showSkeleton) {
+    return (
+      <>
+        <Skeleton
+          width="100%"
+          height="60px"
+          radius="3rem"
+          className="max-xl:!h-[45px] max-xl:!rounded-[0.5rem] mb-10 mt-5"
+        />
+        <Skeleton width="36%" height="30px" radius="0.7rem" />
+        <Blank height="1.5rem" bgColor="transparent" />
+        <div className="flex flex-col gap-4">
+          <Skeleton width="100%" height="18px" radius="0.6rem" />
+          <Skeleton width="96%" height="18px" radius="0.6rem" />
+          <Skeleton width="92%" height="18px" radius="0.6rem" />
+          <Skeleton width="98%" height="18px" radius="0.6rem" />
+          <Skeleton width="88%" height="18px" radius="0.6rem" />
+          <Skeleton width="95%" height="18px" radius="0.6rem" />
+          <Skeleton width="90%" height="18px" radius="0.6rem" />
+          <Skeleton width="97%" height="18px" radius="0.6rem" />
+          <Skeleton width="86%" height="18px" radius="0.6rem" />
+          <Skeleton width="93%" height="18px" radius="0.6rem" />
+          <Skeleton width="89%" height="18px" radius="0.6rem" />
+        </div>
+        <Blank height="1.5rem" bgColor="transparent" />
+      </>
+    );
+  }
 
   const renderComponent = () => {
     switch (displayedTab) {
@@ -253,13 +339,24 @@ export function ProfileContent({
 
   return (
     <>
-      <PrimaryTab
-        tabs={profileTabItems}
-        activeTab={activeTab}
-        onTabChange={handleTabChange}
-        className="mt-5 mb-10"
-        uniqueId={uniqueId}
-      />
+      <div className="hidden xl:block">
+        <PrimaryTab
+          tabs={profileTabItems}
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
+          className="mb-10 mt-5"
+          uniqueId={`${uniqueId}-primary`}
+        />
+      </div>
+      <div className="block xl:hidden">
+        <SecondaryTab
+          tabs={profileTabItems}
+          activeTab={activeTab}
+          onTabChange={handleTabChange}
+          className="mb-8 mt-3"
+          uniqueId={`${uniqueId}-secondary`}
+        />
+      </div>
       <div
         id={`panel-${activeTab}-${uniqueId}`}
         role="tabpanel"

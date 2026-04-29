@@ -1,158 +1,213 @@
 /* ===== View Transition 애니메이션 ===== */
 
-/* ===== slide-out: 뒤로 가기(nav-back) 전환 시 사용 ===== */
-/* ViewTransition 컴포넌트의 share={{ 'nav-back': 'slide-out' }}로 설정된 경우 사용 */
-/* 이전 페이지(old)는 가만히 있다가 오른쪽으로 사라지고, 새 페이지(new)는 작게 시작해서 확대되며 나타남 */
-::view-transition-old(.slide-out) {
-  animation: stay-in-place-then-right 200ms ease-in-out;
-  animation-fill-mode: forwards;
-  z-index: 2;
-}
-::view-transition-new(.slide-out) {
-  animation: slide-in-from-right-delayed 300ms ease-in-out;
-  animation-fill-mode: forwards;
-  z-index: 1;
-}
-
-@container style(--device: desktop) {
-  ::view-transition-old(.slide-out) {
-    animation-duration: 400ms;
-  }
-  ::view-transition-new(.slide-out) {
-    animation-duration: 600ms;
-  }
-}
-
-/* ===== slide-in: 앞으로 가기(nav-forward) 전환 시 사용 ===== */
-/* ViewTransition 컴포넌트의 share={{ 'nav-forward': 'slide-in' }}로 설정된 경우 사용 */
-/* 이전 페이지(old)는 가만히 있다가 블러되며 사라지고, 새 페이지(new)는 오른쪽에서 슬라이드되며 나타남 */
-::view-transition-old(.slide-in) {
+/* page-content를 전역 전환의 단일 앵커로 사용한다. */
+::view-transition-old(page-content) {
   animation: stay-in-place 300ms ease-in-out;
   animation-fill-mode: forwards;
   z-index: 1;
 }
 
-::view-transition-new(.slide-in) {
+::view-transition-new(page-content) {
   animation: slide-in-from-right 300ms ease-in-out;
   animation-fill-mode: forwards;
   z-index: 2;
 }
 
 @container style(--device: desktop) {
-  ::view-transition-old(.slide-in) {
+  ::view-transition-old(page-content) {
     animation-duration: 600ms;
   }
-  ::view-transition-new(.slide-in) {
+
+  ::view-transition-new(page-content) {
     animation-duration: 600ms;
+  }
+
+  html:active-view-transition-type(nav-back)::view-transition-old(
+      page-content
+    ) {
+    animation-duration: 760ms;
+  }
+
+  html:active-view-transition-type(nav-back)::view-transition-new(
+      page-content
+    ) {
+    animation-duration: 980ms;
   }
 }
 
-/* ===== page-content: 기본 페이지 전환 시 사용 ===== */
-/* ViewTransition 컴포넌트의 name="page-content"로 설정된 경우 사용 */
-/* default 전환 타입이거나 특정 전환 타입이 지정되지 않았을 때 사용 */
-::view-transition-old(.page-content) {
-  animation: page-stay-in-place 300ms ease-in-out;
-  animation-fill-mode: forwards;
-  z-index: 1;
+/* transition type이 감지되면 방향별 전환을 우선 적용한다. */
+html:active-view-transition-type(nav-forward)::view-transition-old(
+    page-content
+  ) {
+  animation-name: stay-in-place;
 }
 
-::view-transition-new(.page-content) {
-  animation: page-slide-in 300ms ease-in-out;
-  animation-fill-mode: forwards;
+html:active-view-transition-type(nav-forward)::view-transition-new(
+    page-content
+  ) {
+  animation-name: slide-in-from-right;
+}
+
+html:active-view-transition-type(nav-back)::view-transition-old(page-content) {
+  animation-name: stay-in-place-then-right;
+  animation-duration: 460ms;
   z-index: 2;
 }
 
+html:active-view-transition-type(nav-back)::view-transition-new(page-content) {
+  animation-name: slide-in-from-right-delayed;
+  animation-duration: 620ms;
+  z-index: 1;
+}
+
+/* URL 동기화/프로젝트 복귀에서는 page-content 모션 간섭을 비활성화한다. */
+html:active-view-transition-type(query-sync)::view-transition-old(page-content),
+html:active-view-transition-type(query-sync)::view-transition-new(page-content),
+html:active-view-transition-type(projects-back)::view-transition-old(
+    page-content
+  ),
+html:active-view-transition-type(projects-back)::view-transition-new(
+    page-content
+  ) {
+  animation-name: page-content-static;
+  animation-duration: 1ms;
+  z-index: 1;
+}
+
+html[data-vt-scope='projects-back']::view-transition-old(page-content),
+html[data-vt-scope='projects-back']::view-transition-new(page-content) {
+  animation-name: page-content-static;
+  animation-duration: 1ms;
+  z-index: 1;
+}
+
+/* projects-back에서 page-content만 완전히 비가시화해 shared 레이어를 덮지 않게 한다. */
+html:active-view-transition-type(projects-back)::view-transition-group(
+    page-content
+  ),
+html:active-view-transition-type(projects-back)::view-transition-image-pair(
+    page-content
+  ),
+html:active-view-transition-type(projects-back)::view-transition-old(
+    page-content
+  ),
+html:active-view-transition-type(projects-back)::view-transition-new(
+    page-content
+  ),
+html[data-vt-scope='projects-back']::view-transition-group(page-content),
+html[data-vt-scope='projects-back']::view-transition-image-pair(page-content),
+html[data-vt-scope='projects-back']::view-transition-old(page-content),
+html[data-vt-scope='projects-back']::view-transition-new(page-content) {
+  animation: none !important;
+  opacity: 0 !important;
+}
+
+/* projects 리스트 <-> 디테일 shared name 그룹만 속도 조절 */
+html:active-view-transition-type(projects-forward)::view-transition-group(
+    project-title-back-*
+  ),
+html:active-view-transition-type(projects-forward)::view-transition-group(
+    project-description-back-*
+  ),
+html:active-view-transition-type(projects-forward)::view-transition-group(
+    project-tags-back-*
+  ),
+html:active-view-transition-type(projects-back)::view-transition-group(
+    project-title-back-*
+  ),
+html:active-view-transition-type(projects-back)::view-transition-group(
+    project-description-back-*
+  ),
+html:active-view-transition-type(projects-back)::view-transition-group(
+    project-tags-back-*
+  ) {
+  animation-duration: 760ms !important;
+}
+
 @container style(--device: desktop) {
-  ::view-transition-old(.page-content) {
-    animation-duration: 600ms;
-  }
-  ::view-transition-new(.page-content) {
-    animation-duration: 600ms;
+  html:active-view-transition-type(projects-forward)::view-transition-group(
+      project-title-back-*
+    ),
+  html:active-view-transition-type(projects-forward)::view-transition-group(
+      project-description-back-*
+    ),
+  html:active-view-transition-type(projects-forward)::view-transition-group(
+      project-tags-back-*
+    ),
+  html:active-view-transition-type(projects-back)::view-transition-group(
+      project-title-back-*
+    ),
+  html:active-view-transition-type(projects-back)::view-transition-group(
+      project-description-back-*
+    ),
+  html:active-view-transition-type(projects-back)::view-transition-group(
+      project-tags-back-*
+    ) {
+    animation-duration: 980ms !important;
   }
 }
 
-/* ===== 애니메이션 키프레임 정의 ===== */
-
-/* slide-in 전환 시 이전 페이지(old)에 사용되는 키프레임 */
-/* 페이지가 가만히 있다가 블러 효과와 함께 페이드아웃 */
 @keyframes stay-in-place {
   0% {
-    transform: translateX(0);
+    transform: translateX(0) scale(1);
     filter: blur(10px);
-    transform: scale(1);
     opacity: 1;
   }
   90% {
-    transform: translateX(0);
+    transform: translateX(0) scale(0.8);
     filter: blur(100px);
-    transform: scale(0.8);
   }
   100% {
     opacity: 0;
   }
 }
 
-/* slide-in 전환 시 새 페이지(new)에 사용되는 키프레임 */
-/* 오른쪽에서 왼쪽으로 슬라이드되며 나타남 */
 @keyframes slide-in-from-right {
-  from {
+  0% {
     transform: translateX(100%);
   }
-  to {
+  100% {
     transform: translateX(0);
   }
 }
 
-/* slide-out 전환 시 이전 페이지(old)에 사용되는 키프레임 */
-/* 페이지가 가만히 있다가 블러 효과와 함께 오른쪽으로 사라짐 */
 @keyframes stay-in-place-then-right {
   0% {
-    opacity: 1;
-    filter: blur(10px);
     transform: translateX(0);
+    filter: blur(10px);
+    opacity: 1;
   }
   50% {
-    opacity: 0.5;
-    filter: blur(10px);
     transform: translateX(0);
+    filter: blur(10px);
+    opacity: 0.5;
   }
   100% {
-    opacity: 0;
     transform: translateX(100%);
+    opacity: 0;
   }
 }
 
-/* slide-out 전환 시 새 페이지(new)에 사용되는 키프레임 */
-/* 작은 크기에서 시작해서 확대되며 나타남 (페이드인 효과 포함) */
 @keyframes slide-in-from-right-delayed {
   0% {
-    opacity: 0;
     transform: scale(0.8);
+    opacity: 0;
   }
   100% {
-    opacity: 1;
     transform: scale(1);
+    opacity: 1;
   }
 }
 
-/* page-content 전환 시 이전 페이지(old)에 사용되는 키프레임 */
-/* 페이지가 가만히 있음 (변화 없음) */
-@keyframes page-stay-in-place {
+@keyframes page-content-static {
   from {
     transform: translateX(0);
+    filter: blur(0);
+    opacity: 1;
   }
   to {
     transform: translateX(0);
-  }
-}
-
-/* page-content 전환 시 새 페이지(new)에 사용되는 키프레임 */
-/* 오른쪽에서 왼쪽으로 슬라이드되며 나타남 */
-@keyframes page-slide-in {
-  from {
-    transform: translateX(100%);
-  }
-  to {
-    transform: translateX(0);
+    filter: blur(0);
+    opacity: 1;
   }
 }

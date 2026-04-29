@@ -48,14 +48,7 @@ export function SplitLayoutClient({
   );
 
   return shouldUseViewTransition ? (
-    <ViewTransition
-      name={viewTransitionName}
-      share={{
-        default: 'fade',
-        'nav-forward': 'slide-in',
-        'nav-back': 'slide-out',
-      }}
-    >
+    <ViewTransition name={viewTransitionName}>
       {content}
     </ViewTransition>
   ) : (

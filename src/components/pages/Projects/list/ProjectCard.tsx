@@ -110,6 +110,7 @@ export function ProjectCard({ project }: ProjectCardProps) {
     navigateToUrl({
       url: `/projects/${project.meta.id}`,
       useDefaultTransition: true,
+      transitionType: 'projects-forward',
       state: {
         timestamp: nextTimestamp,
         transitionToken: nextTransitionToken,

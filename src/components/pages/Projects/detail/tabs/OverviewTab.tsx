@@ -2,7 +2,6 @@
 
 import React from 'react';
 import { ViewTransitionCompat as ViewTransition } from '@/components/common/ViewTransitionCompat';
-import { useMediaQuery } from '../../../../../hooks';
 import { SectionHeader } from '../../../../ui/Heading';
 import type {
   OverviewTab as OverviewTabType,
@@ -24,7 +23,6 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
     (t): t is OverviewTabType => t.type === 'overview'
   );
   const title = tab?.label ?? '제작 배경';
-  const isXlOrAbove = useMediaQuery('--breakpoint-xl', 'min');
   const descriptionName = timestamp
     ? `project-description-${transitionNameMode}-${project.meta.id}-${timestamp}`
     : undefined;
@@ -34,7 +32,8 @@ const OverviewTab: React.FC<OverviewTabProps> = ({
       <SectionHeader
         size={2}
         title={title}
-        bottomSpacing={isXlOrAbove ? 'xs' : 'xs'}
+        bottomSpacing="none"
+        className={{ root: 'mb-4' }}
         visualSize="lg"
       />
       <ViewTransition

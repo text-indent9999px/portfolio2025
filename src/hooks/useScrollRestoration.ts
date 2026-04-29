@@ -20,6 +20,10 @@ export const useScrollRestoration = () => {
       return;
     }
 
+    const isDetailBackTransition =
+      currentEntry.state?.transitionScope === 'projects-list-detail' &&
+      currentEntry.state?.transitionFrom === 'detail-back';
+
     // 스크롤 컨테이너 찾기
     const getScrollContainer = () => {
       // lg 브레이크포인트 이상이면 데스크톱 컨테이너, 아니면 모바일 컨테이너
@@ -40,10 +44,13 @@ export const useScrollRestoration = () => {
     const setScrollY = (scrollY: number) => {
       const container = getScrollContainer();
       if (container) {
-        // 부드러운 스크롤 애니메이션
+        // detail-back 복귀에서는 shared transition과 겹치지 않도록 즉시 복구한다.
+        const behavior: ScrollBehavior = isDetailBackTransition
+          ? 'auto'
+          : 'smooth';
         container.scrollTo({
           top: scrollY,
-          behavior: 'smooth',
+          behavior,
         });
       }
     };
@@ -54,7 +61,8 @@ export const useScrollRestoration = () => {
     };
 
     // setTimeout으로 지연 실행
-    setTimeout(restoreScroll, 100);
+    const timeoutId = window.setTimeout(restoreScroll, 100);
+    return () => window.clearTimeout(timeoutId);
   }, [history, currentIndex, isXlOrAbove]);
 };
 

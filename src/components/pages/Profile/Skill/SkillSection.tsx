@@ -1,9 +1,9 @@
 'use client';
 
 import { useId } from 'react';
-import type { SkillCategory, SkillTabItem } from '../types';
 import InfoText from '../../../ui/InfoText';
 import { SecondaryTab } from '../../../ui/Tab/Secondary';
+import type { SkillCategory, SkillTabItem } from '../types';
 import SkillList from './SkillList';
 
 interface SkillSectionProps {
@@ -34,13 +34,13 @@ export default function SkillSection({
   }
 
   return (
-    <div className="flex flex-col gap-6">
+    <div className="flex flex-col">
       <SecondaryTab
         uniqueId={uniqueId}
         tabs={skillTabItems}
         activeTab={activeTab}
         onTabChange={onTabChange}
-        className="-mr-6 xl:mr-0 pr-6 xl:pr-0"
+        className="-mr-6 xl:mr-0 mb-6 pr-6 xl:pr-0 -mt-3 max-xl:-mt-4"
       />
       {Object.entries(skillCategories).map(([key, category]) => (
         <div

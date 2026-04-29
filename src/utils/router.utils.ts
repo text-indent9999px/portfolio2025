@@ -2,90 +2,56 @@ import { WindowWithRipple } from './router.types';
 
 export const waitForRipple = (isXlOrAbove?: boolean): Promise<void> => {
   return new Promise(resolve => {
-    const FALLBACK_TIMEOUT_MS = 500;
-
-    // 모바일에서는 리플 이펙트가 없으므로 바로 resolve
+    // 모바일에서는 리플 이펙트를 기다릴 필요가 없다.
     if (isXlOrAbove === false) {
       resolve();
       return;
     }
 
     const windowWithRipple = window as WindowWithRipple;
-    const isRippleActive = windowWithRipple.__cursorRippleActive;
+    // 리플 종료 이벤트가 누락되는 경우를 대비해
+    // 활성 플래그가 false로 돌아오는지 RAF로도 함께 확인한다.
+    const MAX_WAIT_MS = 700;
+    let settled = false;
+    let sawActive = Boolean(windowWithRipple.__cursorRippleActive);
+    let frameId: number | null = null;
 
-    if (isRippleActive) {
-      // ripple이 이미 시작되었으므로 완료 이벤트만 기다림
-      let isResolved = false;
-      const timeoutId = window.setTimeout(() => {
-        if (isResolved) return;
-        isResolved = true;
-        window.removeEventListener('cursor-ripple-end', rippleEndHandler);
-        resolve();
-      }, FALLBACK_TIMEOUT_MS);
+    const done = () => {
+      if (settled) return;
+      settled = true;
+      window.clearTimeout(timeoutId);
+      if (frameId !== null) {
+        cancelAnimationFrame(frameId);
+      }
+      window.removeEventListener('cursor-ripple-start', onRippleStart);
+      window.removeEventListener('cursor-ripple-end', onRippleEnd);
+      resolve();
+    };
 
-      const rippleEndHandler = () => {
-        if (isResolved) return;
-        isResolved = true;
-        window.clearTimeout(timeoutId);
-        window.removeEventListener('cursor-ripple-end', rippleEndHandler);
-        resolve();
-      };
-      window.addEventListener('cursor-ripple-end', rippleEndHandler);
-    } else {
-      // ripple이 없거나 아직 시작되지 않음
-      let isResolved = false;
-      let checkFrame: number | null = null;
+    const tick = () => {
+      if (settled) return;
 
-      const handleRippleStart = () => {
-        // 시작 이벤트 리스너 제거 및 체크 프레임 취소
-        window.removeEventListener('cursor-ripple-start', handleRippleStart);
-        if (checkFrame !== null) {
-          cancelAnimationFrame(checkFrame);
-          checkFrame = null;
-        }
-        if (isResolved) return;
+      const isActiveNow = Boolean(windowWithRipple.__cursorRippleActive);
+      if (isActiveNow) {
+        sawActive = true;
+      } else if (sawActive) {
+        // 리플이 한번이라도 활성화된 뒤 비활성으로 돌아왔으면 종료로 간주
+        done();
+        return;
+      }
 
-        // ripple 시작 후 완료 이벤트를 기다림
-        const endHandler = () => {
-          window.removeEventListener('cursor-ripple-end', endHandler);
-          if (!isResolved) {
-            isResolved = true;
-            window.clearTimeout(timeoutId);
-            resolve();
-          }
-        };
-        const timeoutId = window.setTimeout(() => {
-          if (isResolved) return;
-          isResolved = true;
-          window.removeEventListener('cursor-ripple-end', endHandler);
-          resolve();
-        }, FALLBACK_TIMEOUT_MS);
-        window.addEventListener('cursor-ripple-end', endHandler);
-      };
+      frameId = requestAnimationFrame(tick);
+    };
 
-      window.addEventListener('cursor-ripple-start', handleRippleStart);
+    const onRippleStart = () => {
+      sawActive = true;
+    };
+    const onRippleEnd = () => done();
 
-      // 다음 이벤트 루프에서 체크 (ripple 시작이 아직 발생하지 않았을 수 있음)
-      checkFrame = requestAnimationFrame(() => {
-        requestAnimationFrame(() => {
-          const stillInactive = !(window as WindowWithRipple)
-            .__cursorRippleActive;
-
-          if (stillInactive) {
-            // 여전히 ripple이 없으면 시작 이벤트 리스너 제거하고 즉시 진행
-            window.removeEventListener(
-              'cursor-ripple-start',
-              handleRippleStart
-            );
-            if (!isResolved) {
-              isResolved = true;
-              resolve();
-            }
-          }
-          // ripple이 시작되었으면 handleRippleStart가 처리할 것
-        });
-      });
-    }
+    const timeoutId = window.setTimeout(done, MAX_WAIT_MS);
+    window.addEventListener('cursor-ripple-start', onRippleStart);
+    window.addEventListener('cursor-ripple-end', onRippleEnd);
+    frameId = requestAnimationFrame(tick);
   });
 };
 
