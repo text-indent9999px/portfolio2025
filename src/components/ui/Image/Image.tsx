@@ -48,6 +48,7 @@ const Image: React.FC<ImageProps> = ({
 
   const safeWidth = typeof width === 'number' ? width : 1200;
   const safeHeight = typeof height === 'number' ? height : 800;
+  const isVertical = safeHeight > safeWidth;
 
   const imageStyle: React.CSSProperties = {
     ...(safeWidth > 0 && safeHeight > 0
@@ -142,7 +143,10 @@ const Image: React.FC<ImageProps> = ({
           >
             <div
               className={cn(
-                'flex justify-start flex-col gap-3 w-[90%] xl:w-[80%] pt-16 pb-5',
+                'flex justify-start flex-col gap-3 pt-16 pb-5',
+                isVertical
+                  ? 'w-[85%] max-w-[380px] sm:max-w-[420px]'
+                  : 'w-[90%] xl:w-[80%]',
                 'h-auto m-auto transition-all duration-300 ease-out',
                 isModalOpen
                   ? 'translate-y-0 opacity-100'

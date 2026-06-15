@@ -1,5 +1,3 @@
-'use client';
-
 import { faArrowRight } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import React from 'react';
@@ -7,6 +5,7 @@ import Blank from '../../../../ui/Blank';
 import CustomButton from '../../../../ui/Button';
 import { SectionHeader } from '../../../../ui/Heading';
 import { Description } from '../../../../ui/Description';
+import Image from '../../../../ui/Image/Image';
 import type { ProjectDetail, DeployCustomTab } from '../../types';
 
 interface DeployTabProps {
@@ -26,6 +25,7 @@ const DeployTab: React.FC<DeployTabProps> = ({ project }) => {
   const deployUrl = tab.payload.deployUrl;
   const description = tab.payload.description ?? '프로젝트의 배포 사이트로 바로 이동하여 동작을 테스트해볼 수 있습니다.';
   const title = tab.label ?? '배포 사이트';
+  const image = tab.payload.image;
 
   return (
     <div>
@@ -38,6 +38,19 @@ const DeployTab: React.FC<DeployTabProps> = ({ project }) => {
       <Description size={4} leading="7">
         {description}
       </Description>
+      {image && (
+        <>
+          <Blank height="1.5rem" bgColor="transparent" />
+          <Image
+            src={image.path}
+            title={image.title}
+            description={image.description}
+            contextTitle={project.meta.title}
+            width={image.width ?? 1200}
+            height={image.height ?? 800}
+          />
+        </>
+      )}
       <Blank height="2rem" bgColor="transparent" />
       <CustomButton
         color="brand"

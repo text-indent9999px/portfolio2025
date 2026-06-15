@@ -43,12 +43,22 @@ export interface VideoData {
   thumbnail?: string;
 }
 
+// 이미지 데이터 타입
+export interface ImageData {
+  path: string;
+  title?: string;
+  description?: string;
+  width?: number;
+  height?: number;
+}
+
 // 각 탭 타입별 정의
 export interface DemoTab extends BaseTab {
   type: 'demo';
   payload: {
     videoPath?: string; // Deprecated, use videos
     videos?: VideoData[];
+    images?: ImageData[];
     description?: string;
   };
 }
@@ -102,6 +112,13 @@ export interface DeployCustomTab extends BaseTab {
   payload: {
     deployUrl: string;
     description?: string;
+    image?: {
+      path: string;
+      width?: number;
+      height?: number;
+      title?: string;
+      description?: string;
+    };
   };
 }
 

@@ -43,6 +43,9 @@ export default function ResumeDownloadButton({
   className,
   ...rest
 }: ResumeDownloadButtonProps) {
+  // 임시 감춤 처리 (이력서 파일 수정 후 복구 예정)
+  return null;
+
   const hasLargePadding = size !== 'xs' && size !== 'sm';
   const buttonClassName = `font-semibold uppercase font-kor-point 
     focus-visible:ring-4 focus-visible:ring-accent-300! 

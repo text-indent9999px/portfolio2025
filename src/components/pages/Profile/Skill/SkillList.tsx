@@ -17,6 +17,14 @@ function Skill({
   className,
   hasBackground,
 }: SkillProps) {
+  // 특정 아이콘의 시각적 불균형 미세 조정
+  const imageStyle: React.CSSProperties = {};
+  if (name === 'Vercel') {
+    imageStyle.transform = 'translateY(-3.5px) scale(0.9)';
+  } else if (name === 'Render') {
+    imageStyle.transform = 'scale(0.8)';
+  }
+
   return (
     <div
       className={`${className} flex items-center gap-2`}
@@ -34,11 +42,11 @@ function Skill({
         className={`
           ${
             hasBackground
-              ? 'p-1 border-2 border-gray-900 dark:border-gray-200 dark:bg-gray-50'
+              ? 'p-1 border-2 border-gray-900 dark:border-gray-200 dark:bg-gray-50 flex items-center justify-center'
               : 'p-0'
           } rounded-full`}
       >
-        <Image src={icon} alt={name} width={size} height={size} />
+        <Image src={icon} alt={name} width={size} height={size} style={imageStyle} />
       </div>
       <span>{name}</span>
     </div>
