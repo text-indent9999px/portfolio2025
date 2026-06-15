@@ -96,6 +96,15 @@ export interface AccessibilityCustomTab extends BaseTab {
   payload: { description?: string };
 }
 
+export interface DeployCustomTab extends BaseTab {
+  type: 'custom';
+  label: '배포 사이트';
+  payload: {
+    deployUrl: string;
+    description?: string;
+  };
+}
+
 export interface GenericCustomTab extends BaseTab {
   type: 'custom';
   label: string;
@@ -113,6 +122,7 @@ export type ProjectTab =
   | StyleGuideTab
   | StorybookCustomTab
   | AccessibilityCustomTab
+  | DeployCustomTab
   | GenericCustomTab;
 
 export interface ProjectDetail {

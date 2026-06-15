@@ -25,6 +25,7 @@ import {
   LighthouseTab,
   OverviewTab,
   StorybookTab,
+  DeployTab,
 } from './tabs';
 
 const SIMPLE_TAB_COMPONENTS = {
@@ -335,6 +336,9 @@ export function ProjectTabsContent({
       }
       if (customTab?.label === '접근성') {
         return <LighthouseTab project={project} />;
+      }
+      if (customTab?.label === '배포 사이트') {
+        return <DeployTab project={project} />;
       }
       return null;
     }
