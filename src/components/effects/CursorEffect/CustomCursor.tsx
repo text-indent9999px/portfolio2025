@@ -227,7 +227,11 @@ const CustomCursor: React.FC = () => {
 
   return (
     <>
-      <div ref={mainRef} className={styles['custom-cursor-main']} />
+      <div
+        ref={mainRef}
+        data-cursor-root
+        className={styles['custom-cursor-main']}
+      />
       <div ref={secondaryRef} className={styles['custom-cursor-secondary']} />
       <div ref={tertiaryRef} className={styles['custom-cursor-tertiary']} />
       <div ref={rippleContainerRef} className={styles['ripple-container']} />

@@ -1,10 +1,6 @@
 'use client';
 
-import {
-  useRouter as useNextRouter,
-  usePathname,
-  useSearchParams,
-} from 'next/navigation';
+import { useRouter as useNextRouter, usePathname } from 'next/navigation';
 import React, { useTransition } from 'react';
 import { useNavigationHistoryOptional } from '../contexts/NavigationContext';
 import { useMediaQuery } from '../hooks/useMediaQuery';
@@ -15,7 +11,6 @@ export function useTransitionNavigation() {
 
   const router = useNextRouter();
   const pathname = usePathname();
-  const searchParams = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const isXlOrAbove = useMediaQuery('--breakpoint-xl', 'min');
   const navigation = useNavigationHistoryOptional();
@@ -47,7 +42,7 @@ export function useTransitionNavigation() {
   const historyRef = React.useRef(history);
   const currentIndexRef = React.useRef(currentIndex);
   const previousPathnameRef = React.useRef<string>(pathname);
-  const previousSearchParamsRef = React.useRef<string>(searchParams.toString());
+  const previousSearchRef = React.useRef<string>('');
   const setIsNavigatingRef = React.useRef<((value: boolean) => void) | null>(
     null
   );
@@ -112,16 +107,17 @@ export function useTransitionNavigation() {
 
   // pathname 변경 시 로딩 상태 해제
   React.useEffect(() => {
+    // useSearchParams는 정적 페이지 전체를 CSR로 밀어내므로 쓰지 않고,
+    // 쿼리는 location에서 직접 읽는다.
     const previousPathname = previousPathnameRef.current;
-    const currentSearchParams = searchParams.toString();
-    const previousSearchParams = previousSearchParamsRef.current;
+    const currentSearch = window.location.search;
     const hasUrlChanged =
       previousPathname !== pathname ||
-      previousSearchParams !== currentSearchParams;
+      previousSearchRef.current !== currentSearch;
 
     if (hasUrlChanged) {
       previousPathnameRef.current = pathname;
-      previousSearchParamsRef.current = currentSearchParams;
+      previousSearchRef.current = currentSearch;
 
       // 실제로 네비게이션을 시작한 인스턴스에서만 리셋 처리한다.
       if (!isNavigatingNow()) {
@@ -131,7 +127,7 @@ export function useTransitionNavigation() {
       setRippleComplete(false);
       setNavigating(false);
     }
-  }, [pathname, searchParams, setRippleComplete, navigation]);
+  }, [pathname, setRippleComplete, navigation]);
 
   const navigateToUrl = React.useCallback(
     ({
@@ -154,10 +150,7 @@ export function useTransitionNavigation() {
       // replace 경로는 전환 트리거와 상태 후처리를 분리해 단순화한다.
       if (replace) {
         navigateTo?.(url, state, replace);
-        const currentUrl = (() => {
-          const query = searchParams.toString();
-          return query ? `${pathname}?${query}` : pathname;
-        })();
+        const currentUrl = `${pathname}${window.location.search}`;
 
         if (currentUrl === url) {
           return;
