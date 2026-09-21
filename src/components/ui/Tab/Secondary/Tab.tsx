@@ -23,7 +23,7 @@ const INDICATOR_CLASS_NAME = getIndicatorClassName();
 const SCROLL_LEFT_BUTTON_CLASS_NAME = getScrollLeftButtonClassName();
 const SCROLL_RIGHT_BUTTON_CLASS_NAME = getScrollRightButtonClassName();
 
-const Tab: React.FC<TabProps> = ({
+const SecondaryTab: React.FC<TabProps> = ({
   tabs,
   activeTab,
   onTabChange,
@@ -116,4 +116,4 @@ const Tab: React.FC<TabProps> = ({
   );
 };
 
-export default Tab;
+export { SecondaryTab };

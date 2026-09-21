@@ -1,8 +1,8 @@
 'use client';
 
 import { useCallback } from 'react';
-import type { TabItem } from '../common.types';
-import { buildButtonFocusSync } from '../common.utils';
+import type { TabItem } from '../../common.types';
+import { buildButtonFocusSync } from '../../common.utils';
 
 export interface UseTabNavigationProps {
   tabs: TabItem[];

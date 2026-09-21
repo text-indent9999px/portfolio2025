@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
-import InfoText from './InfoText';
+import { InfoText } from './InfoText';
 
 const meta: Meta<typeof InfoText> = {
   title: 'UI/InfoText',

@@ -70,24 +70,6 @@ export const viewTransition: Project = {
   mediaNote: '시연 영상은 사이트 리뉴얼 이전 버전에서 녹화한 화면입니다.',
   code: [
     {
-      title: '전환 내비게이션 훅',
-      description: 'ViewTransition과 커스텀 useRouter 훅으로 페이지 전환 애니메이션을 구현했습니다.',
-      file: 'router.ts',
-      language: 'typescript',
-    },
-    {
-      title: '전환 타이밍 유틸',
-      description: '리플 완료 대기(waitForRipple)와 실제 내비게이션(performNavigation)을 분리해 타이밍을 안정적으로 제어합니다.',
-      file: 'router.utils.ts',
-      language: 'typescript',
-    },
-    {
-      title: '내비게이션 상태 컨텍스트',
-      description: '커스텀 히스토리와 전환 상태를 전역에서 관리해 back/forward 동작과 전환 상태를 일관되게 유지합니다.',
-      file: 'NavigationContext.tsx',
-      language: 'typescript',
-    },
-    {
       title: 'ViewTransition 호환 래퍼',
       description: '브라우저 지원 여부를 감지해 View Transition과 폴백 렌더링을 호환 레이어에서 처리합니다.',
       file: 'ViewTransitionCompat.tsx',

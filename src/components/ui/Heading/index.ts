@@ -1,4 +1,4 @@
-export { default as Heading } from './Heading';
+export { Heading } from './Heading';
 export type {
   ClassNameProps,
   HeadingProps,
@@ -7,5 +7,5 @@ export type {
   SpacingProps,
   TypographyProps,
 } from './Heading.types';
-export { default as PageHeader } from './PageHeader';
-export { default as SectionHeader } from './SectionHeader';
+export { PageHeader } from './PageHeader';
+export { SectionHeader } from './SectionHeader';

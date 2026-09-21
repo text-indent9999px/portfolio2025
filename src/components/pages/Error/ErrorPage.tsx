@@ -1,7 +1,7 @@
 import React from 'react';
 import { CenteredLayout } from '../../layout';
-import Blank from '../../ui/Blank';
-import CustomButton, { BackButton } from '../../ui/Button';
+import { Blank } from '../../ui/Blank';
+import { Button, BackButton } from '../../ui/Button';
 import { PageHeader } from '../../ui/Heading';
 
 interface ApiError {
@@ -81,7 +81,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
         <div className="xl:mt-[22vh]">
           {showBackButton && (
             <>
-              <BackButton newHref={backHref} />
+              <BackButton href={backHref} />
               <Blank height="2rem" bgColor="transparent" />
             </>
           )}
@@ -98,7 +98,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
 
           {actualErrorCode === 500 && (
             <>
-              <CustomButton
+              <Button
                 variant="outline"
                 color="brand"
                 size="md"
@@ -109,7 +109,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
                 fullWidth={true}
               >
                 새로 고침
-              </CustomButton>
+              </Button>
               <Blank height="2rem" bgColor="transparent" />
             </>
           )}

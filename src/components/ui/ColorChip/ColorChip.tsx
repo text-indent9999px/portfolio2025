@@ -86,4 +86,4 @@ const ColorChip: React.FC<ColorChipProps> = ({
   );
 };
 
-export default ColorChip;
+export { ColorChip };

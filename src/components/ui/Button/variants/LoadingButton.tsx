@@ -1,11 +1,11 @@
 'use client';
 
 import React from 'react';
-import Button from '../Button';
-import type { CustomButtonProps } from '../Button.types';
+import { Button } from '../Button';
+import type { ButtonProps } from '../Button.types';
 import styles from './LoadingButton.module.scss';
 
-export interface LoadingButtonProps extends CustomButtonProps {
+export interface LoadingButtonProps extends ButtonProps {
   loading?: boolean;
   loadingLabel?: string;
   tone?: 'auto' | 'light' | 'dark';
@@ -35,7 +35,7 @@ const LoadingButton: React.FC<LoadingButtonProps> = ({
   ...props
 }) => {
   const handleClick = loading
-    ? (e?: React.MouseEvent<HTMLButtonElement>) => {
+    ? (e?: React.MouseEvent<HTMLElement>) => {
         // 로딩 중에는 클릭 무시
         e?.preventDefault();
         e?.stopPropagation();
@@ -55,7 +55,6 @@ const LoadingButton: React.FC<LoadingButtonProps> = ({
       onClick={handleClick}
       aria-busy={loading || undefined}
       aria-disabled={loading || undefined}
-      cursorTrigger={!loading}
       style={{ ...style, ...loadingStyles }}
     >
       {loading ? (
@@ -73,4 +72,4 @@ const LoadingButton: React.FC<LoadingButtonProps> = ({
   );
 };
 
-export default LoadingButton;
+export { LoadingButton };

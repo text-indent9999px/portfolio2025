@@ -2,7 +2,7 @@ import Link from 'next/link';
 import type { ReactNode } from 'react';
 import { getAdjacentProjects, type Project } from '@/data/portfolio';
 import { Reveal } from '../../common/Reveal';
-import CustomButton from '../../ui/Button';
+import { Button } from '../../ui/Button';
 import { CodeHighlight } from '../../ui/CodeHighlight';
 import { Image } from '../../ui/Image';
 import { Pill } from '../../ui/Pill';
@@ -106,7 +106,7 @@ export function CaseStudy({ project }: { project: Project }) {
           {project.links && project.links.length > 0 && (
             <div className="mt-8 flex flex-wrap gap-3">
               {project.links.map((link, index) => (
-                <CustomButton
+                <Button
                   key={link.href}
                   size="lg"
                   rounded="pill"
@@ -115,7 +115,7 @@ export function CaseStudy({ project }: { project: Project }) {
                   href={link.href}
                 >
                   {link.label} ↗
-                </CustomButton>
+                </Button>
               ))}
             </div>
           )}

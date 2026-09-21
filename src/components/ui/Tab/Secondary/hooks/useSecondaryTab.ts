@@ -8,9 +8,9 @@ import {
   useRef,
   useState,
 } from 'react';
-import { debounce } from '../../../../utils/debounce';
-import { useEventCallback } from '../../../../utils/useEventCallback';
-import type { TabItem } from '../common.types';
+import { debounce } from '../../../../../utils/debounce';
+import { useEventCallback } from '../../../../../utils/useEventCallback';
+import type { TabItem } from '../../common.types';
 import { useIndicator } from './useIndicator';
 import { useScroll } from './useScroll';
 import { useTabNavigation } from './useTabNavigation';

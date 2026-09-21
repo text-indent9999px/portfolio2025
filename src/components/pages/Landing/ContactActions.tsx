@@ -9,7 +9,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useRef, useState } from 'react';
 import { SITE } from '@/data/portfolio';
-import CustomButton, { ResumeDownloadButton } from '../../ui/Button';
+import { Button, ResumeDownloadButton } from '../../ui/Button';
 
 const COPIED_RESET_MS = 2200;
 
@@ -40,7 +40,7 @@ export function ContactActions() {
 
   return (
     <div className="mt-10 flex flex-wrap items-center gap-3">
-      <CustomButton
+      <Button
         size="lg"
         rounded="pill"
         variant="solid"
@@ -51,8 +51,8 @@ export function ContactActions() {
         }}
       >
         이메일 보내기
-      </CustomButton>
-      <CustomButton
+      </Button>
+      <Button
         size="lg"
         rounded="pill"
         variant="outline"
@@ -61,8 +61,8 @@ export function ContactActions() {
         onClick={copyEmail}
       >
         {copied ? '복사했습니다' : '주소 복사'}
-      </CustomButton>
-      <CustomButton
+      </Button>
+      <Button
         size="lg"
         rounded="pill"
         variant="minimal"
@@ -72,7 +72,7 @@ export function ContactActions() {
         iconPosition="right"
       >
         GitHub
-      </CustomButton>
+      </Button>
       {SITE.resumeDownload && (
         <ResumeDownloadButton size="lg" rounded="pill" />
       )}

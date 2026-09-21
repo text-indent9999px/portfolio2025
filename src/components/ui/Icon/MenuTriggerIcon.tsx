@@ -52,4 +52,4 @@ const MenuTriggerIcon: React.FC<MenuTriggerIconProps> = ({ isMenuOpen }) => {
   );
 };
 
-export default MenuTriggerIcon;
+export { MenuTriggerIcon };

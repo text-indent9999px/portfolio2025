@@ -69,4 +69,4 @@ const InfoText: React.FC<InfoTextProps> = ({
   );
 };
 
-export default InfoText;
+export { InfoText };

@@ -1,10 +1,10 @@
 import React from 'react';
 
 import { cn } from '@/utils/cn';
-import Blank from '../Blank';
+import { Blank } from '../Blank';
 import { Description } from '../Description';
 import { getPageHeaderHeadingSubtitleSpacing } from './Heading.config';
-import Heading from './Heading';
+import { Heading } from './Heading';
 import type { PageHeaderProps } from './Heading.types';
 import { PAGE_HEADER_SECTION_HEADER_BOTTOM_SPACING } from './Heading.types';
 
@@ -71,4 +71,4 @@ const PageHeader: React.FC<PageHeaderProps> = ({
   );
 };
 
-export default PageHeader;
+export { PageHeader };

@@ -1,4 +1,4 @@
-export { default as Card } from './Card';
+export { Card } from './Card';
 export type {
   CardActivationEvent,
   CardProps,
@@ -6,8 +6,4 @@ export type {
   CardStackProps,
   CardTitleSectionProps,
 } from './Card.types';
-export { default as CardBody } from './CardBody';
-export { default as CardStack } from './CardStack';
-export { default as CardFooter } from './CardFooter';
-export { default as CardHeader } from './CardHeader';
-export { default as CardThumb } from './CardThumb';
+export { CardStack } from './CardStack';

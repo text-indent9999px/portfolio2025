@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import { cn } from '@/utils/cn';
 
-import CustomButton from '../Button';
+import { Button } from '../Button';
 import styles from './Tooltip.module.scss';
 import type { TooltipProps } from './Tooltip.types';
 
@@ -82,7 +82,7 @@ export const Tooltip: React.FC<TooltipProps> = ({
       <div className={styles.content}>
         <span className="flex-1 whitespace-pre">{children}</span>
         {showCloseButton && onClose && (
-          <CustomButton
+          <Button
             variant="soft"
             color="brand"
             size="xs"
@@ -90,7 +90,6 @@ export const Tooltip: React.FC<TooltipProps> = ({
             rounded="circle"
             icon={<FontAwesomeIcon icon={faXmark} />}
             className="mb-auto mt-[1px] w-[1.3rem] h-[1.3rem] translate-y-[-1px] translate-x-[3px]"
-            cursorTrigger={false}
             onClick={onClose}
           />
         )}

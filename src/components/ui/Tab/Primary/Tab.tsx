@@ -15,7 +15,7 @@ import {
 import { useTabIndicator } from './hooks';
 import type { TabProps } from './types';
 
-const Tab: React.FC<TabProps> = ({
+const PrimaryTab: React.FC<TabProps> = ({
   tabs,
   activeTab,
   onTabChange,
@@ -107,4 +107,4 @@ const Tab: React.FC<TabProps> = ({
   );
 };
 
-export default Tab;
+export { PrimaryTab };

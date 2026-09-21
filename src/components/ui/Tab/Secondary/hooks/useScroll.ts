@@ -1,11 +1,11 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { useEventCallback } from '../../../../utils/useEventCallback';
-import type { TabItem } from '../common.types';
-import { animate } from './animation';
-import { EDGE_OVERLAY_WIDTH, EDGE_SCROLL_OFFSET } from './constants';
-import type { ScrollState } from './types';
+import { useEventCallback } from '../../../../../utils/useEventCallback';
+import type { TabItem } from '../../common.types';
+import { animate } from '../animation';
+import { EDGE_OVERLAY_WIDTH, EDGE_SCROLL_OFFSET } from '../constants';
+import type { ScrollState } from '../types';
 
 export interface UseScrollProps {
   scrollContainerRef: React.RefObject<HTMLDivElement | null>;

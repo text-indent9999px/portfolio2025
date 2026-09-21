@@ -26,4 +26,4 @@ const CardStack: React.FC<CardStackProps> = ({
 
 CardStack.displayName = 'CardStack';
 
-export default CardStack;
+export { CardStack };

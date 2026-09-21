@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
-import Blank from './Blank';
+import { Blank } from './Blank';
 
 const meta: Meta<typeof Blank> = {
   title: 'UI/Blank',

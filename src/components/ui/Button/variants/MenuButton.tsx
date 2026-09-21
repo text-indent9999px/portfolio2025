@@ -2,11 +2,11 @@
 
 import React from 'react';
 import { cn } from '@/utils/cn';
-import MenuTriggerIcon from '../../Icon/MenuTriggerIcon';
-import Button from '../Button';
-import type { CustomButtonProps } from '../Button.types';
+import { MenuTriggerIcon } from '../../Icon/MenuTriggerIcon';
+import { Button } from '../Button';
+import type { ButtonProps } from '../Button.types';
 
-export interface MenuButtonProps extends Omit<CustomButtonProps, 'ariaLabel'> {
+export interface MenuButtonProps extends Omit<ButtonProps, 'ariaLabel'> {
   open: boolean;
   controlsId: string; // 오버레이/메뉴 id
   hasPopup?: 'menu' | 'listbox' | 'dialog';
@@ -45,4 +45,4 @@ const MenuButton: React.FC<MenuButtonProps> = ({
   );
 };
 
-export default MenuButton;
+export { MenuButton };

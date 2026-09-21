@@ -1,8 +1,8 @@
 'use client';
 
 import { useRef, useState } from 'react';
-import { useEventCallback } from '../../../../utils/useEventCallback';
-import type { IndicatorStyle } from './types';
+import { useEventCallback } from '../../../../../utils/useEventCallback';
+import type { IndicatorStyle } from '../types';
 
 export interface UseIndicatorProps {
   tabListRef: React.RefObject<HTMLDivElement | null>;

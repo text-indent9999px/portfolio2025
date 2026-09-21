@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import React from 'react';
-import ColorChip from './ColorChip';
+import { ColorChip } from './ColorChip';
 
 const meta: Meta<typeof ColorChip> = {
   title: 'UI/ColorChip',

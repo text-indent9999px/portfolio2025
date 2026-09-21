@@ -2,8 +2,8 @@
 
 import { faCircleArrowDown } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import Button from '../Button';
-import type { CustomButtonProps } from '../Button.types';
+import { Button } from '../Button';
+import type { ButtonProps } from '../Button.types';
 
 const RESUME_FILE_NAME = '프론트엔드_개발_지원자_김남영.pdf';
 
@@ -31,12 +31,12 @@ const downloadResume = async () => {
   }
 };
 
-export type ResumeDownloadButtonProps = Omit<CustomButtonProps, 'onClick'> & {
+export type ResumeDownloadButtonProps = Omit<ButtonProps, 'onClick'> & {
   label?: string;
   showIcon?: boolean;
 };
 
-export default function ResumeDownloadButton({
+export function ResumeDownloadButton({
   size = 'md',
   rounded = 'none',
   style,

@@ -1,9 +1,9 @@
 import React from 'react';
 
-import Blank from '../Blank';
+import { Blank } from '../Blank';
 import { Description } from '../Description';
 import { VISUAL_SIZE_TO_LEVEL } from './Heading.config';
-import Heading from './Heading';
+import { Heading } from './Heading';
 import type {
   HeadingLevel,
   SectionHeaderProps,
@@ -91,4 +91,4 @@ const SectionHeader: React.FC<SectionHeaderProps> = ({
   );
 };
 
-export default SectionHeader;
+export { SectionHeader };

@@ -16,4 +16,4 @@ const CardFooter: React.FC<CardFooterProps> = ({
 
 CardFooter.displayName = 'CardFooter';
 
-export default CardFooter;
+export { CardFooter };
