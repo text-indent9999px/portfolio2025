@@ -24,11 +24,6 @@ html {
   }
 }
 
-/* 테마 전환 중에만 사용하는 플래그(themeDetector) */
-html[data-visibility='hidden'] {
-  display: none;
-}
-
 body {
   font-family:
     var(--quicksand), 'Apple SD Gothic Neo', var(--noto-sans-kr),
