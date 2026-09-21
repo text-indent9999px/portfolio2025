@@ -1,20 +1,6 @@
-import { ProjectsVisual } from '../../components/heroVisual/Projects';
-import { SplitLayout } from '../../components/layout';
-import { List } from '../../components/pages/Projects';
-import { getProjectsData } from '../../server/projects/projects';
+import { redirect } from 'next/navigation';
 
-export default async function ProjectsPage() {
-  const projectsResult = await getProjectsData();
-
-  return (
-    <SplitLayout
-      leftContent={<ProjectsVisual />}
-      rightContent={
-        <List
-          projects={projectsResult.data?.projects ?? []}
-          errorMessage={projectsResult.errorMessage}
-        />
-      }
-    />
-  );
+/** 예전 목록 페이지 주소는 홈의 프로젝트 섹션으로 연결한다. */
+export default function ProjectsPage() {
+  redirect('/#work');
 }

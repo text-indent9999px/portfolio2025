@@ -1,0 +1,72 @@
+/* ===== 스크롤 등장(Reveal) =====
+   data-reveal 속성은 Reveal 컴포넌트가 DOM으로 직접 설정한다.
+   JS가 없거나 모션 감소를 선호하면 항상 보이는 상태로 둔다. */
+
+[data-reveal] {
+  transition:
+    opacity 0.7s ease,
+    transform 0.7s cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: var(--reveal-delay, 0ms);
+}
+
+[data-reveal='hidden'] {
+  opacity: 0;
+  transform: translateY(20px);
+}
+
+[data-reveal='shown'] {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  [data-reveal] {
+    transition: none;
+    opacity: 1 !important;
+    transform: none !important;
+  }
+}
+
+/* ===== 히어로 진입 =====
+   서버 렌더 직후 CSS만으로 재생되므로 hydration을 기다리지 않는다. */
+
+@keyframes hero-in {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+}
+
+.hero-in {
+  animation: hero-in 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  animation-delay: var(--d, 0ms);
+}
+
+@keyframes pulse-dot {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.45;
+    transform: scale(0.8);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-in,
+  .motion-safe-anim {
+    animation: none !important;
+  }
+}
+
+/* 인쇄·PDF 저장 시에는 등장 전 상태로 남지 않게 한다. */
+@media print {
+  [data-reveal] {
+    opacity: 1 !important;
+    transform: none !important;
+    transition: none !important;
+  }
+}

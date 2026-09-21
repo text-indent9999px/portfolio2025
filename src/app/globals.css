@@ -4,6 +4,7 @@
 @import '../styles/colors.css';
 @import '../styles/view-transition.css';
 @import '../styles/elevation.css';
+@import '../styles/motion.css';
 
 /* ===== 기본 스타일 ===== */
 
@@ -12,31 +13,35 @@
 }
 
 html {
-  transition: opacity 1.2s ease;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
 }
 
-html:not(.theme-ready) {
-  opacity: 0;
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }
 
-html.theme-ready {
-  opacity: 1;
-}
-
-html.theme-setting-completed {
-  transition: none;
-}
-
-html[data-visibility='visible'].theme-setting-completed.theme-ready {
-  transition: opacity 0.3s ease;
-}
-
+/* 테마 전환 중에만 사용하는 플래그(themeDetector) */
 html[data-visibility='hidden'] {
   display: none;
 }
 
 body {
-  font-family: var(--quicksand), 'Apple SD Gothic Neo', var(--noto-sans-kr);
+  font-family:
+    var(--quicksand), 'Apple SD Gothic Neo', var(--noto-sans-kr),
+    system-ui, sans-serif;
+  color: var(--color-text-primary);
+  word-break: keep-all;
+  overflow-wrap: break-word;
+  text-rendering: optimizeLegibility;
+}
+
+::selection {
+  background: color-mix(in srgb, var(--color-accent-300) 55%, transparent);
+  color: inherit;
 }
 
 /* 접근성: 스크린리더 전용 숨김 */
@@ -57,18 +62,39 @@ a {
   cursor: pointer;
 }
 
+/* 키보드 사용자에게 "본문으로 건너뛰기" 제공 */
+.skip-link {
+  position: fixed;
+  top: 0.75rem;
+  left: 0.75rem;
+  z-index: 200;
+  padding: 0.6rem 1rem;
+  border-radius: 0.5rem;
+  background: var(--color-surface-level-max);
+  color: var(--color-surface-level-min);
+  font-weight: 600;
+  transform: translateY(-200%);
+  transition: transform 0.2s ease;
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
+}
+
 /* ===== Font Family ===== */
+/* 기존 UI 컴포넌트(Heading 등)가 사용하는 클래스명을 유지한다. */
 
-.font-eng-point {
-  font-family: var(--kalam) !important;
-}
-
-.font-kor-point {
-  font-family: var(--gowun-batang) !important;
-}
-
+.font-eng-point,
+.font-kor-point,
 .font-base {
-  font-family: var(--quicksand), 'Apple SD Gothic Neo', var(--noto-sans-kr);
+  font-family:
+    var(--quicksand), 'Apple SD Gothic Neo', var(--noto-sans-kr),
+    system-ui, sans-serif;
+}
+
+/* 작은 라벨용. 별도 폰트 없이 기본 폰트에 자간만 넓혀 쓴다. */
+.font-mono-label {
+  letter-spacing: 0.04em;
 }
 
 .svg-inline--fa {
@@ -87,4 +113,25 @@ a {
 
   -ms-overflow-style: none;
   scrollbar-width: none;
+}
+
+/* ===== 강조 마커 =====
+   텍스트 색은 그대로 두고 하단에만 형광펜 효과를 준다(명도 대비 유지). */
+.marker {
+  background-image: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--color-accent-300) 60%, transparent) 0.36em,
+    transparent 0.36em
+  );
+  background-repeat: no-repeat;
+  -webkit-box-decoration-break: clone;
+  box-decoration-break: clone;
+}
+
+.dark .marker {
+  background-image: linear-gradient(
+    to top,
+    color-mix(in srgb, var(--color-accent-500) 55%, transparent) 0.36em,
+    transparent 0.36em
+  );
 }
