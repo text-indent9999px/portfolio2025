@@ -1,18 +1,8 @@
 const fs = require('fs');
 const path = require('path');
 
-const HOME_FILE_PATH = path.join(
-  __dirname,
-  '..',
-  'src',
-  'components',
-  'pages',
-  'Home',
-  'Home.tsx'
-);
 const README_FILE_PATH = path.join(__dirname, '..', 'README.md');
 
-const HOME_PREFIX = 'last updated: ';
 const README_PREFIX = '**마지막 업데이트**: ';
 
 function formatDateToYYYYMMDD(date) {
@@ -53,15 +43,6 @@ function updateFile(filePath, regex, prefix, formattedDate, fileName) {
 function main() {
   const now = new Date();
   const formatted = formatDateToYYYYMMDD(now);
-
-  // Home.tsx 업데이트
-  updateFile(
-    HOME_FILE_PATH,
-    /last updated:\s*\d{4}\.\d{2}\.\d{2}/,
-    HOME_PREFIX,
-    formatted,
-    'Home'
-  );
 
   // README.md 업데이트
   updateFile(

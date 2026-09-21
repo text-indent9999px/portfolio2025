@@ -6,7 +6,7 @@
     "dev": "next dev",
     "build": "node scripts/copy-code-files.js && next build",
     "start": "next start",
-    "lint": "next lint",
+    "lint": "eslint .",
     "stylelint": "stylelint \"**/*.{css,scss}\" --fix",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
