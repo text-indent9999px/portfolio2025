@@ -1,1 +1,0 @@
-export { ProjectsVisual } from './Visual';

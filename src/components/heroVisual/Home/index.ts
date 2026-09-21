@@ -1,1 +1,0 @@
-export { HomeVisual } from './Visual';

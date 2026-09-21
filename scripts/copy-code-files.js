@@ -21,7 +21,6 @@ const codePathMap = {
   'NavigationContext.tsx': 'src/contexts/NavigationContext.tsx',
   'ViewTransitionCompat.tsx':
     'src/components/common/ViewTransitionCompat.tsx',
-  'ProjectCard.tsx': 'src/components/pages/Projects/list/ProjectCard.tsx',
   'themeDetector.ts': 'src/utils/themeDetector.ts',
   'themeDetector.types.ts': 'src/utils/themeDetector.types.ts',
   'AppProviders.tsx': 'src/components/providers/AppProviders.tsx',
