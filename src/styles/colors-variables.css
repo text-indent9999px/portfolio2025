@@ -4,8 +4,8 @@
   color-scheme: light;
 
   /* ===== Gray Colors ===== */
-  --color-gray-0: #f2f2f2;
-  --color-gray-50: #eeeeee;
+  --color-gray-0: #fafaf9;
+  --color-gray-50: #f3f3f1;
   --color-gray-100: #e7e7e7;
   --color-gray-200: #cbcbcb;
   --color-gray-300: #acacac;
@@ -43,11 +43,11 @@
   --color-surface-level-max: var(--color-surface-1000);
 
   /* ===== Primary Colors  ===== */
-  --color-primary-50: #f3f3f7;
-  --color-primary-100: #cdccdc;
-  --color-primary-200: #bfbed0;
-  --color-primary-300: #a5a3b9;
-  --color-primary-400: #8c8ba1;
+  --color-primary-50: #f6f6fa;
+  --color-primary-100: #e8e8f0;
+  --color-primary-200: #d6d5e3;
+  --color-primary-300: #bebdd0;
+  --color-primary-400: #9f9eb4;
   --color-primary-500: #75748a;
   --color-primary-600: #605e72;
   --color-primary-700: #4b4a5b;

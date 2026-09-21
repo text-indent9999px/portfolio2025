@@ -103,7 +103,7 @@ const Image: React.FC<ImageProps> = ({
               )}
               <div
                 className={cn(
-                  'relative w-full p-5 rounded-lg border-2 border-gray-800 dark:border-gray-500',
+                  'relative w-full p-3 rounded-lg border-2 border-gray-800 dark:border-gray-500',
                   enableModal &&
                     'cursor-pointer hover:opacity-90 transition-opacity'
                 )}

@@ -2,8 +2,8 @@ import { WindowWithRipple } from './router.types';
 
 export const waitForRipple = (isXlOrAbove?: boolean): Promise<void> => {
   return new Promise(resolve => {
-    // 모바일에서는 리플 이펙트를 기다릴 필요가 없다.
-    if (isXlOrAbove === false) {
+    // 모바일이거나 커스텀 커서가 마운트되지 않았다면 리플을 기다릴 필요가 없다.
+    if (isXlOrAbove === false || !document.querySelector('[data-cursor-root]')) {
       resolve();
       return;
     }

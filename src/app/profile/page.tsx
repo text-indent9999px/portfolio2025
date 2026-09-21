@@ -1,12 +1,6 @@
-import { ProfileVisual } from '../../components/heroVisual/Profile';
-import { SplitLayout } from '../../components/layout';
-import { Profile } from '../../components/pages/Profile';
+import { redirect } from 'next/navigation';
 
+/** 예전 프로필 페이지 주소는 홈의 경력 섹션으로 연결한다. */
 export default function ProfilePage() {
-  return (
-    <SplitLayout
-      leftContent={<ProfileVisual />}
-      rightContent={<Profile />}
-    />
-  );
+  redirect('/#experience');
 }

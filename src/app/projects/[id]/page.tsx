@@ -1,45 +1,45 @@
-import React from 'react';
-import { CenteredLayout } from '../../../components/layout';
-import { Detail } from '../../../components/pages/Projects';
-import { getProjectsData } from '../../../server/projects/projects';
-import NotFound from '../../not-found';
+import type { Metadata } from 'next';
+import { notFound } from 'next/navigation';
+import { CaseStudy } from '../../../components/pages/CaseStudy';
+import { getProject, PROJECTS } from '../../../data/portfolio';
 
 interface ProjectDetailPageProps {
-  params: Promise<{
-    id: string;
-  }>;
-  searchParams: Promise<{ tab?: string; codeSubTab?: string }>;
+  params: Promise<{ id: string }>;
 }
 
-const ProjectDetailPage: React.FC<ProjectDetailPageProps> = async ({
+export const dynamicParams = false;
+
+export function generateStaticParams() {
+  return PROJECTS.map(project => ({ id: project.slug }));
+}
+
+export async function generateMetadata({
   params,
-  searchParams,
-}) => {
+}: ProjectDetailPageProps): Promise<Metadata> {
   const { id } = await params;
-  const { tab, codeSubTab } = await searchParams;
-  const projectId = id;
-  const projectsResult = await getProjectsData();
+  const project = getProject(id);
+  if (!project) return {};
 
-  if (!projectsResult.data) {
-    return <NotFound backHref="/projects" />;
-  }
+  return {
+    title: project.title,
+    description: project.summary,
+    alternates: { canonical: `/projects/${project.slug}` },
+    openGraph: {
+      type: 'article',
+      title: project.title,
+      description: project.summary,
+      url: `/projects/${project.slug}`,
+    },
+  };
+}
 
-  // 프로젝트 ID로 프로젝트 찾기
-  const project = projectsResult.data.projects.find(p => p.meta.id === projectId);
+export default async function ProjectDetailPage({
+  params,
+}: ProjectDetailPageProps) {
+  const { id } = await params;
+  const project = getProject(id);
 
-  if (!project) {
-    return <NotFound backHref="/projects" />;
-  }
+  if (!project) notFound();
 
-  return (
-    <CenteredLayout maxWidth="4xl" useViewTransition={false}>
-      <Detail
-        project={project}
-        initialTab={tab}
-        initialCodeSubTab={codeSubTab}
-      />
-    </CenteredLayout>
-  );
-};
-
-export default ProjectDetailPage;
+  return <CaseStudy project={project} />;
+}

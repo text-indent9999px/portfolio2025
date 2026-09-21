@@ -1,61 +1,62 @@
 import { config } from '@fortawesome/fontawesome-svg-core';
+import '@fortawesome/fontawesome-svg-core/styles.css';
 import type { Metadata, Viewport } from 'next';
-import { Gowun_Batang, Kalam, Noto_Sans_KR, Quicksand } from 'next/font/google';
-import { Suspense } from 'react';
-import { Header } from '../components/common/Navigation';
-import LazyCustomCursor from '../components/effects/CursorEffect/LazyCustomCursor';
+import { Noto_Sans_KR, Quicksand } from 'next/font/google';
+import { SiteFooter } from '../components/common/SiteFooter';
+import { SiteHeader } from '../components/common/SiteHeader';
+import { PageTransition } from '../components/common/PageTransition';
 import { AppProviders } from '../components/providers';
+import { SITE } from '../data/portfolio';
+import { THEME_STORAGE_KEY } from '../utils/themeDetector.constants';
 import './globals.css';
 
-// FontAwesome 설정
+// 스타일은 위에서 직접 불러오므로 런타임 주입을 끈다.
 config.autoAddCss = false;
-config.autoAddCss = true;
+
+// 기본 폰트: 라틴은 Quicksand, 한글은 Noto Sans KR. 두 폰트 모두 가변 폰트라 굵기별 파일이 따로 없다.
+const quicksand = Quicksand({
+  variable: '--quicksand',
+  subsets: ['latin'],
+  display: 'swap',
+});
 
 const notoSansKr = Noto_Sans_KR({
   variable: '--noto-sans-kr',
   subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  display: 'swap',
-  preload: true,
-});
-
-const quicksand = Quicksand({
-  variable: '--quicksand',
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  display: 'swap',
-  preload: false,
-});
-
-const kalam = Kalam({
-  variable: '--kalam',
-  subsets: ['latin'],
-  weight: ['400', '700'],
-  display: 'swap',
-  preload: false,
-});
-
-const gowunBatang = Gowun_Batang({
-  variable: '--gowun-batang',
-  subsets: ['latin'],
-  weight: ['400', '700'],
   display: 'swap',
   preload: false,
 });
 
 export const metadata: Metadata = {
-  title: '김남영 | 프론트엔드 개발자',
-  description: '프론트엔드 개발 포트폴리오입니다.',
-  robots: {
-    index: false,
-    follow: false,
+  metadataBase: new URL(SITE.url),
+  title: { default: SITE.title, template: `%s | ${SITE.title}` },
+  description: SITE.description,
+  applicationName: SITE.title,
+  authors: [{ url: SITE.github }],
+  openGraph: {
+    type: 'website',
+    locale: 'ko_KR',
+    siteName: SITE.title,
+    title: SITE.title,
+    description: SITE.description,
   },
+  twitter: { card: 'summary_large_image' },
+  robots: SITE.indexable
+    ? { index: true, follow: true }
+    : { index: false, follow: false },
 };
 
 export const viewport: Viewport = {
   width: 'device-width',
   initialScale: 1,
+  themeColor: [
+    { media: '(prefers-color-scheme: light)', color: '#fafaf9' },
+    { media: '(prefers-color-scheme: dark)', color: '#111111' },
+  ],
 };
+
+/** 첫 페인트 전에 저장된 테마(없으면 시스템 설정)를 적용해 깜빡임을 막는다. */
+const themeInitScript = `(function(){try{var s=localStorage.getItem('${THEME_STORAGE_KEY}');var d=s==='dark'||((s!=='light')&&window.matchMedia('(prefers-color-scheme: dark)').matches);document.documentElement.classList.toggle('dark',d);}catch(e){}})();`;
 
 export default function RootLayout({
   children,
@@ -66,24 +67,22 @@ export default function RootLayout({
     <html
       lang="ko"
       suppressHydrationWarning
-      className="w-full h-full overflow-y-hidden"
+      data-scroll-behavior="smooth"
+      className={`${quicksand.variable} ${notoSansKr.variable}`}
     >
-      <body
-        data-scroll-container="mobile"
-        className={`
-          w-full h-full overflow-y-auto 
-          xl:overflow-y-hidden no-scrollbar
-          ${notoSansKr.variable} ${gowunBatang.variable}
-          ${quicksand.variable} ${kalam.variable} antialiased bg-surface-level-min`}
-      >
+      <head>
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
+      </head>
+      <body className="min-h-dvh bg-surface-level-min text-text-primary antialiased">
         <AppProviders>
-          <Suspense fallback={null}>
-            <Header />
-            <main id="main-content" className="w-full h-full">
-              {children}
-            </main>
-          </Suspense>
-          <LazyCustomCursor />
+          <a href="#main-content" className="skip-link">
+            본문으로 건너뛰기
+          </a>
+          <SiteHeader />
+          <main id="main-content">
+            <PageTransition>{children}</PageTransition>
+          </main>
+          <SiteFooter />
         </AppProviders>
       </body>
     </html>

@@ -8,6 +8,7 @@ import { ThemeState, useThemeDetector } from '../../../utils/themeDetector';
 import { Toggle } from '../Toggle';
 import { Tooltip } from '../Tooltip';
 
+import styles from './ThemeToggle.module.scss';
 import { ThemeToggleProps } from './ThemeToggle.types';
 
 export const ThemeToggle: React.FC<ThemeToggleProps> = ({
@@ -52,21 +53,22 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
   // Toggle className 병합
   const toggleClassName = React.useMemo(() => {
     return [
+      styles.root,
+      styles[size],
       currentTheme.isDark !== null ? 'opacity-100' : 'opacity-0',
-      'text-accent-500',
       'will-change-transform',
     ]
       .filter(Boolean)
       .join(' ');
-  }, [currentTheme.isDark]);
+  }, [currentTheme.isDark, size]);
 
-  // 아이콘 className 계산 함수
+  // 아이콘 className: 켜진 쪽은 썸 위에서 골드로, 꺼진 쪽은 트랙 위에서 보조 텍스트색으로 보인다.
   const getSunIconClassName = (isDark: boolean) => {
-    return isDark ? 'text-primary-300 opacity-[0.5]' : 'text-accent-300';
+    return isDark ? 'text-text-secondary' : 'text-accent-600';
   };
 
   const getMoonIconClassName = (isDark: boolean) => {
-    return isDark ? 'text-accent-100' : 'text-primary-800 opacity-[0.5]';
+    return isDark ? 'text-accent-600' : 'text-text-secondary';
   };
 
   // ariaLabel 계산
@@ -92,18 +94,14 @@ export const ThemeToggle: React.FC<ThemeToggleProps> = ({
         }
         renderThumb={isDark => {
           return (
-            <span className="absolute w-[190%] h-[100%] flex items-center justify-between left-[50%] transform -translate-x-[50%]">
+            <span className="absolute flex items-center justify-between">
               <FontAwesomeIcon
                 icon={faSun}
-                className={`${getSunIconClassName(isDark)} ${
-                  size === 'sm' ? 'text-sm' : ''
-                }`}
+                className={getSunIconClassName(isDark)}
               />
               <FontAwesomeIcon
                 icon={faMoon}
-                className={`${getMoonIconClassName(isDark)} ${
-                  size === 'sm' ? 'text-sm' : ''
-                }`}
+                className={getMoonIconClassName(isDark)}
               />
             </span>
           );

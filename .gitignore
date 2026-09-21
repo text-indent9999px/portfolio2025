@@ -54,3 +54,6 @@ public/code
 !/secrets/.gitkeep
 /local-data/**
 /scripts-local/**
+
+# 이력서 등 공개하지 않는 파일(공개 저장소에 올리지 않는다)
+/private-files/

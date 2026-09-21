@@ -8,7 +8,6 @@ import NextImage from 'next/image';
 
 import { cn } from '@/utils/cn';
 
-import CustomButton from '../Button';
 import { Card } from '../Card';
 
 import type { VideoProps } from './Video.types';
@@ -106,11 +105,10 @@ export const Video: React.FC<VideoProps> = ({
                     role="button"
                     tabIndex={0}
                     aria-label={playButtonLabel}
-                    aria-controls={videoId}
                     onClick={handlePlay}
                     onKeyDown={handleKeyDown}
                     onFocus={handleParentFocus}
-                    className="cursor-pointer focus-visible:outline-none"
+                    className="cursor-pointer rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500"
                   >
                     <NextImage
                       src={thumbnail}
@@ -118,7 +116,7 @@ export const Video: React.FC<VideoProps> = ({
                       width={width}
                       height={height}
                       className={cn(
-                        'w-full h-auto blur-[3px] scale-[1.01] group-hover:blur-none',
+                        'w-full h-auto object-cover blur-[3px] scale-[1.01] group-hover:blur-none',
                         'duration-300 transition-all ease-in-out'
                       )}
                       style={{
@@ -130,21 +128,19 @@ export const Video: React.FC<VideoProps> = ({
                         'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mOUqwcAAMEAnwarUJAAAAAASUVORK5CYII='
                       }
                     />
-                    <CustomButton
-                      color="brand"
-                      variant="solid"
-                      icon={<FontAwesomeIcon icon={faPlay} />}
-                      rounded="circle"
-                      size="lg"
+                    {/* 부모(role=button)가 상호작용을 맡으므로 재생 아이콘은 장식용 span으로 둔다. */}
+                    <span
                       aria-hidden="true"
-                      tabIndex={-1}
                       data-video-play-button=""
                       className={cn(
-                        'h-19! w-19! border-primary-900! bg-primary-50/90!',
-                        'text-2xl! text-primary-900!',
-                        'absolute! top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 pointer-events-none!'
+                        'absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2',
+                        'grid h-19 w-19 place-items-center rounded-full border-2',
+                        'border-primary-900 bg-primary-50/90 text-2xl text-primary-900',
+                        'pointer-events-none shadow-lg'
                       )}
-                    />
+                    >
+                      <FontAwesomeIcon icon={faPlay} />
+                    </span>
                   </div>
                 ) : (
                   <video

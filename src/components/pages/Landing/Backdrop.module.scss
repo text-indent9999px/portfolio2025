@@ -1,0 +1,83 @@
+@keyframes aurora-drift {
+  0% {
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+
+  50% {
+    transform: translate3d(4%, -6%, 0) scale(1.08);
+  }
+
+  100% {
+    transform: translate3d(-3%, 4%, 0) scale(1);
+  }
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  pointer-events: none;
+
+  &::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: radial-gradient(
+      color-mix(in srgb, var(--color-surface-level-4) 40%, transparent) 1px,
+      transparent 1px
+    );
+    background-size: 26px 26px;
+    mask-image: radial-gradient(
+      ellipse 75% 65% at 50% 25%,
+      #000 25%,
+      transparent 78%
+    );
+  }
+}
+
+.blob {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(90px);
+  opacity: 0.5;
+  animation: aurora-drift 20s ease-in-out infinite alternate;
+  will-change: transform;
+
+  :global(html.dark) & {
+    opacity: 0.22;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+.gold {
+  top: -12rem;
+  right: -8rem;
+  width: 34rem;
+  height: 34rem;
+  background: color-mix(in srgb, var(--color-accent-300) 60%, transparent);
+}
+
+.indigo {
+  top: 6rem;
+  left: -12rem;
+  width: 30rem;
+  height: 30rem;
+  background: color-mix(in srgb, var(--color-primary-300) 60%, transparent);
+  animation-delay: -8s;
+}
+
+/* 하단으로 갈수록 배경색에 녹아들어 다음 섹션과 경계가 남지 않게 한다. */
+.fade {
+  position: absolute;
+  inset: auto 0 0;
+  height: 10rem;
+  background: linear-gradient(
+    to top,
+    var(--color-surface-level-min),
+    transparent
+  );
+}

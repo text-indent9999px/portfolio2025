@@ -1,213 +1,32 @@
-/* ===== View Transition 애니메이션 ===== */
+/* ===== View Transition =====
+   페이지 콘텐츠(page-content)만 부드럽게 교차시키고, 헤더는 그대로 둔다. */
 
-/* page-content를 전역 전환의 단일 앵커로 사용한다. */
 ::view-transition-old(page-content) {
-  animation: stay-in-place 300ms ease-in-out;
-  animation-fill-mode: forwards;
-  z-index: 1;
+  animation: vt-fade-out 180ms ease both;
 }
 
 ::view-transition-new(page-content) {
-  animation: slide-in-from-right 300ms ease-in-out;
-  animation-fill-mode: forwards;
-  z-index: 2;
+  animation: vt-fade-in 360ms cubic-bezier(0.2, 0.7, 0.2, 1) 80ms both;
 }
 
-@container style(--device: desktop) {
-  ::view-transition-old(page-content) {
-    animation-duration: 600ms;
-  }
-
-  ::view-transition-new(page-content) {
-    animation-duration: 600ms;
-  }
-
-  html:active-view-transition-type(nav-back)::view-transition-old(
-      page-content
-    ) {
-    animation-duration: 760ms;
-  }
-
-  html:active-view-transition-type(nav-back)::view-transition-new(
-      page-content
-    ) {
-    animation-duration: 980ms;
-  }
-}
-
-/* transition type이 감지되면 방향별 전환을 우선 적용한다. */
-html:active-view-transition-type(nav-forward)::view-transition-old(
-    page-content
-  ) {
-  animation-name: stay-in-place;
-}
-
-html:active-view-transition-type(nav-forward)::view-transition-new(
-    page-content
-  ) {
-  animation-name: slide-in-from-right;
-}
-
-html:active-view-transition-type(nav-back)::view-transition-old(page-content) {
-  animation-name: stay-in-place-then-right;
-  animation-duration: 460ms;
-  z-index: 2;
-}
-
-html:active-view-transition-type(nav-back)::view-transition-new(page-content) {
-  animation-name: slide-in-from-right-delayed;
-  animation-duration: 620ms;
-  z-index: 1;
-}
-
-/* URL 동기화/프로젝트 복귀에서는 page-content 모션 간섭을 비활성화한다. */
-html:active-view-transition-type(query-sync)::view-transition-old(page-content),
-html:active-view-transition-type(query-sync)::view-transition-new(page-content),
-html:active-view-transition-type(projects-back)::view-transition-old(
-    page-content
-  ),
-html:active-view-transition-type(projects-back)::view-transition-new(
-    page-content
-  ) {
-  animation-name: page-content-static;
-  animation-duration: 1ms;
-  z-index: 1;
-}
-
-html[data-vt-scope='projects-back']::view-transition-old(page-content),
-html[data-vt-scope='projects-back']::view-transition-new(page-content) {
-  animation-name: page-content-static;
-  animation-duration: 1ms;
-  z-index: 1;
-}
-
-/* projects-back에서 page-content만 완전히 비가시화해 shared 레이어를 덮지 않게 한다. */
-html:active-view-transition-type(projects-back)::view-transition-group(
-    page-content
-  ),
-html:active-view-transition-type(projects-back)::view-transition-image-pair(
-    page-content
-  ),
-html:active-view-transition-type(projects-back)::view-transition-old(
-    page-content
-  ),
-html:active-view-transition-type(projects-back)::view-transition-new(
-    page-content
-  ),
-html[data-vt-scope='projects-back']::view-transition-group(page-content),
-html[data-vt-scope='projects-back']::view-transition-image-pair(page-content),
-html[data-vt-scope='projects-back']::view-transition-old(page-content),
-html[data-vt-scope='projects-back']::view-transition-new(page-content) {
-  animation: none !important;
-  opacity: 0 !important;
-}
-
-/* projects 리스트 <-> 디테일 shared name 그룹만 속도 조절 */
-html:active-view-transition-type(projects-forward)::view-transition-group(
-    project-title-back-*
-  ),
-html:active-view-transition-type(projects-forward)::view-transition-group(
-    project-description-back-*
-  ),
-html:active-view-transition-type(projects-forward)::view-transition-group(
-    project-tags-back-*
-  ),
-html:active-view-transition-type(projects-back)::view-transition-group(
-    project-title-back-*
-  ),
-html:active-view-transition-type(projects-back)::view-transition-group(
-    project-description-back-*
-  ),
-html:active-view-transition-type(projects-back)::view-transition-group(
-    project-tags-back-*
-  ) {
-  animation-duration: 760ms !important;
-}
-
-@container style(--device: desktop) {
-  html:active-view-transition-type(projects-forward)::view-transition-group(
-      project-title-back-*
-    ),
-  html:active-view-transition-type(projects-forward)::view-transition-group(
-      project-description-back-*
-    ),
-  html:active-view-transition-type(projects-forward)::view-transition-group(
-      project-tags-back-*
-    ),
-  html:active-view-transition-type(projects-back)::view-transition-group(
-      project-title-back-*
-    ),
-  html:active-view-transition-type(projects-back)::view-transition-group(
-      project-description-back-*
-    ),
-  html:active-view-transition-type(projects-back)::view-transition-group(
-      project-tags-back-*
-    ) {
-    animation-duration: 980ms !important;
-  }
-}
-
-@keyframes stay-in-place {
-  0% {
-    transform: translateX(0) scale(1);
-    filter: blur(10px);
-    opacity: 1;
-  }
-  90% {
-    transform: translateX(0) scale(0.8);
-    filter: blur(100px);
-  }
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes slide-in-from-right {
-  0% {
-    transform: translateX(100%);
-  }
-  100% {
-    transform: translateX(0);
-  }
-}
-
-@keyframes stay-in-place-then-right {
-  0% {
-    transform: translateX(0);
-    filter: blur(10px);
-    opacity: 1;
-  }
-  50% {
-    transform: translateX(0);
-    filter: blur(10px);
-    opacity: 0.5;
-  }
-  100% {
-    transform: translateX(100%);
-    opacity: 0;
-  }
-}
-
-@keyframes slide-in-from-right-delayed {
-  0% {
-    transform: scale(0.8);
-    opacity: 0;
-  }
-  100% {
-    transform: scale(1);
-    opacity: 1;
-  }
-}
-
-@keyframes page-content-static {
-  from {
-    transform: translateX(0);
-    filter: blur(0);
-    opacity: 1;
-  }
+@keyframes vt-fade-out {
   to {
-    transform: translateX(0);
-    filter: blur(0);
-    opacity: 1;
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes vt-fade-in {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
   }
 }
