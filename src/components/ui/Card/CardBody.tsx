@@ -13,4 +13,4 @@ const CardBody: React.FC<CardBodyProps> = ({ children, className = '' }) => (
 
 CardBody.displayName = 'CardBody';
 
-export default CardBody;
+export { CardBody };

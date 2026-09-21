@@ -1,7 +1,7 @@
 import { cn } from '@/utils/cn';
 import { BlankProps } from './Blank.types';
 
-export default function Blank({
+export function Blank({
   margin,
   height = '0.5rem',
   width = '100%',

@@ -1,1 +1,1 @@
-export { default as MenuTriggerIcon } from './MenuTriggerIcon';
+export { MenuTriggerIcon } from './MenuTriggerIcon';

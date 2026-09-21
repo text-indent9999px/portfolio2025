@@ -75,7 +75,7 @@ src/
 ├─ data/portfolio/          콘텐츠 데이터 (위 표 참고)
 ├─ hooks/                   useScrollSpy, useSectionNavigation 등
 ├─ styles/                  colors-*, design-tokens, elevation, motion, view-transition
-└─ utils/                   cn, router(전환 내비게이션), themeDetector
+└─ utils/                   cn, themeDetector(다크모드 스토어·탭 간 동기화)
 ```
 
 ## 시작하기
@@ -85,7 +85,7 @@ npm install
 npm run dev              # http://localhost:3000
 npm run build            # 코드 뷰어용 파일을 public/code로 복사한 뒤 next build
 npm run start
-npm run lint             # eslint . (알려진 오류: utils/router.ts의 react-hooks 규칙 2건)
+npm run lint             # eslint . (알려진 오류: ui/의 react-hooks 규칙 11건)
 npm run stylelint
 npm run storybook        # http://localhost:6006
 ```
@@ -102,7 +102,8 @@ Node.js 20 이상을 권장합니다. 자동 테스트는 없으며, 접근성·
 
 ## 설계 메모
 
-- **정적 생성**: 서버 HTML에 콘텐츠가 그대로 들어가 첫 화면이 빠르고 공유 미리보기에 유리합니다. 라우터에서 `useSearchParams`를 제거한 것도 이 때문입니다(정적 페이지 전체가 클라이언트 렌더링으로 밀려나는 것을 방지).
+- **정적 생성**: 서버 HTML에 콘텐츠가 그대로 들어가 첫 화면이 빠르고 공유 미리보기에 유리합니다.
+
 - **폰트**: 스택 순서가 `Quicksand → Apple SD Gothic Neo → Noto Sans KR`이라 Mac·iOS에서는 한글 웹폰트를 내려받지 않습니다. Windows·Android에서는 한글 웹폰트(약 300KB)가 로드되어 모바일 성능 점수에는 불리합니다.
 - **모션**: `prefers-reduced-motion`을 존중합니다. 스크롤 등장(Reveal)은 JS가 없거나 이미 화면 안에 있는 요소에는 적용되지 않고, 인쇄 시에는 항상 보입니다.
 - **접근성**: 스킵 링크, 시맨틱 랜드마크, 키보드 포커스 표시, `aria-current` 기반 현재 섹션 표시를 갖췄습니다. 2026.09.21 측정 기준 axe-core(WCAG 2.1 AA + best-practice) 위반 0건, Lighthouse 접근성·SEO·모범사례 100점, 성능은 데스크톱 98–99 / 모바일 72–78입니다.

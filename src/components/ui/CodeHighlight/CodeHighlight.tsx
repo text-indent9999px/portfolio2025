@@ -1,7 +1,7 @@
 'use client';
 
 import React, { startTransition, useEffect, useRef, useState } from 'react';
-import InfoText from '../InfoText';
+import { InfoText } from '../InfoText';
 import { Spinner } from '../Spinner';
 import { useCodeFetch, useThemeDetection } from './hooks';
 import {

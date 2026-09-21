@@ -45,4 +45,4 @@ const Pill: React.FC<PillProps> = ({
   );
 };
 
-export default Pill;
+export { Pill };

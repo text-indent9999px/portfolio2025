@@ -77,4 +77,4 @@ const Description: React.FC<DescriptionProps> = ({
   );
 };
 
-export default Description;
+export { Description };

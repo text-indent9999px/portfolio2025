@@ -12,10 +12,10 @@ import {
   getSurfaceBackgroundClass,
 } from './Card.config';
 import styles from './Card.module.scss';
-import CardBody from './CardBody';
-import CardFooter from './CardFooter';
-import CardHeader from './CardHeader';
-import CardThumb from './CardThumb';
+import { CardBody } from './CardBody';
+import { CardFooter } from './CardFooter';
+import { CardHeader } from './CardHeader';
+import { CardThumb } from './CardThumb';
 
 import type { CardActivationEvent, CardProps } from './Card.types';
 
@@ -30,7 +30,6 @@ const Card: React.FC<CardProps> = ({
   padding = 'md',
   onClick,
   interactiveLabel,
-  cursorTrigger = false,
   ratio,
   thumbPosition,
   gap,
@@ -161,8 +160,6 @@ const Card: React.FC<CardProps> = ({
     <div
       {...rest}
       ref={cardRef}
-      data-cursor={isClickable ? 'hover' : 'default'}
-      data-cursor-ripple={cursorTrigger && isClickable ? true : false}
       className={finalClasses}
       style={inlineStyle}
       onClick={handleClick}
@@ -178,4 +175,4 @@ const Card: React.FC<CardProps> = ({
 
 Card.displayName = 'Card';
 
-export default Card;
+export { Card };

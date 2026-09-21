@@ -5,7 +5,7 @@ import {
   useRef,
   useState,
 } from 'react';
-import type { TabIndicatorState, UseTabIndicatorProps } from './types';
+import type { TabIndicatorState, UseTabIndicatorProps } from '../types';
 
 // classes.ts의 indicator transition duration-300과 맞춘 상호작용 플래그 유지 시간
 const INTERACTION_TRANSITION_MS = 300;

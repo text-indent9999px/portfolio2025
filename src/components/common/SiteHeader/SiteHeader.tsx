@@ -11,7 +11,7 @@ import {
   useSectionNavigation,
 } from '@/hooks';
 import { cn } from '@/utils/cn';
-import CustomButton, { MenuButton } from '../../ui/Button';
+import { Button, MenuButton } from '../../ui/Button';
 import { ThemeToggle } from '../../ui/ThemeToggle';
 
 const MOBILE_MENU_ID = 'mobile-menu';
@@ -116,7 +116,7 @@ export function SiteHeader() {
 
         <div className="flex items-center gap-3 md:gap-4">
           <ThemeToggle size="sm" />
-          <CustomButton
+          <Button
             size="sm"
             rounded="pill"
             variant="solid"
@@ -125,7 +125,7 @@ export function SiteHeader() {
             onClick={() => goToSection('contact')}
           >
             연락하기
-          </CustomButton>
+          </Button>
           <MenuButton
             className="md:hidden"
             variant="minimal"

@@ -39,7 +39,6 @@ type CardPropsVisual = {
   surfaceLevel?: SurfaceLevel;
   className?: string;
   padding?: 'sm' | 'md' | 'lg';
-  cursorTrigger?: boolean;
   ratio?: string; // e.g. '120px 1fr'
   thumbPosition?: 'left' | 'right' | 'top' | 'bottom';
   gap?: string; // e.g. '8px', '0.75rem'

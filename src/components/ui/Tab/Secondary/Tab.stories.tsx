@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { useState } from 'react';
-import Tab from './Tab';
+import { SecondaryTab as Tab } from './Tab';
 
 const meta: Meta<typeof Tab> = {
   title: 'UI/Tab/Secondary',

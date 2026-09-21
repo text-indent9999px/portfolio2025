@@ -1,6 +1,7 @@
-export { default as CustomButton, default } from './Button';
+export { Button } from './Button';
 export type {
   ButtonColor,
+  ButtonProps,
   ButtonRounded,
   ButtonSize,
   ButtonVariant,

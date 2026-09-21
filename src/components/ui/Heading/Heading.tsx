@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { cn } from '@/utils/cn';
-import Blank from '../Blank';
+import { Blank } from '../Blank';
 import { VISUAL_SIZE_TO_LEVEL } from './Heading.config';
 import type { HeadingLevel, HeadingProps } from './Heading.types';
 import { BOTTOM_SPACING_HEIGHTS } from './Heading.types';
@@ -70,4 +70,4 @@ const Heading: React.FC<HeadingProps> = ({
   );
 };
 
-export default Heading;
+export { Heading };

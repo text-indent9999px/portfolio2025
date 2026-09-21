@@ -6,9 +6,9 @@ import NextImage from 'next/image';
 import React, { useState } from 'react';
 
 import { cn } from '@/utils/cn';
-import CustomButton from '../Button';
+import { Button } from '../Button';
 import { Card } from '../Card';
-import Overlay from '../Overlay';
+import { Overlay } from '../Overlay';
 import type { ImageProps } from './Image.types';
 
 function getAriaLabel(
@@ -160,7 +160,7 @@ const Image: React.FC<ImageProps> = ({
                   isModalOpen ? 'pointer-events-auto' : 'pointer-events-none'
                 )}
               >
-                <CustomButton
+                <Button
                   color="neutral"
                   variant="soft"
                   onClick={() => setIsModalOpen(false)}
@@ -184,4 +184,4 @@ const Image: React.FC<ImageProps> = ({
   );
 };
 
-export default Image;
+export { Image };

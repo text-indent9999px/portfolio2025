@@ -1,5 +1,5 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
-import Button from './Button';
+import { Button } from './Button';
 
 const meta: Meta<typeof Button> = {
   title: 'UI/Button',
@@ -100,16 +100,6 @@ const meta: Meta<typeof Button> = {
         description: 'Button이 부모 요소의 전체 너비를 차지하도록 합니다.',
       },
     },
-    cursorTrigger: {
-      control: 'boolean',
-      description: '커스텀 커서 효과를 활성화합니다.',
-      table: {
-        type: { summary: 'boolean' },
-        defaultValue: { summary: 'true' },
-        category: '동작',
-        description: '커스텀 커서 효과를 활성화합니다.',
-      },
-    },
     icon: {
       control: 'text',
       description: 'Button에 표시할 아이콘입니다. ReactNode를 받을 수 있습니다.',
@@ -140,7 +130,6 @@ const meta: Meta<typeof Button> = {
     interactive: true,
     disabled: false,
     fullWidth: false,
-    cursorTrigger: true,
   },
 };
 

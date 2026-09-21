@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import type { CSSProperties } from 'react';
 import { SITE } from '@/data/portfolio';
 import { useSectionNavigation } from '@/hooks';
-import CustomButton, { ResumeDownloadButton } from '../../ui/Button';
+import { Button, ResumeDownloadButton } from '../../ui/Button';
 
 export function HeroActions() {
   const goToSection = useSectionNavigation();
@@ -15,7 +15,7 @@ export function HeroActions() {
       className="hero-in mt-10 flex flex-wrap items-center gap-3"
       style={{ '--d': '180ms' } as CSSProperties}
     >
-      <CustomButton
+      <Button
         size="lg"
         rounded="pill"
         variant="solid"
@@ -25,8 +25,8 @@ export function HeroActions() {
         onClick={() => goToSection('work')}
       >
         프로젝트 보기
-      </CustomButton>
-      <CustomButton
+      </Button>
+      <Button
         size="lg"
         rounded="pill"
         variant="outline"
@@ -34,7 +34,7 @@ export function HeroActions() {
         onClick={() => goToSection('contact')}
       >
         연락하기
-      </CustomButton>
+      </Button>
       {SITE.resumeDownload && (
         <ResumeDownloadButton size="lg" rounded="pill" />
       )}

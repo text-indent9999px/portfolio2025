@@ -32,4 +32,4 @@ const CardThumb: React.FC<CardThumbProps> = ({
 
 CardThumb.displayName = 'CardThumb';
 
-export default CardThumb;
+export { CardThumb };

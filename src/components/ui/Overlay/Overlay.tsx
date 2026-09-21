@@ -251,4 +251,4 @@ const Overlay: React.FC<OverlayProps> = ({
   return content;
 };
 
-export default Overlay;
+export { Overlay };

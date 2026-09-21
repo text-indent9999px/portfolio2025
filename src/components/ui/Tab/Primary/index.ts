@@ -1,2 +1,2 @@
-export { SecondaryTab } from './Tab';
+export { PrimaryTab } from './Tab';
 export type { TabProps } from './types';

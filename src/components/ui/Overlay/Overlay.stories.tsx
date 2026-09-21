@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/nextjs';
 import { useState } from 'react';
-import Overlay from './Overlay';
+import { Overlay } from './Overlay';
 
 const meta: Meta<typeof Overlay> = {
   title: 'UI/Overlay',

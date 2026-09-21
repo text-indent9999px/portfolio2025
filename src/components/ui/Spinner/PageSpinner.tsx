@@ -2,8 +2,8 @@
 
 import React from 'react';
 
-import Overlay from '../Overlay';
-import Spinner from './Spinner';
+import { Overlay } from '../Overlay';
+import { Spinner } from './Spinner';
 
 const pageSpinnerOverlayStyle: React.CSSProperties = {
   display: 'flex',
@@ -30,4 +30,3 @@ export const PageSpinner: React.FC<{
   );
 };
 
-export default PageSpinner;
