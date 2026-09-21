@@ -42,7 +42,6 @@
 | `/profile` `/projects` `/contact` | 예전 주소. 홈의 해당 섹션으로 리다이렉트                                           |
 | `/api/resume`                 | 이력서 다운로드. `SITE.resumeDownload`가 꺼져 있으면 404                               |
 | `/api/code/[filename]`        | 케이스 스터디의 "핵심 코드" 섹션용(허용 목록의 파일만). 현재 노출 프로젝트는 사용 안 함 |
-| `/api/revalidate`             | Firebase 콘텐츠 시절의 재검증 API. 현재 미사용                                         |
 
 ## 콘텐츠 수정
 
@@ -95,14 +94,11 @@ Node.js 20 이상을 권장합니다. 자동 테스트는 없으며, 접근성·
 
 ## 환경 변수
 
-| 이름                        | 설명                                                    | 상태     |
-| --------------------------- | ------------------------------------------------------- | -------- |
-| `NEXT_PUBLIC_SITE_URL`      | 절대 URL(OG·sitemap 기준). 미설정 시 기본 배포 주소     | 사용 중  |
-| `NEXT_PUBLIC_STORYBOOK_URL` | Storybook 주소(옛 프로젝트 탭 코드에서만 사용)          | 레거시   |
-| `REVALIDATE_SECRET`         | `/api/revalidate` 토큰                                  | 레거시   |
-| `secrets/firebase-admin.json` | Firebase 서비스 계정(`seed:portfolio`, `src/server`)  | 레거시   |
+| 이름                   | 설명                                                |
+| ---------------------- | --------------------------------------------------- |
+| `NEXT_PUBLIC_SITE_URL` | 절대 URL(OG·sitemap 기준). 미설정 시 기본 배포 주소 |
 
-현재 사이트는 Firebase를 사용하지 않습니다. 콘텐츠는 모두 `src/data/portfolio`에 있습니다.
+외부 서비스에 의존하지 않습니다. 콘텐츠는 모두 `src/data/portfolio`에 있고 빌드 시 정적 페이지로 생성됩니다.
 
 ## 설계 메모
 
@@ -111,18 +107,9 @@ Node.js 20 이상을 권장합니다. 자동 테스트는 없으며, 접근성·
 - **모션**: `prefers-reduced-motion`을 존중합니다. 스크롤 등장(Reveal)은 JS가 없거나 이미 화면 안에 있는 요소에는 적용되지 않고, 인쇄 시에는 항상 보입니다.
 - **접근성**: 스킵 링크, 시맨틱 랜드마크, 키보드 포커스 표시, `aria-current` 기반 현재 섹션 표시를 갖췄습니다. 2026.09.21 측정 기준 axe-core(WCAG 2.1 AA + best-practice) 위반 0건, Lighthouse 접근성·SEO·모범사례 100점, 성능은 데스크톱 98–99 / 모바일 72–78입니다.
 
-## 정리 예정 레거시
+## 정리 이력
 
-Firebase 콘텐츠 구조를 쓰던 시절의 코드가 아직 남아 있습니다. 라이브 라우트에서 import되지 않는 것을 확인했고, 삭제는 승인 후 진행합니다.
-
-| 위치                                                                              | 설명                                        |
-| --------------------------------------------------------------------------------- | ------------------------------------------- |
-| `src/components/pages/{Home,Profile,Projects,Contact}`                            | 예전 페이지 구현                            |
-| `src/components/common/{Navigation,Logo}`                                         | 예전 메뉴·로고                              |
-| `src/components/{heroVisual,styleGuide}`, `src/components/effects/CursorEffect`   | 예전 히어로 비주얼·스타일 가이드·커스텀 커서 |
-| `src/server`, `src/data/{navigation,profile}`, `src/config/links.ts`              | Firebase 조회와 예전 데이터·링크 설정       |
-| `src/app/api/revalidate`, `scripts/seed-portfolio.ts`, `local-data/`, `firebase-admin` 의존성 | Firebase 시드·재검증 흐름          |
-| `src/stories`                                                                     | Storybook 기본 예제(Button, Header, Page)   |
+- 2026.09.22: Firebase 콘텐츠 구조를 쓰던 시절의 코드(예전 페이지·메뉴·스타일 가이드·커스텀 커서, `src/server`, 재검증 API, 시드 스크립트, Storybook 기본 예제)와 `firebase-admin` 의존성을 삭제했습니다. git 이력에서 복구할 수 있습니다.
 
 ## 개발 가이드
 
