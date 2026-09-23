@@ -6,7 +6,7 @@
 > **라이브**: <https://text-indent9999px.vercel.app>
 > **Storybook**: <https://text-indent9999px-storybook.vercel.app>
 
-**마지막 업데이트**: 2026.09.22
+**마지막 업데이트**: 2026.09.23
 
 ## 공개 설정
 
@@ -88,9 +88,13 @@ npm run start
 npm run lint             # eslint . (알려진 오류: ui/의 react-hooks 규칙 11건)
 npm run stylelint
 npm run storybook        # http://localhost:6006
+npm run test             # vitest run
+npm run test:watch       # vitest (watch)
 ```
 
-Node.js 20 이상을 권장합니다. 자동 테스트는 없으며, 접근성·성능은 axe-core와 Lighthouse로 직접 측정합니다.
+Node.js 20 이상을 권장합니다. 접근성·성능은 axe-core와 Lighthouse로 직접 측정합니다.
+
+단위 테스트는 Vitest + Testing Library입니다. `*.test.ts(x)`를 컴포넌트/유틸 옆에 두면 자동으로 실행 대상이 됩니다. 지금은 `Button`, `useTheme`, `PrimaryTab` 키보드 내비게이션에만 있고, 나머지는 아직 없습니다.
 
 ## 환경 변수
 
