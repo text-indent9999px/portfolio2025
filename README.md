@@ -71,7 +71,7 @@ src/
 │  ├─ pages/Error, layout/  에러 페이지와 그 레이아웃 (ErrorBoundary가 사용)
 │  ├─ common/               SiteHeader, SiteFooter, Reveal(스크롤 등장), PageTransition
 │  └─ providers/, errorBoundary/
-├─ contexts/                Device · Navigation Context (ui/Button의 useRouter가 의존)
+├─ contexts/                DeviceContext (반응형 브레이크포인트 감지)
 ├─ data/portfolio/          콘텐츠 데이터 (위 표 참고)
 ├─ hooks/                   useScrollSpy, useSectionNavigation 등
 ├─ styles/                  colors-*, design-tokens, elevation, motion, view-transition
