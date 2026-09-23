@@ -94,7 +94,7 @@ npm run test:watch       # vitest (watch)
 
 Node.js 20 이상을 권장합니다. 접근성·성능은 axe-core와 Lighthouse로 직접 측정합니다.
 
-단위 테스트는 Vitest + Testing Library입니다. `*.test.ts(x)`를 컴포넌트/유틸 옆에 두면 자동으로 실행 대상이 됩니다. 지금은 `Button`, `Card`, `Toggle`, `useTheme`, `useMediaQuery`, `useScrollSpy`, `PrimaryTab` 키보드 내비게이션에만 있고, 나머지는 아직 없습니다.
+단위 테스트는 Vitest + Testing Library입니다. `*.test.ts(x)`를 컴포넌트/유틸 옆에 두면 자동으로 실행 대상이 됩니다. 지금은 `Button`, `Card`, `Toggle`, `useTheme`, `useMediaQuery`, `useScrollSpy`, `useCodeFetch`, `useThemeDetection`, `ColorChip`(색상 유틸·훅), `PrimaryTab`·`SecondaryTab` 키보드 내비게이션에 있고, 나머지는 아직 없습니다.
 
 ## 환경 변수
 
