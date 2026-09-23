@@ -44,10 +44,13 @@ const CodeHighlightComponent: React.FC<CodeHighlightProps> = ({
   const [isInView, setIsInView] = useState<boolean>(false);
   /**
    * 한 번이라도 fetch 활성화 조건을 만족하면(즉시 로드 또는 뷰포트 진입),
-   * 같은 filename 동안에는 observer 토글로 다시 비활성화하지 않는다.
+   * 그 뒤로는 observer 토글로 다시 비활성화하지 않는다.
+   * `filename`은 이 컴포넌트가 살아 있는 동안 바뀌지 않는다고 가정한다
+   * (파일이 바뀌면 호출하는 쪽에서 `key`를 바꿔 새 인스턴스로 마운트한다).
    */
-  const [hasActivatedFetch, setHasActivatedFetch] = useState<boolean>(false);
-  /** Observer 사용 시에만 뷰포트를 기다린다. 끄면 filename만 있으면 바로 fetch. */
+  const [hasActivatedFetch, setHasActivatedFetch] = useState<boolean>(
+    () => !enableObserver
+  );
   const fetchFilename = filename && hasActivatedFetch ? filename : '';
   const { code, loading, error } = useCodeFetch(fetchFilename);
   const isDark = useThemeDetection();
@@ -58,19 +61,6 @@ const CodeHighlightComponent: React.FC<CodeHighlightProps> = ({
   useEffect(() => {
     onLoadCompleteRef.current = onLoadComplete;
   }, [onLoadComplete]);
-
-  useEffect(() => {
-    setIsInView(false);
-    setHasActivatedFetch(false);
-    setHighlightedHtml('');
-  }, [filename]);
-
-  useEffect(() => {
-    if (!filename) return;
-    if (!enableObserver || isInView) {
-      setHasActivatedFetch(true);
-    }
-  }, [filename, enableObserver, isInView]);
 
   useEffect(() => {
     if (
@@ -88,6 +78,7 @@ const CodeHighlightComponent: React.FC<CodeHighlightProps> = ({
           if (entry.isIntersecting && observerActive) {
             startTransition(() => {
               setIsInView(true);
+              setHasActivatedFetch(true);
             });
             observer.disconnect();
           }

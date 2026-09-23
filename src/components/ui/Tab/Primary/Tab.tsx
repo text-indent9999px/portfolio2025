@@ -70,7 +70,7 @@ const PrimaryTab: React.FC<TabProps> = ({
             aria-controls={`panel-${tab.id}-${uniqueId}`}
             tabIndex={isActive ? 0 : -1}
             onClick={() => handleTabChange(tab.id, onTabChange)}
-            className={getTabButtonClassName(isActive, hasNotification)}
+            className={getTabButtonClassName(isActive)}
             data-tab-id={tab.id}
             type="button"
           >

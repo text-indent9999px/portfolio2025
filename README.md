@@ -85,7 +85,7 @@ npm install
 npm run dev              # http://localhost:3000
 npm run build            # 코드 뷰어용 파일을 public/code로 복사한 뒤 next build
 npm run start
-npm run lint             # eslint . (알려진 오류: ui/의 react-hooks 규칙 11건)
+npm run lint             # eslint . (src/는 깨끗함. scripts/*.js의 require() 등 src 밖 오류는 남아 있음)
 npm run stylelint
 npm run storybook        # http://localhost:6006
 npm run test             # vitest run

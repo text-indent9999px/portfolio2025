@@ -6,6 +6,7 @@ export interface UseTabObserversProps {
   scrollContainerRef: React.RefObject<HTMLDivElement | null>;
   tabListRef: React.RefObject<HTMLDivElement | null>;
   isInitialMountRef: React.MutableRefObject<boolean>;
+  setIsInitialMount: React.Dispatch<React.SetStateAction<boolean>>;
   setMounted: React.Dispatch<React.SetStateAction<boolean>>;
   updateIndicatorState: (source?: string) => void;
   handleResize: () => void;
@@ -16,6 +17,7 @@ export function useTabObservers({
   scrollContainerRef,
   tabListRef,
   isInitialMountRef,
+  setIsInitialMount,
   setMounted,
   updateIndicatorState,
   handleResize,
@@ -27,6 +29,7 @@ export function useTabObservers({
     if (!container || !tabList) return;
 
     isInitialMountRef.current = true;
+    setIsInitialMount(true);
 
     updateIndicatorState('initialMount');
     // 초기 마운트 시 스크롤 상태 업데이트는 useLayoutEffect에서 처리
@@ -36,6 +39,7 @@ export function useTabObservers({
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         isInitialMountRef.current = false;
+        setIsInitialMount(false);
       });
     });
 
@@ -66,6 +70,7 @@ export function useTabObservers({
     isInitialMountRef,
     scrollAnimationCancelRef,
     scrollContainerRef,
+    setIsInitialMount,
     setMounted,
     tabListRef,
     updateIndicatorState,

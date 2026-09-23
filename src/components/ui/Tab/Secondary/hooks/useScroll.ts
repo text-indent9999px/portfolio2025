@@ -16,7 +16,6 @@ export interface UseScrollProps {
   isInitialMountRef: React.MutableRefObject<boolean>;
   isDocumentHiddenRef: React.MutableRefObject<boolean>;
   scheduleIndicatorUpdate: (delay?: number, source?: string) => void;
-  uniqueId?: string;
 }
 
 export function useScroll({
@@ -28,7 +27,6 @@ export function useScroll({
   isInitialMountRef,
   isDocumentHiddenRef,
   scheduleIndicatorUpdate,
-  uniqueId = '',
 }: UseScrollProps) {
   const scrollAnimationCancelRef = useRef<(() => void) | null>(null);
 

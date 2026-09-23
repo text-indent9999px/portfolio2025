@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 
 import { cn } from '@/utils/cn';
 
+import { useHasMounted } from '../../../hooks';
 import { buildClickHandler, buildKeydownHandler } from './Toggle.handlers';
 import { ToggleProps, ToggleSize } from './Toggle.types';
 import {
@@ -37,11 +38,7 @@ export const Toggle: React.FC<ToggleProps> = ({
   onMouseLeave,
 }) => {
   /** 마운트 후에만 트랙/썸을 그린다. SSR 첫 페인트와 하이드레이션 직후에 부모가 준 `checked`와 기본 스냅샷이 잠깐 달라져 레이아웃·트랜지션이 어색해 보이는 것을 줄이기 위함. */
-  const [isInitialized, setIsInitialized] = useState(false);
-
-  useEffect(() => {
-    setIsInitialized(true);
-  }, []);
+  const isInitialized = useHasMounted();
 
   const [isUserInteraction, setIsUserInteraction] = useState(false);
 

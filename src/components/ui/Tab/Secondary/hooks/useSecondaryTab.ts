@@ -8,8 +8,6 @@ import {
   useRef,
   useState,
 } from 'react';
-import { debounce } from '../../../../../utils/debounce';
-import { useEventCallback } from '../../../../../utils/useEventCallback';
 import type { TabItem } from '../../common.types';
 import { useIndicator } from './useIndicator';
 import { useScroll } from './useScroll';
@@ -36,6 +34,12 @@ export const useSecondaryTab = ({
   const [mounted, setMounted] = useState(false);
   const isInitialMountRef = useRef(true);
   const isDocumentHiddenRef = useRef(false);
+  /**
+   * `isInitialMountRef`와 항상 같은 값을 들고 다니는 state 짝. ref는 effect·콜백에서
+   * 리렌더 없이 즉시 읽을 때 쓰고, 렌더 중 값이 필요한 `shouldShowTransition`은
+   * 반드시 이 state로만 읽는다(ref.current를 렌더 중에 읽으면 안 됨).
+   */
+  const [isInitialMount, setIsInitialMount] = useState(true);
 
   const tabIdToIndex = useMemo(() => {
     const map = new Map<string, number>();
@@ -71,7 +75,6 @@ export const useSecondaryTab = ({
     isInitialMountRef,
     isDocumentHiddenRef,
     scheduleIndicatorUpdate,
-    uniqueId,
   });
 
   const { handleTabClick, handleButtonKeydown, handleButtonFocusSync } =
@@ -82,27 +85,40 @@ export const useSecondaryTab = ({
       uniqueId,
     });
 
-  const debouncedResizeHandler = useMemo(
-    () =>
-      debounce(() => {
-        if (isDocumentHiddenRef.current) return;
-        if (isInitialMountRef.current) return;
-        if (scrollContainerRef.current) {
-          updateIndicatorState('handleResize');
-          updateScrollState();
-        }
-      }, 166),
-    [updateIndicatorState, updateScrollState]
-  );
+  // 디바운스를 직접 만든다(외부 debounce()에 ref를 읽는 콜백을 넘기면 정적 분석이
+  // 렌더 중 ref 접근으로 오인한다). 타이머는 이 useCallback 안에서만 쓰는 구현 세부라
+  // ref로 들고, 실제 ref 읽기는 setTimeout 콜백 안, 즉 리사이즈가 실제로 일어난
+  // 한참 뒤에만 일어난다. updateIndicatorState/updateScrollState는 이미 안정된
+  // 참조라 이 함수 자체도 재생성되지 않는다.
+  const resizeTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const handleResize = useEventCallback(
-    debouncedResizeHandler
-  );
+  const handleResize = useCallback(() => {
+    if (resizeTimeoutRef.current) {
+      clearTimeout(resizeTimeoutRef.current);
+    }
+    resizeTimeoutRef.current = setTimeout(() => {
+      if (isDocumentHiddenRef.current) return;
+      if (isInitialMountRef.current) return;
+      if (scrollContainerRef.current) {
+        updateIndicatorState('handleResize');
+        updateScrollState();
+      }
+    }, 166);
+  }, [updateIndicatorState, updateScrollState]);
+
+  useEffect(() => {
+    return () => {
+      if (resizeTimeoutRef.current) {
+        clearTimeout(resizeTimeoutRef.current);
+      }
+    };
+  }, []);
 
   useTabObservers({
     scrollContainerRef,
     tabListRef,
     isInitialMountRef,
+    setIsInitialMount,
     setMounted,
     updateIndicatorState,
     handleResize,
@@ -179,7 +195,7 @@ export const useSecondaryTab = ({
     };
   }, [indicatorUpdateTimeoutRef]);
 
-  const shouldShowTransition = mounted && !isInitialMountRef.current;
+  const shouldShowTransition = mounted && !isInitialMount;
   const handleArrowLeft = useCallback(
     () => handleArrowClick('left'),
     [handleArrowClick]

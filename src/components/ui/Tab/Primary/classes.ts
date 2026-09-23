@@ -1,10 +1,7 @@
 // PrimaryTab className 계산 함수들
 
 // 탭 버튼 className 계산 함수
-export const getTabButtonClassName = (
-  isActive: boolean,
-  hasNotification: boolean
-) => {
+export const getTabButtonClassName = (isActive: boolean) => {
   return [
     // Group/State
     'group',

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState, useSyncExternalStore } from 'react';
 import type { SemanticTone } from './ColorChip.types';
 
 export const SEMANTIC_TONE_TO_RAW_COLOR: Record<SemanticTone, string> = {
@@ -70,25 +70,23 @@ export const getColorValue = (
 
 // 색상값을 동적으로 가져오는 커스텀 훅
 export const useColorValue = (colorType: string, shade: string | number) => {
-  const [hexCode, setHexCode] = useState<string>('');
-
-  const updateColorValue = useCallback(() => {
+  const getSnapshot = useCallback(() => {
     try {
-      const colorValue = getColorValue(colorType, shade);
-      setHexCode(colorValue);
+      return getColorValue(colorType, shade);
     } catch (error) {
       console.warn(
         `Failed to get color value for ${colorType}-${shade}:`,
         error
       );
-      setHexCode('#000000'); // fallback
+      return '#000000'; // fallback
     }
   }, [colorType, shade]);
 
-  useEffect(() => {
-    updateColorValue();
+  // 테마(`html` class)가 바뀌면 칩 옆 HEX도 다시 읽어야 하므로, 그 변화를
+  // 외부 소스로 보고 useSyncExternalStore로 구독한다.
+  const subscribe = useCallback((onStoreChange: () => void) => {
+    if (typeof MutationObserver === 'undefined') return () => {};
 
-    // 테마(`html` class) 변경 시 칩 옆 HEX를 다시 읽는다.
     // 연속 attribute 변화는 requestAnimationFrame으로 한 프레임에 합친다.
     let rafId: number | null = null;
     const observer = new MutationObserver(() => {
@@ -97,7 +95,7 @@ export const useColorValue = (colorType: string, shade: string | number) => {
       }
       rafId = requestAnimationFrame(() => {
         rafId = null;
-        updateColorValue();
+        onStoreChange();
       });
     });
 
@@ -112,9 +110,9 @@ export const useColorValue = (colorType: string, shade: string | number) => {
       }
       observer.disconnect();
     };
-  }, [updateColorValue]);
+  }, []);
 
-  return hexCode;
+  return useSyncExternalStore(subscribe, getSnapshot, () => '');
 };
 
 // hover 상태를 관리하는 커스텀 훅

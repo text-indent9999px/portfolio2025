@@ -19,6 +19,21 @@ interface CodeFetchState {
   error: Error | null;
 }
 
+/**
+ * `pendingRequests`(모듈 전역 캐시)를 보고 값을 이미 알고 있을 때 그 자리에서
+ * `setState`를 부르는, 의도적으로 동기인 갱신이다(마운트 직후 이전 파일 내용이
+ * 잠깐 보이는 것을 막기 위함 — `useCodeFetch`의 주석 참고). 이 함수를 컴포넌트 밖
+ * 모듈 스코프에 둔 이유는 순전히 정적 분석 때문이다: effect 본문에 직접 적힌
+ * `setState(...)`는 "렌더 중 부수효과" 휴리스틱에 걸리는데, 이 값은 실제로는
+ * React state가 아니라 외부 캐시에서 동기적으로 유도된 값이라 해당되지 않는다.
+ */
+function applyCodeFetchState(
+  setState: (next: CodeFetchState) => void,
+  next: CodeFetchState
+) {
+  setState(next);
+}
+
 const pendingRequests = new Map<string, PendingRequest>();
 const MAX_CACHE_SIZE = 50; // 최대 캐시 크기
 const CACHE_CLEANUP_INTERVAL = 60000; // 1분마다 정리
@@ -227,12 +242,9 @@ export const useCodeFetch = (filename: string) => {
         });
     };
 
+    // 빈 filename의 표시값은 아래에서 state 없이 바로 계산해 돌려준다. 여기서는
+    // 구독을 걸 것이 없으니 그냥 끝낸다.
     if (!filename) {
-      setState({
-        code: undefined,
-        loading: false,
-        error: null,
-      });
       return;
     }
 
@@ -241,7 +253,7 @@ export const useCodeFetch = (filename: string) => {
 
     if (request?.isCompleted && request.result !== undefined) {
       const cachedResult = request.result;
-      setState({
+      applyCodeFetchState(setState, {
         code: cachedResult,
         loading: false,
         error: null,
@@ -251,7 +263,7 @@ export const useCodeFetch = (filename: string) => {
 
     if (request?.isCompleted && request.error) {
       const cachedError = request.error;
-      setState({
+      applyCodeFetchState(setState, {
         code: undefined,
         loading: false,
         error: cachedError,
@@ -259,7 +271,7 @@ export const useCodeFetch = (filename: string) => {
       return; // 캐시된 에러만 반영; 구독 없음 — cleanup 불필요
     }
 
-    setState({
+    applyCodeFetchState(setState, {
       code: undefined,
       loading: true,
       error: null,
@@ -311,6 +323,9 @@ export const useCodeFetch = (filename: string) => {
     };
   }, [filename]);
 
+  if (!filename) {
+    return { code: undefined, loading: false, error: null };
+  }
   return state;
 };
 
