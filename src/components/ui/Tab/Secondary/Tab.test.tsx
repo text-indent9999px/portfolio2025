@@ -67,7 +67,7 @@ describe('SecondaryTab', () => {
     );
   });
 
-  it('마지막 탭에서 오른쪽 화살표를 눌러도 넘어가지 않는다(순환하지 않음)', async () => {
+  it('마지막 탭에서 오른쪽 화살표를 누르면 첫 탭으로 순환한다', async () => {
     const onTabChange = vi.fn();
     render(
       <SecondaryTab
@@ -81,7 +81,24 @@ describe('SecondaryTab', () => {
     screen.getByRole('tab', { name: /탭 C/ }).focus();
     await userEvent.keyboard('{ArrowRight}');
 
-    expect(onTabChange).not.toHaveBeenCalled();
+    expect(onTabChange).toHaveBeenCalledWith('a');
+  });
+
+  it('첫 탭에서 왼쪽 화살표를 누르면 마지막 탭으로 순환한다', async () => {
+    const onTabChange = vi.fn();
+    render(
+      <SecondaryTab
+        tabs={tabs}
+        activeTab="a"
+        onTabChange={onTabChange}
+        uniqueId="test"
+      />
+    );
+
+    screen.getByRole('tab', { name: /탭 A/ }).focus();
+    await userEvent.keyboard('{ArrowLeft}');
+
+    expect(onTabChange).toHaveBeenCalledWith('c');
   });
 
   it('End 키는 마지막 탭으로 이동한다', async () => {

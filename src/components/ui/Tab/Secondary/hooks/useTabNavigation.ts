@@ -36,11 +36,11 @@ export function useTabNavigation({
     switch (e.key) {
       case 'ArrowLeft':
         e.preventDefault();
-        targetIndex = Math.max(0, currentIndex - 1);
+        targetIndex = (currentIndex - 1 + tabs.length) % tabs.length;
         break;
       case 'ArrowRight':
         e.preventDefault();
-        targetIndex = Math.min(tabs.length - 1, currentIndex + 1);
+        targetIndex = (currentIndex + 1) % tabs.length;
         break;
       case 'Home':
         e.preventDefault();
