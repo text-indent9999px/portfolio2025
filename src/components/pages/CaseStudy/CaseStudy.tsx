@@ -65,7 +65,7 @@ export function CaseStudy({ project }: { project: Project }) {
     <article className="relative isolate">
       <Backdrop />
 
-      <div className="mx-auto w-full max-w-6xl px-5 pb-24 pt-28 md:px-8 md:pt-36">
+      <div className="mx-auto w-full max-w-6xl px-5 pb-24 pt-12 md:px-8 md:pt-20">
         <Link
           href="/#work"
           className="group inline-flex items-center gap-2 rounded-sm text-sm font-medium text-text-secondary transition-colors hover:text-text-primary focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-accent-500"
@@ -108,8 +108,8 @@ export function CaseStudy({ project }: { project: Project }) {
               {project.links.map((link, index) => (
                 <Button
                   key={link.href}
-                  size="lg"
-                  rounded="pill"
+                  size="md"
+                  rounded="md"
                   variant={index === 0 ? 'solid' : 'outline'}
                   color="brand"
                   href={link.href}

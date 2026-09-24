@@ -6,7 +6,7 @@
 > **라이브**: <https://text-indent9999px.vercel.app>
 > **Storybook**: <https://text-indent9999px-storybook.vercel.app>
 
-**마지막 업데이트**: 2026.09.23
+**마지막 업데이트**: 2026.09.24
 
 ## 공개 설정
 

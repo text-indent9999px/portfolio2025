@@ -78,11 +78,19 @@ export default function RootLayout({
           <a href="#main-content" className="skip-link">
             본문으로 건너뛰기
           </a>
-          <SiteHeader />
-          <main id="main-content">
-            <PageTransition>{children}</PageTransition>
-          </main>
-          <SiteFooter />
+          {/* 페이지 전체를 감싸는 테두리. 뷰포트 끝까지는 안 닿게 최소 여백을 주고,
+              1320px부터는 그 이상 넓어지지 않고 가운데 정렬된다 — 폭 제한은 이
+              바깥 껍데기에서 한 번만 걸고, 안쪽 콘텐츠는 이 너비를 그대로 채운다
+              (각 섹션 안에서 max-w-6xl로 한 번 더 좁히지 않는다). */}
+          <div className="px-3 md:px-5">
+            <div className="mx-auto my-3 max-w-[1320px] border-2 border-surface-level-4 dark:border-surface-level-5 md:my-5">
+              <SiteHeader />
+              <main id="main-content">
+                <PageTransition>{children}</PageTransition>
+              </main>
+              <SiteFooter />
+            </div>
+          </div>
         </AppProviders>
       </body>
     </html>

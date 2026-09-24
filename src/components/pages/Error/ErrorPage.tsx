@@ -105,7 +105,7 @@ const ErrorPage: React.FC<ErrorPageProps> = ({
                 onClick={() => {
                   window.location.reload();
                 }}
-                rounded="pill"
+                rounded="md"
                 fullWidth={true}
               >
                 새로 고침

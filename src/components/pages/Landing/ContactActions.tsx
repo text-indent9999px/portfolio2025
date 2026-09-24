@@ -41,8 +41,8 @@ export function ContactActions() {
   return (
     <div className="mt-10 flex flex-wrap items-center gap-3">
       <Button
-        size="lg"
-        rounded="pill"
+        size="md"
+        rounded="md"
         variant="solid"
         color="brand"
         icon={<FontAwesomeIcon icon={faEnvelope} />}
@@ -53,8 +53,8 @@ export function ContactActions() {
         이메일 보내기
       </Button>
       <Button
-        size="lg"
-        rounded="pill"
+        size="md"
+        rounded="md"
         variant="outline"
         color="brand"
         icon={<FontAwesomeIcon icon={copied ? faCheck : faCopy} />}
@@ -63,8 +63,8 @@ export function ContactActions() {
         {copied ? '복사했습니다' : '주소 복사'}
       </Button>
       <Button
-        size="lg"
-        rounded="pill"
+        size="md"
+        rounded="md"
         variant="minimal"
         color="brand"
         href={SITE.github}
@@ -73,9 +73,7 @@ export function ContactActions() {
       >
         GitHub
       </Button>
-      {SITE.resumeDownload && (
-        <ResumeDownloadButton size="lg" rounded="pill" />
-      )}
+      {SITE.resumeDownload && <ResumeDownloadButton size="md" rounded="md" />}
       <span role="status" aria-live="polite" className="sr-only">
         {copied ? '이메일 주소를 클립보드에 복사했습니다.' : ''}
       </span>

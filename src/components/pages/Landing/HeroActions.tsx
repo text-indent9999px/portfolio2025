@@ -16,8 +16,8 @@ export function HeroActions() {
       style={{ '--d': '180ms' } as CSSProperties}
     >
       <Button
-        size="lg"
-        rounded="pill"
+        size="md"
+        rounded="md"
         variant="solid"
         color="brand"
         icon={<FontAwesomeIcon icon={faArrowDown} />}
@@ -27,17 +27,15 @@ export function HeroActions() {
         프로젝트 보기
       </Button>
       <Button
-        size="lg"
-        rounded="pill"
+        size="md"
+        rounded="md"
         variant="outline"
         color="brand"
         onClick={() => goToSection('contact')}
       >
         연락하기
       </Button>
-      {SITE.resumeDownload && (
-        <ResumeDownloadButton size="lg" rounded="pill" />
-      )}
+      {SITE.resumeDownload && <ResumeDownloadButton size="md" rounded="md" />}
     </div>
   );
 }

@@ -9,7 +9,7 @@ export function Hero() {
   return (
     <section id="top" aria-label="소개" className="relative isolate">
       <Backdrop />
-      <div className="mx-auto w-full max-w-6xl px-5 pb-20 pt-36 md:px-8 md:pb-28 md:pt-48">
+      <div className="mx-auto w-full max-w-6xl px-5 pb-20 pt-20 md:px-8 md:pb-28 md:pt-32">
         <p
           className="hero-in font-mono-label inline-flex items-center gap-2.5 rounded-full border border-surface-level-2 bg-surface-level-min/70 px-3.5 py-1.5 text-xs font-medium text-text-secondary backdrop-blur dark:border-surface-level-3"
           style={delay(0)}

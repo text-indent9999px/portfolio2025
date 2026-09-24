@@ -40,9 +40,7 @@ function SiteChip({ site }: { site: WorkedSite }) {
       )}
     >
       {site.name}
-      {site.note && (
-        <span className="text-xs font-normal">· {site.note}</span>
-      )}
+      {site.note && <span className="text-xs font-normal">· {site.note}</span>}
     </span>
   );
 }
@@ -55,7 +53,7 @@ function AchievementItem({
   defaultOpen?: boolean;
 }) {
   return (
-    <li className="border-b border-surface-level-2 dark:border-surface-level-3">
+    <li className="border-b border-surface-level-2 last:border-b-0 dark:border-surface-level-3">
       <details className="group" open={defaultOpen}>
         <summary className="flex cursor-pointer list-none items-start justify-between gap-4 rounded-md py-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500 [&::-webkit-details-marker]:hidden">
           <span className="text-base font-semibold leading-snug text-text-primary md:text-lg">
@@ -71,7 +69,10 @@ function AchievementItem({
         <div className="pb-7 md:pr-12">
           <dl className="space-y-3.5 text-sm leading-relaxed md:text-base">
             {DETAIL_ROWS.map(row => (
-              <div key={row.key} className="grid grid-cols-[2.75rem_1fr] gap-x-4">
+              <div
+                key={row.key}
+                className="grid grid-cols-[2.75rem_1fr] gap-x-4"
+              >
                 <dt className="font-mono-label pt-0.5 text-xs font-medium uppercase tracking-wider text-text-secondary">
                   {row.label}
                 </dt>
@@ -124,7 +125,9 @@ export function Experience() {
               <h3 className="mt-2 text-3xl font-bold tracking-tight text-text-primary">
                 {career.company}
               </h3>
-              <p className="mt-1 font-medium text-text-primary">{career.role}</p>
+              <p className="mt-1 font-medium text-text-primary">
+                {career.role}
+              </p>
               <div className="mt-3 flex flex-wrap gap-1.5">
                 <Pill variant="soft" color="neutral" size="sm">
                   {career.companyType}
@@ -151,7 +154,7 @@ export function Experience() {
                 {career.engagements.map(engagement => (
                   <li
                     key={engagement.id}
-                    className="border-t border-surface-level-3 pt-6"
+                    className="border-t border-surface-level-3 pt-6 first:border-t-0 first:pt-0"
                   >
                     <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-1">
                       <h4 className="text-xl font-bold leading-snug tracking-tight text-text-primary">
@@ -191,7 +194,7 @@ export function Experience() {
 
                     {engagement.achievements &&
                       engagement.achievements.length > 0 && (
-                        <ul className="mt-6 border-t border-surface-level-2 dark:border-surface-level-3">
+                        <ul className="mt-6">
                           {engagement.achievements.map(achievement => (
                             <AchievementItem
                               key={achievement.id}
@@ -204,7 +207,7 @@ export function Experience() {
                 ))}
               </ul>
             ) : (
-              <ul className="border-t border-surface-level-3">
+              <ul>
                 {career.achievements?.map((achievement, index) => (
                   <AchievementItem
                     key={achievement.id}

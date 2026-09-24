@@ -58,13 +58,13 @@ export function SiteHeader() {
   return (
     <header
       className={cn(
-        'fixed inset-x-0 top-0 z-50 transition-[background-color,box-shadow,backdrop-filter] duration-300',
+        'sticky top-0 z-50 transition-[background-color,backdrop-filter] duration-300',
         showSolidBackground
-          ? 'bg-surface-level-min/80 shadow-[0_1px_0_0_var(--color-surface-level-1)] backdrop-blur-xl dark:shadow-[0_1px_0_0_var(--color-surface-level-2)]'
+          ? 'bg-surface-level-min/80 backdrop-blur-xl'
           : 'bg-transparent'
       )}
     >
-      <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between gap-4 px-5 md:px-8">
+      <div className="flex w-full items-center justify-between gap-4 px-6 py-5 md:px-10 md:py-6">
         <Link
           href="/"
           aria-label="포트폴리오 홈"
@@ -92,7 +92,7 @@ export function SiteHeader() {
                     onClick={handleNavClick(item.id)}
                     aria-current={isActive ? 'location' : undefined}
                     className={cn(
-                      'relative rounded-full px-3.5 py-2 text-sm font-medium transition-colors',
+                      'font-mono-label relative rounded-full px-3.5 py-2 text-xs font-medium uppercase transition-colors',
                       'focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent-500',
                       isActive
                         ? 'text-text-primary'
@@ -118,7 +118,7 @@ export function SiteHeader() {
           <ThemeToggle size="sm" />
           <Button
             size="sm"
-            rounded="pill"
+            rounded="md"
             variant="solid"
             color="brand"
             className="hidden md:inline-flex"
@@ -138,10 +138,15 @@ export function SiteHeader() {
         </div>
       </div>
 
+      {/* 프레임 폭(body)에 거의 맞춰 긋되, 프레임 테두리에서 넉넉히 띈다. */}
+      <div aria-hidden className="px-6 md:px-10">
+        <div className="border-t-2 border-surface-level-4 dark:border-surface-level-5" />
+      </div>
+
       <div
         id={MOBILE_MENU_ID}
         hidden={!isMenuOpen}
-        className="border-t border-surface-level-1 px-5 pb-6 pt-2 md:hidden dark:border-surface-level-2"
+        className="px-6 pb-6 pt-2 md:hidden"
       >
         <ul className="flex flex-col">
           {NAV_ITEMS.map(item => (

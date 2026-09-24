@@ -26,7 +26,7 @@ export const PADDING_STYLES = {
  * surface 단계별 테두리 — 라이트/다크 토큰을 `ld`로 분리
  */
 export const BORDER_STYLES = {
-  min: ld('border-surface-level-1', 'dark:border-surface-level-4'),
+  min: ld('border-surface-level-4', 'dark:border-surface-level-5'),
   1: ld('border-surface-level-2', 'dark:border-surface-level-4'),
   2: ld('border-surface-level-3', 'dark:border-surface-level-4'),
   3: ld('border-surface-level-4', 'dark:border-surface-level-4'),

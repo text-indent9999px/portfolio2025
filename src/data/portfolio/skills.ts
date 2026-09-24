@@ -4,7 +4,8 @@ export const SKILL_GROUPS: SkillGroup[] = [
   {
     id: 'core',
     title: 'Language & Framework',
-    summary: '타입으로 오류를 줄이고, 서버·클라이언트 경계를 의식해 설계합니다.',
+    summary:
+      '타입으로 오류를 줄이고, 서버·클라이언트 경계를 의식해 설계합니다.',
     items: [
       { name: 'TypeScript', icon: '/assets/skills/ts.svg' },
       { name: 'JavaScript', icon: '/assets/skills/js.svg' },
@@ -33,7 +34,8 @@ export const SKILL_GROUPS: SkillGroup[] = [
   {
     id: 'data',
     title: 'State & Data',
-    summary: '서버 상태와 클라이언트 상태를 분리해 호출 수와 복잡도를 줄입니다.',
+    summary:
+      '서버 상태와 클라이언트 상태를 분리해 호출 수와 복잡도를 줄입니다.',
     items: [
       {
         name: 'React Query',
@@ -66,16 +68,42 @@ export const SKILL_GROUPS: SkillGroup[] = [
     summary: '브랜치 전략, 코드 리뷰, 자동 배포까지 협업 흐름을 갖춰 일합니다.',
     items: [
       { name: 'Git', icon: '/assets/skills/git.svg' },
-      { name: 'GitHub', icon: '/assets/skills/gitHub.svg', hasBackground: true },
-      { name: 'Vercel', icon: '/assets/skills/vercel.svg', hasBackground: true },
-      { name: 'Render', icon: '/assets/skills/render.svg', hasBackground: true },
+      {
+        name: 'GitHub',
+        icon: '/assets/skills/gitHub.svg',
+        hasBackground: true,
+      },
+      {
+        name: 'Vercel',
+        icon: '/assets/skills/vercel.svg',
+        hasBackground: true,
+      },
+      {
+        name: 'Render',
+        icon: '/assets/skills/render.svg',
+        hasBackground: true,
+      },
       { name: 'Jira', icon: '/assets/skills/jira.svg' },
-      { name: 'AI & LLM API', icon: '/assets/skills/ai.svg' },
     ],
     points: [
       'Git Submodule 기반 공통 모듈 관리, Git Flow, PR 템플릿, 코드 리뷰를 활용합니다.',
       'Vercel·Render로 빌드부터 배포까지 자동화 파이프라인을 운영합니다.',
-      'OpenAI·Gemini 등 LLM API 연동 경험이 있고, AI 도구를 개발 프로세스에 적극 활용합니다.',
+    ],
+  },
+  {
+    id: 'ai-tools',
+    title: 'AI 활용',
+    summary:
+      '코딩 에이전트로 개발 흐름에 결합하고, 필요하면 API 연동까지 직접 구현합니다.',
+    items: [
+      { name: 'ChatGPT', icon: '/assets/skills/ai.svg' },
+      { name: 'Claude', icon: '/assets/skills/ai.svg' },
+      { name: 'Gemini', icon: '/assets/skills/ai.svg' },
+      { name: 'Cursor', icon: '/assets/skills/ai.svg' },
+    ],
+    points: [
+      'ChatGPT·Claude·Gemini·Cursor를 코딩 에이전트로 활용해 구현 속도와 코드 품질을 높입니다.',
+      'Gemini는 API 연동까지 직접 구현해 서비스 로직에도 활용해 봤습니다.',
     ],
   },
 ];

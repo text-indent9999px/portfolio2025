@@ -27,13 +27,13 @@ export function About() {
           ))}
         </Reveal>
 
-        <ol className="border-t border-surface-level-3">
+        <ol>
           {PRINCIPLES.map((principle, index) => (
             <Reveal
               as="li"
               key={principle.title}
               delay={index * 100}
-              className="flex gap-5 border-b border-surface-level-2 py-7 dark:border-surface-level-3"
+              className="flex gap-5 border-b border-surface-level-2 py-7 last:border-b-0 dark:border-surface-level-3"
             >
               <span
                 aria-hidden

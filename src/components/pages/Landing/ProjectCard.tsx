@@ -1,6 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import type { ReactNode } from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import type { Project } from '@/data/portfolio';
 import { cn } from '@/utils/cn';
 import { Card } from '../../ui/Card';
@@ -14,10 +14,12 @@ interface ProjectCardProps {
   project: Project;
   variant?: Variant;
   priority?: boolean;
+  /** Work 섹션의 격자 배치용 — gridDividers의 grid-column/row를 그대로 전달한다. */
+  style?: CSSProperties;
 }
 
 const CARD_CLASS =
-  'group relative h-full hover:-translate-y-1 hover:border-surface-level-4 focus-within:border-surface-level-5';
+  'group relative h-full hover:-translate-y-1 hover:border-surface-level-5 focus-within:border-surface-level-6';
 
 function Meta({ project }: { project: Project }) {
   return (
@@ -25,11 +27,7 @@ function Meta({ project }: { project: Project }) {
       <span className="font-mono-label text-xs font-medium uppercase tracking-wider text-text-secondary">
         {project.category}
       </span>
-      <Pill
-        variant="soft"
-        color={STATUS_COLOR[project.status]}
-        size="xs"
-      >
+      <Pill variant="soft" color={STATUS_COLOR[project.status]} size="xs">
         {STATUS_LABEL[project.status]}
       </Pill>
     </div>
@@ -91,12 +89,13 @@ export function ProjectCard({
   project,
   variant = 'default',
   priority,
+  style,
 }: ProjectCardProps) {
   if (variant === 'compact') {
     return (
       <Card
         appearance="outline"
-        surfaceLevel={1}
+        surfaceLevel="min"
         elevation={0}
         padding="md"
         thumbPosition="left"
@@ -140,7 +139,7 @@ export function ProjectCard({
     return (
       <Card
         appearance="outline"
-        surfaceLevel={1}
+        surfaceLevel="min"
         elevation={0}
         padding="md"
         className={CARD_CLASS}
@@ -175,14 +174,16 @@ export function ProjectCard({
   return (
     <Card
       appearance="outline"
-      surfaceLevel={1}
+      surfaceLevel="min"
       elevation={0}
-      padding="md"
       thumbPosition="top"
       gap="1.25rem"
-      className={CARD_CLASS}
+      className={cn(CARD_CLASS, 'h-full rounded-none border-0 p-0 lg:p-6')}
+      style={style}
       slots={{
-        thumb: <CoverArt project={project} sizes="(min-width: 1024px) 30vw, 100vw" />,
+        thumb: (
+          <CoverArt project={project} sizes="(min-width: 1024px) 30vw, 100vw" />
+        ),
         body: (
           <div className="flex h-full flex-col gap-3">
             <Meta project={project} />

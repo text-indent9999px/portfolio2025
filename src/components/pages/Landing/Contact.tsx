@@ -9,9 +9,15 @@ export function Contact() {
     <section
       id="contact"
       aria-label="연락처"
-      className="relative isolate scroll-mt-16 overflow-hidden py-20 md:py-28"
+      className="relative isolate scroll-mt-20 md:scroll-mt-24 overflow-hidden py-10 md:py-16"
     >
       <Backdrop fade={false} />
+      <div
+        aria-hidden
+        className="pointer-events-none absolute inset-x-0 top-0 px-6 md:px-10"
+      >
+        <div className="border-t-2 border-surface-level-4 dark:border-surface-level-5" />
+      </div>
       <div className="mx-auto w-full max-w-6xl px-5 md:px-8">
         <Reveal>
           <p className="font-mono-label text-xs font-medium uppercase tracking-[0.18em] text-text-secondary">
